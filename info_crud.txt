@@ -1,0 +1,10 @@
+1 - Cadastro de clientes:
+nome, telefone, email, cpf(opcional), data de nascimento
+historico de agendamemtos e atendimentos
+observacoes(preferencias, restricoes, cor de tinta)
+
+
+Ferramentas/comandos:
+npm init -y
+npm i express cors mysql2 nodemon dotenv sequelize sequelize-cli
+npx sequelize init
