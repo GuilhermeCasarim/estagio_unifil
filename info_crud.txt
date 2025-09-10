@@ -6,5 +6,8 @@ observacoes(preferencias, restricoes, cor de tinta)
 
 Ferramentas/comandos:
 npm init -y
-npm i express cors mysql2 nodemon dotenv sequelize sequelize-cli
+npm i express cors mysql2 nodemon dotenv sequelize sequelize-cli axios react-hook-form
 npx sequelize init
+
+Iniciar front: npm run dev
+Iniciar back: npm start
