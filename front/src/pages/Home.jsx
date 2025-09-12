@@ -20,6 +20,7 @@ export const Home = () => {
                         <p>{cliente.email}</p>
                         <p>{cliente.cpf && `${cliente.cpf}`}</p>
                         <p>{cliente.data_nascimento}</p>
+                        <p>{cliente.observacoes && `${cliente.observacoes}`}</p>
                     </div>
                 ))}
             </div>

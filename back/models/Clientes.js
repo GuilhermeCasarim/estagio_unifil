@@ -19,6 +19,10 @@ module.exports = (sequelize, DataTypes) => {
         data_nascimento: {
             type: DataTypes.STRING,
             allowNull: false
+        },
+        observacoes: {
+            type: DataTypes.STRING,
+            allowNull: true
         }
     })
     return Clientes;

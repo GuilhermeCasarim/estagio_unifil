@@ -1,42 +1,75 @@
 import React from 'react'
 import { useForm } from 'react-hook-form'
+import validator from 'validator'
+import axios from 'axios'
 
 export const Clientes = () => {
 
-    const *methods = useForm();
+    const { register, handleSubmit, formState: { errors } } = useForm();
+    console.log(errors)
 
-    const onSubmit = () => {
 
+    const onSubmit = (data) => {
+        axios.post('http://localhost:3001/clientes', data).then((res) => {
+            console.log('funcionou')
+        })
     }
 
     return (
-        <div>
-            <div className="nome">
+        <div className='flex flex-col space-y-8 p-2'>
+            <div className="nome space-x-4">
                 <label htmlFor="nome">Nome</label>
-                <input type="text" name='nome' id='nome' placeholder='Seu nome(obrigatório)' />
+                <input type="text" name='nome' id='nome' placeholder='Seu nome(obrigatório)'
+                    {...register('nome', { required: true })}
+                />
+                {errors?.nome?.type == 'required' &&
+                    <p className='text-red-500 text-sm'>Nome necessário!</p>}
             </div>
 
-            <div className="telefone">
+            <div className="telefone space-x-4">
                 <label htmlFor="telefone">Telefone</label>
-                <input type="text" name='telefone' id='telefone' placeholder='Seu telefone(obrigatório)' />
+                <input type="text" name='telefone' id='telefone' placeholder='Seu telefone(obrigatório)'
+                    {...register('telefone', { required: true, minLength: 11 })}
+                />
+                {errors?.telefone?.type == 'required' &&
+                    <p className='text-red-500 text-sm'>Telefone necessário!</p>}
+                {errors?.telefone?.type == 'minLength' &&
+                    <p className='text-red-500 text-sm'>Mínimo 11 dígitos</p>}
             </div>
 
-            <div className="email">
+            <div className="email space-x-4">
                 <label htmlFor="email">Email</label>
-                <input type="text" name='email' id='email' placeholder='Seu email(obrigatório)' />
+                <input type="email" name='email' id='email' placeholder='Seu email(obrigatório)' {...register('email', {
+                    required: true,
+                    validate: (value) => validator.isEmail(value)
+                })}
+                />
+                {errors?.email?.type == 'required' &&
+                    <p className='text-red-500 text-sm'>Email necessário!</p>}
+                {errors?.email?.type == 'validate' &&
+                    <p className='text-red-500 text-sm'>Email inválido!</p>}
             </div>
 
-            <div className="cpf">
+            <div className="cpf space-x-4">
                 <label htmlFor="cpf">Cpf</label>
-                <input type="text" name='cpf' id='cpf' placeholder='Seu cpf(opcional)' />
+                <input type="text" name='cpf' id='cpf' placeholder='Seu cpf(opcional)'
+                    {...register('cpf')}
+                />
             </div>
 
-            <div className="data_nascimento">
+            <div className="data_nascimento space-x-4">
                 <label htmlFor="data_nascimento">Data de nascimento</label>
-                <input type="text" name='data_nascimento' id='data_nascimento' placeholder='Sua data de nascimento(obrigatório)' />
+                <input type="text" name='data_nascimento' id='data_nascimento' placeholder='Sua data de nascimento(obrigatório)' {...register('data_nascimento', { required: true })}
+                />
+                {errors?.data_nascimento?.type == 'required' &&
+                    <p className='text-red-500 text-sm'>Data de nascimento necessária!</p>}
+            </div>
+            <div className="observacoes space-x-4">
+                <label htmlFor="observacoes">Observações</label>
+                <input type="text" name='observacoes' id='observacoes' placeholder='Ex: Corte preferido' {...register('observacoes')} />
             </div>
             <div className="botao">
-                <button onClick={onSubmit}>Cadastrar cliente</button>
+                <button onClick={() => handleSubmit(onSubmit)()} className='py-1 px-2 bg-purple-400 rounded cursor-pointer hover:bg-purple-600 transition duration-300'>Cadastrar cliente</button>
             </div>
         </div>
     )
