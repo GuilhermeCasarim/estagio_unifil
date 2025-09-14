@@ -4,12 +4,18 @@ const { Clientes } = require('../models')
 
 module.exports = router;
 
-router.get('/', async (req, res) => { //rota get/clientes
+router.get('/', async (req, res) => { //getall
     const listaClientes = await Clientes.findAll()
     res.json(listaClientes)
 })
 
-router.post('/', async (req, res) => { //rota get/clientes
+router.get('/byId/:id', async (req, res) => { //getbyid
+    const id = req.params.id
+    const cliente = await Clientes.findByPk(id)
+    res.json(cliente)
+})
+
+router.post('/', async (req, res) => { //cria cliente
     const cliente = req.body //5 dados
     await Clientes.create(cliente)
     res.json(cliente)

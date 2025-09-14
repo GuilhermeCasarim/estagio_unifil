@@ -12,6 +12,7 @@ export const Clientes = () => {
     const onSubmit = (data) => {
         axios.post('http://localhost:3001/clientes', data).then((res) => {
             console.log('funcionou')
+            console.log(res)
         })
     }
 
