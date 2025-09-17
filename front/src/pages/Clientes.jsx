@@ -4,7 +4,7 @@ import validator from 'validator'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 
-export const Clientes = () => {
+export const Clientes = () => { //cadastro/form clientes
 
     const { register, handleSubmit, formState: { errors } } = useForm();
     console.log(errors)

@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { Link } from 'react-router-dom'
 
-export const Home = () => {
+export const Home = () => { //tela inicial/listar clientes por enquanto
     const navigate = useNavigate();
     const [listaClientes, setListaClientes] = useState([])
     useEffect(() => {

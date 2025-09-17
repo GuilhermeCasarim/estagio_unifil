@@ -12,6 +12,6 @@ app.use('/clientes', clientesRouter) //caminho padrao começa com /clientes
 const usuariosRouter = require('./routes/Usuarios')
 app.use('/auth', usuariosRouter)
 
-db.sequelize.sync({force: true}).then(() => {
+db.sequelize.sync({alter: true}).then(() => {
     app.listen((3001), () => console.log('server rodando na porta 3001'))
 })

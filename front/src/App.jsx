@@ -3,6 +3,7 @@ import { Clientes } from './pages/Clientes'
 import { Cliente } from './pages/Cliente'
 import { Home } from './pages/Home'
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
+import { Login } from './pages/Login'
 
 function App() {
 
@@ -12,6 +13,7 @@ function App() {
         <div className='flex flex-col bg-gray-300'>
           <p className='text-teal-600'>BelezaGest</p>
           <p className='text-gray-600'>Tipo de login</p>
+          <Link className='text-blue-700' to='/login'>Login</Link>
           <Link className='text-blue-700' to='/'>Início listar clientes</Link>
           <Link className='text-blue-700' to='/clientes'>Agenda</Link>
           <Link className='text-blue-700' to='/clientes'>Clientes cadastrar cliente</Link>
@@ -25,6 +27,7 @@ function App() {
           <Route path='/' element={<Home />} />
           <Route path='/clientes' element={<Clientes />} />
           <Route path='/cliente/:id' element={<Cliente />} />
+          <Route path='/login' element={<Login />} />
         </Routes>
       </BrowserRouter>
     </div>
