@@ -1,20 +1,23 @@
 import axios from 'axios'
 import React from 'react'
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { AuthContext } from '../helpers/AuthContext.js'
 
 export const Login = () => {
 
     const [login, setLogin] = useState('')
     const [senha, setSenha] = useState('')
     const navigate = useNavigate()
+    const { setAuthState } = useContext(AuthContext) //var global p mudar estado
 
     const makeLogin = () => { //manda as credenciais para autenticacao
         const data = { login, senha }
         axios.post('http://localhost:3001/auth/login', data).then((res) => {
             if (res.data.error) return alert(res.data.error)
             console.log(res.data)
-            sessionStorage.setItem('accessToken', res.data)
+            localStorage.setItem('accessToken', res.data)
+            setAuthState(true)
         })
         navigate('/')
 

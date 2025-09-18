@@ -4,7 +4,8 @@ const { Usuarios } = require('../models')
 const bcrypt = require('bcrypt')
 module.exports = router;
 
-const {sign} = require('jsonwebtoken')
+const {sign} = require('jsonwebtoken');
+const { validateToken } = require('../middlewares/AuthMiddleware');
 //rota base: path
 router.post('/', async (req, res) => { //cria
     const {login, senha, tipo_login} = req.body
@@ -30,4 +31,8 @@ router.post('/login', async (req, res) => { //autentica
         return res.json(accessToken)
     })
 }) //busca na tabela um usuario = usuario daqui
+
+router.get('/auth', validateToken, (req, res) => { //cria
+    res.json(req.usuario)
+})
 
