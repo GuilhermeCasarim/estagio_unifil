@@ -26,6 +26,11 @@ function App() {
       })
   }, [])
 
+  const logout = () => {
+    localStorage.removeItem('accessToken')
+    setAuthState(false)
+  }
+
   return (
     <div>
       {/* variavel fica "global" */}
@@ -34,8 +39,10 @@ function App() {
           <div className='flex flex-col bg-gray-300'>
             <p className='text-teal-600'>BelezaGest</p>
             <p className='text-gray-600'>Tipo de login</p>
-            {!authState && ( //renderiza insta
+            {!authState ? ( //renderiza insta
               <Link className='text-blue-700' to='/login'>Login</Link>
+            ) : (
+              <Link onClick={logout} className='text-blue-700'>Sair</Link>
             )}
             <Link className='text-blue-700' to='/'>Início listar clientes</Link>
             <Link className='text-blue-700' to='/clientes'>Agenda</Link>
