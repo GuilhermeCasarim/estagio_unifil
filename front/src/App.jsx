@@ -2,14 +2,14 @@ import './index.css'
 import { Clientes } from './pages/Clientes'
 import { Cliente } from './pages/Cliente'
 import { Home } from './pages/Home'
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Link, useNavigate } from 'react-router-dom'
 import { Login } from './pages/Login'
 import { AuthContext } from './helpers/AuthContext'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 
 function App() {
-
+  // const navigate = useNavigate()
   const [authState, setAuthState] = useState({
     login: '',
     id: 0,
@@ -40,6 +40,12 @@ function App() {
     console.log("O authState foi atualizado:", authState);
   }, [authState]); // visualizar se os dados estão certos.
 
+  // useEffect(() => {
+  //   if (!authState.status) {
+  //     navigate('/login')
+  //   }
+  // }, [authState.status]); 
+
   const logout = () => {
     localStorage.removeItem('accessToken')
     setAuthState({ ...authState, status: false })
@@ -56,20 +62,21 @@ function App() {
             {authState.status == false ? ( //renderiza insta
               <Link className='text-blue-700' to='/login'>Login</Link>
             ) : (
-              <Link onClick={logout} className='text-blue-700'>Sair</Link>
+              <div className='flex flex-col'>
+                <Link onClick={logout} className='text-blue-700'>Sair</Link>
+                <Link className='text-blue-700' to='/'>Início listar clientes</Link>
+                <Link className='text-blue-700' to='/clientes'>Agenda</Link>
+                <Link className='text-blue-700' to='/clientes'>Clientes cadastrar cliente</Link>
+                <Link className='text-blue-700' to='/clientes'>Profissionais</Link>
+                <Link className='text-blue-700' to='/clientes'>Serviços</Link>
+                <Link className='text-blue-700' to='/clientes'>Estoque</Link>
+                <Link className='text-blue-700' to='/clientes'>Financeiro</Link>
+                <Link className='text-blue-700' to='/clientes'>Relatórios</Link>
+                <div>
+                  {authState.status && <h1>{`Nome: ${authState.login}`}</h1>}
+                </div>
+              </div>
             )}
-            <Link className='text-blue-700' to='/'>Início listar clientes</Link>
-            <Link className='text-blue-700' to='/clientes'>Agenda</Link>
-            <Link className='text-blue-700' to='/clientes'>Clientes cadastrar cliente</Link>
-            <Link className='text-blue-700' to='/clientes'>Profissionais</Link>
-            <Link className='text-blue-700' to='/clientes'>Serviços</Link>
-            <Link className='text-blue-700' to='/clientes'>Estoque</Link>
-            <Link className='text-blue-700' to='/clientes'>Financeiro</Link>
-            <Link className='text-blue-700' to='/clientes'>Relatórios</Link>
-          </div>
-          <div>
-            {authState.status && <h1>{authState.login}</h1>}
-            <h1>{authState.status}</h1>
           </div>
           <Routes>
             <Route path='/' element={<Home />} />

@@ -1,15 +1,38 @@
 import React from 'react'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { Link } from 'react-router-dom'
+import { AuthContext } from '../helpers/AuthContext'
 
 export const Home = () => { //tela inicial/listar clientes por enquanto
+    const { authState } = useContext(AuthContext)
     const navigate = useNavigate();
     const [listaClientes, setListaClientes] = useState([])
-    useEffect(() => {
-        axios.get('http://localhost:3001/clientes').then((res) => setListaClientes(res.data))
-    }, [])
+    // useEffect(() => {
+    //     axios.get('http://localhost:3001/clientes').then((res) => setListaClientes(res.data))
+    // }, [])
+
+    useEffect(() => { //solucao temporaria para 
+        const timer = setTimeout(() => {
+            if (authState.status === false) {
+                navigate('/login');
+            } else {
+                axios.get('http://localhost:3001/clientes')
+                    .then((res) => setListaClientes(res.data))
+                    .catch((error) => {
+                        console.error("Erro ao buscar clientes:", error);
+                    });
+            }
+        }, 300);
+
+        return () => clearTimeout(timer);
+    }, [authState.status, navigate]);
+
+
+    const handleDelete = (id) => {
+        axios.delete(`http://localhost:3001/clientes/delete/:${id}`)
+    }
 
     return (
         <div>
@@ -24,7 +47,7 @@ export const Home = () => { //tela inicial/listar clientes por enquanto
                         {/* <p>{cliente.cpf && `${cliente.cpf}`}</p> */}
                         {/* <p>{cliente.data_nascimento}</p> */}
                         <p>{cliente.observacoes && `${cliente.observacoes}`}</p>
-                        <button className='px-2 py-1 rounded bg-red-500 cursor-pointer'>Excluir</button>
+                        <button className='px-2 py-1 rounded bg-red-500 cursor-pointer' onClick={() => handleDelete(cliente.id)}>Excluir</button>
                         <button className='px-2 py-1 rounded bg-gray-500 cursor-pointer'>Editar</button>
                     </div>
                 ))}
