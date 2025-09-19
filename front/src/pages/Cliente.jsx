@@ -15,8 +15,17 @@ export const Cliente = () => { //pagina crud cliente
   }, [])
 
   return (
-    <div>
-      <p>{clienteInfo.nome}</p>
+    <div className='cliente bg-gray-400 my-4 cursor-pointer
+                     hover:bg-gray-600 transiton duration-300 mt-12'>
+      <p>Id: {clienteInfo.id}</p>
+      <p>Nome: {clienteInfo.nome}</p>
+      <p>Telefone: {clienteInfo.telefone}</p>
+      <p>Email: {clienteInfo.email}</p>
+      <p>{clienteInfo.cpf && `CPF: ${clienteInfo.cpf}`}</p>
+      <p>Data de nascimento: {clienteInfo.data_nascimento}</p>
+      <p>{clienteInfo.observacoes && `Observações: ${clienteInfo.observacoes}`}</p>
+      {/* <button className='px-2 py-1 rounded bg-red-500 cursor-pointer'>Excluir</button>
+      <button className='px-2 py-1 rounded bg-gray-500 cursor-pointer'>Editar</button> */}
     </div>
   )
 }

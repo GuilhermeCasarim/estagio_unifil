@@ -16,14 +16,16 @@ export const Home = () => { //tela inicial/listar clientes por enquanto
             <div className="clientesData">
                 {listaClientes.map((cliente, key) => (
                     <div className="cliente bg-gray-400 my-4 cursor-pointer
-                     hover:bg-gray-600 transiton duration-300" key={key} 
-                    onClick={() => navigate(`/cliente/${cliente.id}`)}>
+                     hover:bg-gray-600 transiton duration-300" key={key}
+                        onClick={() => navigate(`/cliente/${cliente.id}`)}>
                         <p>{cliente.nome}</p>
                         <p>{cliente.telefone}</p>
                         <p>{cliente.email}</p>
                         {/* <p>{cliente.cpf && `${cliente.cpf}`}</p> */}
                         {/* <p>{cliente.data_nascimento}</p> */}
                         <p>{cliente.observacoes && `${cliente.observacoes}`}</p>
+                        <button className='px-2 py-1 rounded bg-red-500 cursor-pointer'>Excluir</button>
+                        <button className='px-2 py-1 rounded bg-gray-500 cursor-pointer'>Editar</button>
                     </div>
                 ))}
             </div>

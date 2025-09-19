@@ -20,3 +20,20 @@ router.post('/', async (req, res) => { //cria cliente
     await Clientes.create(cliente)
     res.json(cliente)
 })
+
+// router.patch('/', async (req, res) => { //edita cliente
+//     const cliente = req.body //5 dados
+//     await Clientes.create(cliente)
+//     res.json(cliente)
+// })
+
+router.delete('/delete/:id', async (req, res) => { //exclui cliente
+    const idCliente = req.params.id
+
+    Clientes.destroy({
+        where: {
+            id: idCliente
+        }
+    })
+    res.json('usuario deletado')
+})
