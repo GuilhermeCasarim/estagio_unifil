@@ -28,11 +28,11 @@ router.post('/login', async (req, res) => { //autentica
         if(!match) return res.json({error: 'senha errada'}) //se fizer login(info certas), faz o token
         const accessToken = sign({login: usuario.login, id: usuario.id}, "macaco")
     //token -> credencial de login
-        return res.json(accessToken)
+        return res.json({token: accessToken, login: usuario.login, id: usuario.id})
     })
 }) //busca na tabela um usuario = usuario daqui
 
 router.get('/auth', validateToken, (req, res) => { //cria
-    res.json(req.usuario)
+    res.json(req.usuario) //usuario -> objeto com atributos senha e id
 })
 

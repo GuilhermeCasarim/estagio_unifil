@@ -10,7 +10,11 @@ import axios from 'axios'
 
 function App() {
 
-  const [authState, setAuthState] = useState(false) //state para renderizar o login
+  const [authState, setAuthState] = useState({
+    login: '',
+    id: 0,
+    status: false
+  }) //state para renderizar o login com o localStorage
   useEffect(() => {
     axios.get('http://localhost:3001/auth/auth', {
       headers: {
@@ -19,16 +23,26 @@ function App() {
     })
       .then((res) => {
         if (res.data.error) {
-          setAuthState(false)
+          alert('sem login detectado/erro')
+          setAuthState({ ...authState, status: false })
         } else {
-          setAuthState(true)
+          setAuthState({
+            login: res.data.login,
+            id: res.data.id,
+            status: true
+          })
         }
+        console.log(authState)
       })
   }, [])
 
+  useEffect(() => {
+    console.log("O authState foi atualizado:", authState);
+  }, [authState]); // visualizar se os dados estão certos.
+
   const logout = () => {
     localStorage.removeItem('accessToken')
-    setAuthState(false)
+    setAuthState({ ...authState, status: false })
   }
 
   return (
@@ -39,7 +53,7 @@ function App() {
           <div className='flex flex-col bg-gray-300'>
             <p className='text-teal-600'>BelezaGest</p>
             <p className='text-gray-600'>Tipo de login</p>
-            {!authState ? ( //renderiza insta
+            {authState.status == false ? ( //renderiza insta
               <Link className='text-blue-700' to='/login'>Login</Link>
             ) : (
               <Link onClick={logout} className='text-blue-700'>Sair</Link>
@@ -52,6 +66,10 @@ function App() {
             <Link className='text-blue-700' to='/clientes'>Estoque</Link>
             <Link className='text-blue-700' to='/clientes'>Financeiro</Link>
             <Link className='text-blue-700' to='/clientes'>Relatórios</Link>
+          </div>
+          <div>
+            {authState.status && <h1>{authState.login}</h1>}
+            <h1>{authState.status}</h1>
           </div>
           <Routes>
             <Route path='/' element={<Home />} />

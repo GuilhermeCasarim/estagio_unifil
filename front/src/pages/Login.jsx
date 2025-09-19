@@ -14,16 +14,20 @@ export const Login = () => {
     const makeLogin = () => { //manda as credenciais para autenticacao
         const data = { login, senha }
         axios.post('http://localhost:3001/auth/login', data).then((res) => {
-            if (res.data.error) return alert(res.data.error)
+            if (res.data.error) {
+                alert(res.data.error)
+            }
             console.log(res.data)
-            localStorage.setItem('accessToken', res.data)
-            setAuthState(true)
+            localStorage.setItem('accessToken', res.data.token)
+            setAuthState({
+                login: res.data.login,
+                id: res.data.id,
+                status: true,
+            });
         })
         navigate('/')
-
         //user teste: Testosterono senha123
     }
-    // eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6IlRlc3Rvc3Rlcm9ubyIsImlkIjoxLCJpYXQiOjE3NTgxMTg4MDV9.QuTOf9-IOJzJZ5W7WZq53c98Xs6vpNXxFoT8aN-3Ktk
     return (
         <div>
             <div className="login space-x-4">
