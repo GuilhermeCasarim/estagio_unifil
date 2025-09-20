@@ -30,7 +30,7 @@ router.post('/', async (req, res) => { //cria cliente
 router.delete('/delete/:id', async (req, res) => { //exclui cliente
     const idCliente = req.params.id
 
-    Clientes.destroy({
+    await Clientes.destroy({
         where: {
             id: idCliente
         }

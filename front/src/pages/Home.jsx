@@ -12,17 +12,20 @@ export const Home = () => { //tela inicial/listar clientes por enquanto
     // useEffect(() => {
     //     axios.get('http://localhost:3001/clientes').then((res) => setListaClientes(res.data))
     // }, [])
+    const fetchClientes = () => {
+        axios.get('http://localhost:3001/clientes')
+            .then((res) => setListaClientes(res.data))
+            .catch((error) => {
+                console.error("Erro ao buscar clientes:", error);
+            });
+    }
 
-    useEffect(() => { //solucao temporaria para 
+    useEffect(() => { //solucao temporaria para nao pegar o authState no estado inicial
         const timer = setTimeout(() => {
             if (authState.status === false) {
                 navigate('/login');
             } else {
-                axios.get('http://localhost:3001/clientes')
-                    .then((res) => setListaClientes(res.data))
-                    .catch((error) => {
-                        console.error("Erro ao buscar clientes:", error);
-                    });
+                fetchClientes()
             }
         }, 300);
 
@@ -31,7 +34,14 @@ export const Home = () => { //tela inicial/listar clientes por enquanto
 
 
     const handleDelete = (id) => {
-        axios.delete(`http://localhost:3001/clientes/delete/:${id}`)
+        axios.delete(`http://localhost:3001/clientes/delete/${id}`).then(() => {
+            fetchClientes()
+        })
+            .catch((e) => alert(e, 'erro ao deletar cliente'))
+    }
+
+    const handleEdit = (id) => {
+        console.log(id)
     }
 
     return (
@@ -47,8 +57,17 @@ export const Home = () => { //tela inicial/listar clientes por enquanto
                         {/* <p>{cliente.cpf && `${cliente.cpf}`}</p> */}
                         {/* <p>{cliente.data_nascimento}</p> */}
                         <p>{cliente.observacoes && `${cliente.observacoes}`}</p>
-                        <button className='px-2 py-1 rounded bg-red-500 cursor-pointer' onClick={() => handleDelete(cliente.id)}>Excluir</button>
-                        <button className='px-2 py-1 rounded bg-gray-500 cursor-pointer'>Editar</button>
+                        <button className='px-2 py-1 rounded bg-red-500 cursor-pointer' onClick={(e) => {
+                            e.stopPropagation()
+                            handleDelete(cliente.id)
+                        }
+                        }>Excluir</button>
+                        <button className='px-2 py-1 rounded bg-gray-500 cursor-pointer'
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            handleEdit(cliente.id)
+                        }}
+                        >Editar</button>
                     </div>
                 ))}
             </div>
