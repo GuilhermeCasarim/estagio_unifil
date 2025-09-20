@@ -7,6 +7,7 @@ import { Login } from './pages/Login'
 import { AuthContext } from './helpers/AuthContext'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
+import { ClienteEdit } from './pages/ClienteEdit'
 
 function App() {
   // const navigate = useNavigate()
@@ -83,6 +84,8 @@ function App() {
             <Route path='/clientes' element={<Clientes />} />
             <Route path='/cliente/:id' element={<Cliente />} />
             <Route path='/login' element={<Login />} />
+            <Route path='/cliente/edit/:id' element={<ClienteEdit />} />
+            <Route path='*' element={<Error />} />
           </Routes>
         </BrowserRouter>
       </AuthContext.Provider>

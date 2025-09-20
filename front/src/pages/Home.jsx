@@ -41,7 +41,7 @@ export const Home = () => { //tela inicial/listar clientes por enquanto
     }
 
     const handleEdit = (id) => {
-        console.log(id)
+        navigate(`/cliente/edit/${id}`)
     }
 
     return (

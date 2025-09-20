@@ -2,17 +2,29 @@ import React from 'react'
 import { useForm } from 'react-hook-form'
 import validator from 'validator'
 import axios from 'axios'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
+import { useEffect } from 'react'
 
-export const Clientes = () => { //cadastro/form clientes
+export const ClienteEdit = () => { //cadastro/form clientes
 
-    const { register, handleSubmit, formState: { errors } } = useForm();
+    const { register, handleSubmit, formState: { errors }, reset } = useForm();
     console.log(errors)
     const navigate = useNavigate()
+    let { id } = useParams(); //pega id pela url com o clique do usenavigate
+
+    useEffect(() => {
+        //busca dados do cliente editado para preencher o form atual
+        axios.get(`http://localhost:3001/clientes/byId/${id}`)
+            .then((res) => {
+                reset(res.data); //preenche o forms com os dados dele.
+            })
+            .catch((error) => {
+                console.error("Erro ao buscar dados do cliente:", error);
+            });
+    }, [id, reset]);
 
     const onSubmit = (data) => {
-        axios.post('http://localhost:3001/clientes', data).then((res) => {
-            console.log('funcionou')
+        axios.put(`http://localhost:3001/clientes/update/${id}`, data).then((res) => {
             console.log(res)
             navigate('/')
         })
@@ -20,6 +32,7 @@ export const Clientes = () => { //cadastro/form clientes
 
     return (
         <div className='flex flex-col space-y-8 p-2'>
+            <h1>Formulario de edição de cliente</h1>
             <div className="nome space-x-4">
                 <label htmlFor="nome">Nome</label>
                 <input type="text" name='nome' id='nome' placeholder='Seu nome(obrigatório)'
@@ -72,7 +85,7 @@ export const Clientes = () => { //cadastro/form clientes
                 <input type="text" name='observacoes' id='observacoes' placeholder='Ex: Corte preferido' {...register('observacoes')} />
             </div>
             <div className="botao">
-                <button onClick={() => handleSubmit(onSubmit)} className='py-1 px-2 bg-purple-400 rounded cursor-pointer hover:bg-purple-600 transition duration-300'>Cadastrar cliente</button>
+                <button onClick={() => handleSubmit(onSubmit)} className='py-1 px-2 bg-purple-400 rounded cursor-pointer hover:bg-purple-600 transition duration-300'>Finalizar edição de cliente</button>
             </div>
         </div>
     )
