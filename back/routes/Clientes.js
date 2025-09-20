@@ -21,17 +21,17 @@ router.post('/', async (req, res) => { //cria cliente
     res.json(cliente)
 })
 
-router.put('/update/:id', async (req, res) => { //edita cliente
+router.patch('/update/:id', async (req, res) => { //edita cliente
     const idCliente = req.params.id
     const { nome, telefone, email, cpf, data_nascimento, observacoes } = req.body //5 dados
     try {
         await Clientes.update(
-            { nome, telefone, email, cpf, data_nascimento, observacoes, },
+            { nome, telefone, email, cpf, data_nascimento, observacoes },
             { where: { id: idCliente } }
         )
         res.json('cliente atualizado')
-    } catch (e){
-        res.json({error: 'erro ao atualizar cliente'})
+    } catch (e) {
+        res.json({ error: 'erro ao atualizar cliente' })
     }
 })
 

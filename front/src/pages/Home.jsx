@@ -1,6 +1,6 @@
 import React from 'react'
 import { useEffect, useState, useContext } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import axios from 'axios'
 import { Link } from 'react-router-dom'
 import { AuthContext } from '../helpers/AuthContext'
@@ -8,6 +8,7 @@ import { AuthContext } from '../helpers/AuthContext'
 export const Home = () => { //tela inicial/listar clientes por enquanto
     const { authState } = useContext(AuthContext)
     const navigate = useNavigate();
+    const location = useLocation();
     const [listaClientes, setListaClientes] = useState([])
     // useEffect(() => {
     //     axios.get('http://localhost:3001/clientes').then((res) => setListaClientes(res.data))
@@ -31,6 +32,12 @@ export const Home = () => { //tela inicial/listar clientes por enquanto
 
         return () => clearTimeout(timer);
     }, [authState.status, navigate]);
+
+    useEffect(() => {
+        if (location.state?.refetch) {
+            fetchClientes();
+        }
+    }, [location.state]);
 
 
     const handleDelete = (id) => {
@@ -63,10 +70,10 @@ export const Home = () => { //tela inicial/listar clientes por enquanto
                         }
                         }>Excluir</button>
                         <button className='px-2 py-1 rounded bg-gray-500 cursor-pointer'
-                        onClick={(e) => {
-                            e.stopPropagation()
-                            handleEdit(cliente.id)
-                        }}
+                            onClick={(e) => {
+                                e.stopPropagation()
+                                handleEdit(cliente.id)
+                            }}
                         >Editar</button>
                     </div>
                 ))}

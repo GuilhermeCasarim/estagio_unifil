@@ -24,14 +24,14 @@ export const ClienteEdit = () => { //cadastro/form clientes
     }, [id, reset]);
 
     const onSubmit = (data) => {
-        axios.put(`http://localhost:3001/clientes/update/${id}`, data).then((res) => {
+        axios.patch(`http://localhost:3001/clientes/update/${id}`, data).then((res) => {
             console.log(res)
-            navigate('/')
+            navigate('/', { state: { refetch: true } })
         })
     }
 
     return (
-        <div className='flex flex-col space-y-8 p-2'>
+        <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col space-y-8 p-2'>
             <h1>Formulario de edição de cliente</h1>
             <div className="nome space-x-4">
                 <label htmlFor="nome">Nome</label>
@@ -85,8 +85,8 @@ export const ClienteEdit = () => { //cadastro/form clientes
                 <input type="text" name='observacoes' id='observacoes' placeholder='Ex: Corte preferido' {...register('observacoes')} />
             </div>
             <div className="botao">
-                <button onClick={() => handleSubmit(onSubmit)} className='py-1 px-2 bg-purple-400 rounded cursor-pointer hover:bg-purple-600 transition duration-300'>Finalizar edição de cliente</button>
+                <button type='submit' className='py-1 px-2 bg-purple-400 rounded cursor-pointer hover:bg-purple-600 transition duration-300'>Finalizar edição de cliente</button>
             </div>
-        </div>
+        </form>
     )
 }
