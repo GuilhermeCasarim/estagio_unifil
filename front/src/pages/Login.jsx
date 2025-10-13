@@ -11,14 +11,15 @@ export const Login = () => {
     const navigate = useNavigate()
     const { setAuthState } = useContext(AuthContext) //var global p mudar estado
 
-    const makeLogin = () => { //manda as credenciais para autenticacao
+    const makeLogin = () => { //manda as credenciais para autenticacao; se fizer login retorna um token
         const data = { login, senha }
         axios.post('http://localhost:3001/auth/login', data).then((res) => {
             if (res.data.error) {
                 alert(res.data.error)
             }
             console.log(res.data)
-            localStorage.setItem('accessToken', res.data.token)
+            localStorage.setItem('accessToken', res.data.token) 
+            //token no localStorage; o app.jsx é responsavel pelo login automatico
             setAuthState({
                 login: res.data.login,
                 id: res.data.id,

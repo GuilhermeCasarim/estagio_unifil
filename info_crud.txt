@@ -11,3 +11,23 @@ npx sequelize init
 
 Iniciar front: npm run dev
 Iniciar back: npm start
+
+Front:
+
+Paginas:
+ 
+            <Route path='/' element={<Home />} /> | pagina inicial onde lista todos os clientes
+
+            <Route path='/clientes' element={<Clientes />} /> | cadastro/forms de clientes
+
+            <Route path='/cliente/:id' element={<Cliente />} /> | read de cliente individual
+
+            <Route path='/login' element={<Login />} /> | login com autenticacao de token
+
+            <Route path='/cliente/edit/:id' element={<ClienteEdit />} /> | forms de edicao de cliente
+
+            <Route path='*' element={<Error />} />
+
+Back:
+.env -> login, senha e token
+

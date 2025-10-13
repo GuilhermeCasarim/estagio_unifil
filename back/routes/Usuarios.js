@@ -7,7 +7,7 @@ module.exports = router;
 const {sign} = require('jsonwebtoken');
 const { validateToken } = require('../middlewares/AuthMiddleware');
 //rota base: path
-router.post('/', async (req, res) => { //cria
+router.post('/', async (req, res) => { //cria usuario no banco(nao implementado; apenas no Insomnia/API)
     const {login, senha, tipo_login} = req.body
     bcrypt.hash(senha, 10).then((hash) => {
         Usuarios.create({
@@ -30,7 +30,7 @@ router.post('/login', async (req, res) => { //autentica
     //token -> credencial de login
         return res.json({token: accessToken, login: usuario.login, id: usuario.id})
     })
-}) //busca na tabela um usuario = usuario daqui
+}) //busca na tabela um usuario daqui
 
 router.get('/auth', validateToken, (req, res) => { //cria
     res.json(req.usuario) //usuario -> objeto com atributos senha e id
