@@ -10,6 +10,8 @@ import axios from 'axios'
 import { ClienteEdit } from './pages/ClienteEdit'
 import { Error } from './pages/Error'
 import { Header } from './components/Header'
+import { Container } from './components/Container'
+import { ListaClientes } from './pages/ListaClientes'
 
 function App() {
   const [authState, setAuthState] = useState({
@@ -53,14 +55,17 @@ function App() {
       <AuthContext.Provider value={{ authState, setAuthState, logout }}>
         <BrowserRouter>
           <Header/>
-          <Routes>
-            <Route path='/' element={<Home />} />
-            <Route path='/clientes' element={<Clientes />} />
-            <Route path='/cliente/:id' element={<Cliente />} />
-            <Route path='/login' element={<Login />} />
-            <Route path='/cliente/edit/:id' element={<ClienteEdit />} />
-            <Route path='*' element={<Error />} />
-          </Routes>
+          <Container>
+            <Routes>
+              <Route path='/' element={<Home />} />
+              <Route path='/clientes' element={<Clientes />} />
+              <Route path='/cliente/:id' element={<Cliente />} />
+              <Route path='/login' element={<Login />} />
+              <Route path='/cliente/edit/:id' element={<ClienteEdit />} />
+              <Route path='/clientes/lista' element={<ListaClientes />} />
+              <Route path='*' element={<Error />} />
+            </Routes>
+          </Container>
         </BrowserRouter>
       </AuthContext.Provider>
     </div>
