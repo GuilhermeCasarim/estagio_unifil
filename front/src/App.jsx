@@ -12,6 +12,7 @@ import { Error } from './pages/Error'
 import { Header } from './components/Header'
 import { Container } from './components/Container'
 import { ListaClientes } from './pages/ListaClientes'
+import { Agendamento } from './pages/Agendamento'
 
 function App() {
   const [authState, setAuthState] = useState({
@@ -63,6 +64,7 @@ function App() {
               <Route path='/login' element={<Login />} />
               <Route path='/cliente/edit/:id' element={<ClienteEdit />} />
               <Route path='/clientes/lista' element={<ListaClientes />} />
+              <Route path='/agendamento' element={<Agendamento />} />
               <Route path='*' element={<Error />} />
             </Routes>
           </Container>

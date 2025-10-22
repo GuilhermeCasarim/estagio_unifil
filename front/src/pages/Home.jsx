@@ -1,4 +1,5 @@
 import React from 'react'
+//pagina inicio/Home
 
 export const Home = () => {
 
@@ -18,24 +19,28 @@ export const Home = () => {
             </div>
             <div className='dia'>
                 <p>Hoje é {diaSemana}, {dia} de {mes} de {diaAno} </p>
-                <p>Possui 5 agendamentos hoje</p>
+                <p>Possui 2 agendamentos hoje</p>
             </div>
             <div className="clientesHoje flex flex-col space-y-4">
-                <div className="cliente flex space-x-4">
-                    <p>09:00</p>
-                    <div className='flex flex-col justify-center space-y-5'>
-                        <p>Roberto Carlos</p>
-                        <p>Barba | Carlos Gaiva</p>
-                    </div>
-                    <p className=''>Status: Confirmado</p>
 
-                </div>
-                <div className="cliente">
-                    <p>09:00</p>
-                    <p>Roberto Carlos</p>
-                    <p>Status: Confirmado</p>
+                <div className="cliente flex flex-col space-y-4 bg-blue-300 rounded p-2">
+                    <div className='flex justify-center space-x-8'>
+                        <p>Roberto Carlos</p>
+                        <p>09:00</p>
+                        <p className=''>Status: Confirmado</p>
+                    </div>
                     <p>Barba | Carlos Gaiva</p>
                 </div>
+
+                <div className="cliente flex flex-col space-y-4 bg-blue-300 rounded p-2">
+                    <div className='flex justify-center space-x-8'>
+                        <p>Roberto Carlos</p>
+                        <p>09:00</p>
+                        <p className=''>Status: Confirmado</p>
+                    </div>
+                    <p>Barba | Carlos Gaiva</p>
+                </div>
+
             </div>
         </div>
     )

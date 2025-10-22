@@ -15,9 +15,9 @@ export const Header = () => {
         <div className='flex flex-col'>
           <Link onClick={logout} className='text-blue-700'>Sair</Link>
           <Link className='text-blue-700' to='/'>Início</Link>
-          <Link className='text-blue-700' to='/clientes/lista'>Listar clientes</Link>
-          <Link className='text-blue-700' to='/clientes'>Agenda</Link>
-          <Link className='text-blue-700' to='/clientes'>Clientes cadastrar cliente</Link>
+          <Link className='text-blue-700' to='/clientes/lista'>Clientes</Link>
+          <Link className='text-blue-700' to='/agendamento'>Agenda</Link>
+          <Link className='text-blue-700' to='/clientes'>Cadastrar cliente</Link>
           <Link className='text-blue-700' to='/clientes'>Profissionais</Link>
           <Link className='text-blue-700' to='/clientes'>Serviços</Link>
           <Link className='text-blue-700' to='/clientes'>Estoque</Link>
