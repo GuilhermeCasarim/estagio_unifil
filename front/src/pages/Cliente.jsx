@@ -1,13 +1,12 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
+//pagina cliente(quando clicado a partir da lista)
 
-export const Cliente = () => { //pagina crud cliente
+export const Cliente = () => { 
 
   let { id } = useParams(); //pega id pela url com o clique do usenavigate
   const [clienteInfo, setClienteInfo] = useState([]);
-
-
   useEffect(() => { //manda o id pra pegar o cliente
     axios.get(`http://localhost:3001/clientes/byId/${id}`).then((res) => { //
       setClienteInfo(res.data)
@@ -15,6 +14,7 @@ export const Cliente = () => { //pagina crud cliente
   }, [])
 
   return (
+    
     <div className='cliente bg-gray-400 my-4 cursor-pointer
                      hover:bg-gray-600 transiton duration-300 mt-12'>
       <p>Id: {clienteInfo.id}</p>

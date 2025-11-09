@@ -4,8 +4,9 @@ import validator from 'validator'
 import axios from 'axios'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useEffect } from 'react'
+//edicao/form clientes edit
 
-export const ClienteEdit = () => { //cadastro/form clientes
+export const ClienteEdit = () => { 
 
     const { register, handleSubmit, formState: { errors }, reset } = useForm();
     console.log(errors)

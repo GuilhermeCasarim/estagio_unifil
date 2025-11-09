@@ -3,8 +3,9 @@ import { useForm } from 'react-hook-form'
 import validator from 'validator'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
+//cadastro/form clientes
 
-export const Clientes = () => { //cadastro/form clientes
+export const Clientes = () => { 
 
     const { register, handleSubmit, formState: { errors } } = useForm();
     console.log(errors)

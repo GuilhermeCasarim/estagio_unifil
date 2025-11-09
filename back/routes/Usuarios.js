@@ -6,20 +6,20 @@ module.exports = router;
 
 const {sign} = require('jsonwebtoken');
 const { validateToken } = require('../middlewares/AuthMiddleware');
-//rota base: path
+//rota base: /auth
 router.post('/', async (req, res) => { //cria usuario no banco(nao implementado; apenas no Insomnia/API)
-    const {login, senha, tipo_login} = req.body
+    const {login, senha, tipo_login = 'tipoLogin'} = req.body
     bcrypt.hash(senha, 10).then((hash) => {
         Usuarios.create({
-            login: login,
+            login,
             senha: hash,
-            tipo_login: 'tipo_login'
+            tipo_login
         })
         res.json('sucesso ao criar usuario')
     })
 })
 
-router.post('/login', async (req, res) => { //autentica
+router.post('/login', async (req, res) => { //login forms; autentica; usar insomnia para criar user
     const {login, senha} = req.body
     const usuario = await Usuarios.findOne({where: {login: login}}) //verif login banco e login recebido aqui/input
     if(!usuario) return res.json({error: 'usuario nao existe'}) //retorna usuario
@@ -27,12 +27,13 @@ router.post('/login', async (req, res) => { //autentica
     bcrypt.compare(senha, usuario.senha).then((match) => {
         if(!match) return res.json({error: 'senha errada'}) //se fizer login(info certas), faz o token
         const accessToken = sign({login: usuario.login, id: usuario.id}, "macaco")
-    //token -> credencial de login
+        console.log(accessToken)
+    //token -> credencial de login; a funcao sign cria o token
         return res.json({token: accessToken, login: usuario.login, id: usuario.id})
     })
 }) //busca na tabela um usuario daqui
 
-router.get('/auth', validateToken, (req, res) => { //cria
-    res.json(req.usuario) //usuario -> objeto com atributos senha e id
+router.get('/auth', validateToken, (req, res) => {
+    res.json(req.usuario) //autentica o token para login
 })
 

@@ -3,8 +3,9 @@ import { useEffect, useState, useContext } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import axios from 'axios'
 import { AuthContext } from '../helpers/AuthContext'
+//listar clientes
 
-export const ListaClientes = () => { //tela inicial/listar clientes por enquanto
+export const ListaClientes = () => {
     const { authState } = useContext(AuthContext)
     const navigate = useNavigate();
     const location = useLocation();
@@ -55,23 +56,32 @@ export const ListaClientes = () => { //tela inicial/listar clientes por enquanto
                     <div className="cliente bg-gray-400 my-4 cursor-pointer
                      hover:bg-gray-600 transiton duration-300" key={key}
                         onClick={() => navigate(`/cliente/${cliente.id}`)}>
-                        <p>{cliente.nome}</p>
-                        <p>{cliente.telefone}</p>
-                        <p>{cliente.email}</p>
-                        {/* <p>{cliente.cpf && `${cliente.cpf}`}</p> */}
-                        {/* <p>{cliente.data_nascimento}</p> */}
-                        <p>{cliente.observacoes && `${cliente.observacoes}`}</p>
-                        <button className='px-2 py-1 rounded bg-red-500 cursor-pointer' onClick={(e) => {
-                            e.stopPropagation()
-                            handleDelete(cliente.id)
-                        }
-                        }>Excluir</button>
-                        <button className='px-2 py-1 rounded bg-gray-500 cursor-pointer'
-                            onClick={(e) => {
-                                e.stopPropagation()
-                                handleEdit(cliente.id)
-                            }}
-                        >Editar</button>
+                        <div className="card-header flex flex-col">
+                            <div className="card-body1 flex">
+                                <span className='mr-6'>{`Nome: ${cliente.nome}`}</span>
+                                <button className='px-2 py-1 rounded bg-gray-500 cursor-pointer'
+                                    onClick={(e) => {
+                                        e.stopPropagation()
+                                        handleEdit(cliente.id)
+                                    }}
+                                >Editar</button>
+                                <button className='px-2 py-1 rounded bg-red-500 cursor-pointer' onClick={(e) => {
+                                    e.stopPropagation()
+                                    handleDelete(cliente.id)
+                                }
+                                }>Excluir</button>
+                            </div>
+                            <div className="card-body2">
+                                <button className='px-2 py-1'>Ativo</button>
+                                <p>Estrelas</p>
+                            </div>
+                        </div>
+
+                        <div className="card-info mt-4">
+                            <p>{`Email: ${cliente.email}`}</p>
+                            <p>{`Telefone: ${cliente.telefone}`}</p>
+                            <p>{cliente.observacoes && `${cliente.observacoes}`}</p>
+                        </div>
                     </div>
                 ))}
             </div>

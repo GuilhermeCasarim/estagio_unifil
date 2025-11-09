@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const { Clientes } = require('../models')
+//rota base: /clientes
 
 module.exports = router;
 
