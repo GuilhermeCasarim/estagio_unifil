@@ -1,11 +1,9 @@
 const express = require('express')
 const router = express.Router()
-const { Clientes } = require('../models')
 const ClienteController = require('../controllers/ClienteController')
-//rota base: /clientes
-
 module.exports = router;
 
+//rota base: /clientes
 router.get('/', ClienteController.getAll)
 
 router.get('/byId/:id', ClienteController.getById)
