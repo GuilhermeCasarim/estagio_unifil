@@ -1,3 +1,45 @@
-info_crud.txt
+# ------------------------------------
+# 1. Regras Comuns (ou para o Backend)
+# ------------------------------------
+# Dependências do Node (cobre o node_modules da raiz)
+node_modules
+
+# Variáveis de Ambiente
+.env
 dotenv
-node_modules/
+
+# Arquivo de texto na raiz
+info_crud.txt
+
+# ------------------------------------
+# 2. Regras Específicas do Frontend
+# ------------------------------------
+# Dependências do Frontend (deve ser prefixado com a pasta)
+
+# Pastas de build/dist (se a build for dentro do frontend)
+/front/dist
+/front/dist-ssr
+
+# Logs do Frontend
+/front/logs
+/front/*.log
+/front/yarn-debug.log*
+/front/yarn-error.log*
+/front/lerna-debug.log*
+/front/npm-debug.log*
+
+# ------------------------------------
+# 3. Arquivos Temporários/Editores
+# ------------------------------------
+*.local
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.idea
+
+# Arquivos de editor (VSCode)
+.vscode/*
+!.vscode/extensions.json 
