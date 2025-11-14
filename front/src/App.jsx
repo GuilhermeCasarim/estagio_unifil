@@ -13,6 +13,7 @@ import { Header } from './components/Header'
 import { Container } from './components/Container'
 import { ListaClientes } from './pages/ListaClientes'
 import { Agendamento } from './pages/Agendamento'
+import { MainLayout } from './components/MainLayout'
 
 function App() {
   const [authState, setAuthState] = useState({
@@ -52,12 +53,12 @@ function App() {
 
   return (
     <div className='bg-gray-300 h-screen'>
-      {/* variavel fica "global" */}
       <AuthContext.Provider value={{ authState, setAuthState, logout }}>
         <BrowserRouter >
-          <Header/>
           <Container>
-            <Routes>
+            <MainLayout/>
+            {/* <Header/> */}
+            {/* <Routes>
               <Route path='/' element={<Home />} />
               <Route path='/clientes' element={<Clientes />} />
               <Route path='/cliente/:id' element={<Cliente />} />
@@ -66,7 +67,7 @@ function App() {
               <Route path='/clientes/lista' element={<ListaClientes />} />
               <Route path='/agendamento' element={<Agendamento />} />
               <Route path='*' element={<Error />} />
-            </Routes>
+            </Routes> */}
           </Container>
         </BrowserRouter>
       </AuthContext.Provider>

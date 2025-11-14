@@ -13,7 +13,7 @@ export const Home = () => {
     const mes = dataAtual.toLocaleDateString('pt-BR', { month: 'long' });
     return (
         <div className='space-y-8'>
-            <div className="inicio">
+            <div className="inicio border-b-2 border-gray-400">
                 <h1>Início</h1>
                 <p>Bem vindo ao BelezaGest</p>
             </div>
