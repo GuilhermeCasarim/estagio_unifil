@@ -76,7 +76,7 @@ export const ClienteEdit = () => {
 
             <div className="data_nascimento space-x-4">
                 <label htmlFor="data_nascimento">Data de nascimento</label>
-                <input type="text" name='data_nascimento' id='data_nascimento' placeholder='Sua data de nascimento(obrigatório)' {...register('data_nascimento', { required: true })}
+                <input type="date" name='data_nascimento' id='data_nascimento' placeholder='Sua data de nascimento(obrigatório)' {...register('data_nascimento', { required: true })}
                 />
                 {errors?.data_nascimento?.type == 'required' &&
                     <p className='text-red-500 text-sm'>Data de nascimento necessária!</p>}

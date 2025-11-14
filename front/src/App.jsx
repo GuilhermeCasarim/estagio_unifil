@@ -51,10 +51,10 @@ function App() {
   }
 
   return (
-    <div>
+    <div className='bg-gray-300 h-screen'>
       {/* variavel fica "global" */}
       <AuthContext.Provider value={{ authState, setAuthState, logout }}>
-        <BrowserRouter>
+        <BrowserRouter >
           <Header/>
           <Container>
             <Routes>
