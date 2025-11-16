@@ -27,7 +27,7 @@ export const ClienteEdit = () => {
     const onSubmit = (data) => {
         axios.patch(`http://localhost:3001/clientes/update/${id}`, data).then((res) => {
             console.log(res)
-            navigate('/', { state: { refetch: true } })
+            navigate('/clientes/lista', { state: { refetch: true } })
         })
     }
 

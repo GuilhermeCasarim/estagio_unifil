@@ -1,18 +1,11 @@
 import './index.css'
-import { Clientes } from './pages/Clientes'
-import { Cliente } from './pages/Cliente'
-import { Home } from './pages/Home'
-import { BrowserRouter, Routes, Route} from 'react-router-dom'
-import { Login } from './pages/Login'
+import { BrowserRouter } from 'react-router-dom'
 import { AuthContext } from './helpers/AuthContext'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
-import { ClienteEdit } from './pages/ClienteEdit'
-import { Error } from './pages/Error'
-import { Header } from './components/Header'
+
 import { Container } from './components/Container'
-import { ListaClientes } from './pages/ListaClientes'
-import { Agendamento } from './pages/Agendamento'
+
 import { MainLayout } from './components/MainLayout'
 
 function App() {
@@ -54,20 +47,9 @@ function App() {
   return (
     <div className='bg-gray-300 h-screen'>
       <AuthContext.Provider value={{ authState, setAuthState, logout }}>
-        <BrowserRouter >
+        <BrowserRouter>
           <Container>
-            <MainLayout/>
-            {/* <Header/> */}
-            {/* <Routes>
-              <Route path='/' element={<Home />} />
-              <Route path='/clientes' element={<Clientes />} />
-              <Route path='/cliente/:id' element={<Cliente />} />
-              <Route path='/login' element={<Login />} />
-              <Route path='/cliente/edit/:id' element={<ClienteEdit />} />
-              <Route path='/clientes/lista' element={<ListaClientes />} />
-              <Route path='/agendamento' element={<Agendamento />} />
-              <Route path='*' element={<Error />} />
-            </Routes> */}
+            <MainLayout />
           </Container>
         </BrowserRouter>
       </AuthContext.Provider>

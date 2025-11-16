@@ -3,6 +3,7 @@ import { useEffect, useState, useContext } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import axios from 'axios'
 import { AuthContext } from '../helpers/AuthContext'
+import { Mail, Phone, SquarePen, Star, Trash2, Users } from 'lucide-react';
 //listar clientes
 
 export const ListaClientes = () => {
@@ -40,7 +41,7 @@ export const ListaClientes = () => {
 
     const handleDelete = (id) => {
         axios.delete(`http://localhost:3001/clientes/delete/${id}`).then(() => {
-            fetchClientes()
+            navigate('/clientes/lista', { state: { refetch: true } })
         })
             .catch((e) => alert(e, 'erro ao deletar cliente'))
     }
@@ -50,37 +51,76 @@ export const ListaClientes = () => {
     }
 
     return (
-        <div>
+        <div className='space-y-8'>
+            <div className="header border-b-2 border-gray-400 pb-2">
+                <h1 className='flex gap-4'> <Users /> Clientes </h1>
+            </div>
+
+            <div className='intro flex items-center'>
+                <div className="texto">
+                    <p>Gestão de clientes</p>
+                    <p>Pesquise e gerencie os clientes</p>
+                </div>
+                <button className='bg-teal-400 text-white px-2 py-1 rounded-full hover:bg-teal-500 transition duration-300'>Novo Cliente</button>
+            </div>
+
+            <div className="totalClientes bg-gray-300 rounded">
+                <span className='flex gap-4'><Users /> 4</span>
+                <p>Total de clientes</p>
+            </div>
+
+            <div className="searchClientes bg-gray-300 p-2">
+                <h1>Pesquisar Clientes</h1>
+                <p>Procure o cliente via nome</p>
+                <div className="input flex gap-2">
+                    <input type="text" placeholder='Pesquisar cliente...' className='px-2 py-1 rounded bg-white outline-0' />
+                    <button className='bg-teal-400 text-white px-4 py-1 rounded-full hover:bg-teal-500 transition duration-300'>Pesquisar</button>
+                </div>
+            </div>
+
             <div className="clientesData">
                 {listaClientes.map((cliente, key) => (
-                    <div className="cliente bg-gray-400 my-4 cursor-pointer
-                     hover:bg-gray-600 transiton duration-300" key={key}
+                    <div className="cliente-card bg-gray-300 my-8 cursor-pointer
+                     hover:bg-gray-400 transiton duration-300 p-2 flex flex-col gap-8" key={key}
                         onClick={() => navigate(`/cliente/${cliente.id}`)}>
-                        <div className="card-header flex flex-col">
-                            <div className="card-body1 flex">
-                                <span className='mr-6'>{`Nome: ${cliente.nome}`}</span>
-                                <button className='px-2 py-1 rounded bg-gray-500 cursor-pointer'
+
+                        <div className="card-header flex justify-center space-x-4 items-center">
+                            <div className="info1 flex flex-col justify-center gap-2">
+                                <span className=''>{cliente.nome}</span>
+                                <div className="others-info flex gap-1">
+                                    <button className='bg-teal-400 text-white px-4 py-1 rounded-full hover:bg-teal-500 transition duration-300'>Ativo</button>
+                                    <p className='flex gap-2 items-center'><Star className='text-yellow-500' size={12} /> 4.9</p>
+                                </div>
+                            </div>
+                            <div className="buttons space-x-2">
+                                <button className='px-2 py-1 rounded text-gray-500 cursor-pointer'
                                     onClick={(e) => {
                                         e.stopPropagation()
                                         handleEdit(cliente.id)
                                     }}
-                                >Editar</button>
-                                <button className='px-2 py-1 rounded bg-red-500 cursor-pointer' onClick={(e) => {
+                                >
+                                    <SquarePen />
+                                </button>
+                                <button className='px-2 py-1 rounded text-red-500 cursor-pointer' onClick={(e) => {
                                     e.stopPropagation()
                                     handleDelete(cliente.id)
                                 }
-                                }>Excluir</button>
-                            </div>
-                            <div className="card-body2">
-                                <button className='px-2 py-1'>Ativo</button>
-                                <p>Estrelas</p>
+                                }>
+                                    <Trash2 />
+                                </button>
+
                             </div>
                         </div>
-
-                        <div className="card-info mt-4">
-                            <p>{`Email: ${cliente.email}`}</p>
-                            <p>{`Telefone: ${cliente.telefone}`}</p>
-                            <p>{cliente.observacoes && `${cliente.observacoes}`}</p>
+                        {/* <Phone /> */}
+                        <div className="card-bottom info2 space-y-4">
+                            <p className='flex gap-2 items-center'><Mail size={16} />{cliente.email}</p>
+                            <p className='flex gap-2 items-center'><Phone size={16} />{cliente.telefone}</p>
+                            <p className='flex gap-2 items-center'>{cliente.observacoes && (
+                                <>
+                                    <Star size={16} />
+                                    {cliente.observacoes}
+                                </>
+                            )}</p>
                         </div>
                     </div>
                 ))}
