@@ -14,7 +14,7 @@ export const MainLayout = () => {
   return (
     <div className='flex space-x-12 min-h-[100vh]'>
 
-      <aside className='min-h-[100vh]'>
+      <aside className='h-full'>
         <Header />
       </aside>
 

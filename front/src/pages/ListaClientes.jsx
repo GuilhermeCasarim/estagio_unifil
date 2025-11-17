@@ -61,7 +61,9 @@ export const ListaClientes = () => {
                     <p>Gestão de clientes</p>
                     <p>Pesquise e gerencie os clientes</p>
                 </div>
-                <button className='bg-teal-400 text-white px-2 py-1 rounded-full hover:bg-teal-500 transition duration-300'>Novo Cliente</button>
+                <button className='bg-teal-400 text-white px-2 py-1 rounded-full hover:bg-teal-500 transition duration-300 cursor-pointer'
+                    onClick={() => navigate('/clientes')}
+                >Novo Cliente</button>
             </div>
 
             <div className="totalClientes bg-gray-300 rounded">
@@ -74,7 +76,8 @@ export const ListaClientes = () => {
                 <p>Procure o cliente via nome</p>
                 <div className="input flex gap-2">
                     <input type="text" placeholder='Pesquisar cliente...' className='px-2 py-1 rounded bg-white outline-0' />
-                    <button className='bg-teal-400 text-white px-4 py-1 rounded-full hover:bg-teal-500 transition duration-300'>Pesquisar</button>
+                    <button className='bg-teal-400 text-white px-4 py-1 rounded-full hover:bg-teal-500 transition duration-300 cursor-pointer'
+                    >Pesquisar</button>
                 </div>
             </div>
 

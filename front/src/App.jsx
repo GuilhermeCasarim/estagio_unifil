@@ -45,13 +45,13 @@ function App() {
   }
 
   return (
-    <div className='bg-gray-300 h-screen'>
+    <div className='bg-gray-300'>
       <AuthContext.Provider value={{ authState, setAuthState, logout }}>
-        <BrowserRouter>
           <Container>
+        <BrowserRouter>
             <MainLayout />
-          </Container>
         </BrowserRouter>
+          </Container>
       </AuthContext.Provider>
     </div>
   )
