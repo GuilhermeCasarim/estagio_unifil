@@ -32,7 +32,7 @@ export const Login = () => {
         // Remova o navigate('/') daqui
     }
     return (
-        <div className='p-2 flex flex-col items-center w-[80%] mx-auto bg-[#EAF3F2]'>
+        <div className='flex flex-col items-center mx-auto bg-[#EAF3F2] py-4'>
             <div className="infoLogin mb-16 flex flex-col items-center space-y-4">
                 <h1 className='text-white bg-emerald-400 px-2 rounded'>BelezaGest</h1>
                 <h2 className='text-emerald-400 '>Acesse sua conta</h2>

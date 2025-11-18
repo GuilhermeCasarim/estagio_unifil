@@ -18,13 +18,13 @@ export const Header = () => {
           <Link onClick={logout} className='text-blue-700 flex gap-2'> <LogOut /> Sair</Link>
           <Link className='flex gap-2' to='/'> <Home size={24} /> Início</Link>
           <Link className='flex gap-2' to='/clientes/lista'> <Users /> Clientes</Link>
-          <Link className='flex gap-2' to='/agendamento'> <NotebookText />Agenda</Link>
+          <Link className='flex gap-2' to='#'> <NotebookText />Agenda</Link>
           {/* <Link className='flex gap-2' to='/clientes'> <Scissors /> Cadastrar cliente</Link> */}
-          <Link className='flex gap-2' to='/clientes'> <UserStar /> Profissionais</Link>
-          <Link className='flex gap-2' to='/clientes'> <Scissors /> Serviços</Link>
-          <Link className='flex gap-2' to='/clientes'> <Package /> Estoque</Link>
-          <Link className='flex gap-2' to='/clientes'> <DollarSign /> Financeiro</Link>
-          <Link className='flex gap-2' to='/clientes'> <ChartColumnIncreasing /> Relatórios</Link>
+          <Link className='flex gap-2' to='#'> <UserStar /> Profissionais</Link>
+          <Link className='flex gap-2' to='#'> <Scissors /> Serviços</Link>
+          <Link className='flex gap-2' to='#'> <Package /> Estoque</Link>
+          <Link className='flex gap-2' to='#'> <DollarSign /> Financeiro</Link>
+          <Link className='flex gap-2' to='#'> <ChartColumnIncreasing /> Relatórios</Link>
           <div>
             {authState.status && <h1>{`Usuário atual: ${authState.login}`}</h1>}
           </div>

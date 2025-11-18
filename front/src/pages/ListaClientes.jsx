@@ -56,12 +56,12 @@ export const ListaClientes = () => {
                 <h1 className='flex gap-4'> <Users /> Clientes </h1>
             </div>
 
-            <div className='intro flex items-center'>
+            <div className='intro flex items-center justify-between'>
                 <div className="texto">
                     <p>Gestão de clientes</p>
                     <p>Pesquise e gerencie os clientes</p>
                 </div>
-                <button className='bg-teal-400 text-white px-2 py-1 rounded-full hover:bg-teal-500 transition duration-300 cursor-pointer'
+                <button className='bg-teal-400 text-white px-4 py-1 rounded-full hover:bg-teal-500 transition duration-300 cursor-pointer'
                     onClick={() => navigate('/clientes')}
                 >Novo Cliente</button>
             </div>
@@ -83,7 +83,7 @@ export const ListaClientes = () => {
 
             <div className="clientesData">
                 {listaClientes.map((cliente, key) => (
-                    <div className="cliente-card bg-gray-300 my-8 cursor-pointer
+                    <div className="cliente-card w-2/5 bg-gray-300 my-8 cursor-pointer
                      hover:bg-gray-400 transiton duration-300 p-2 flex flex-col gap-8" key={key}
                         onClick={() => navigate(`/cliente/${cliente.id}`)}>
 

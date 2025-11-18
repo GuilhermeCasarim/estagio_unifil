@@ -5,3 +5,5 @@ export const Container = ({ children }) => {
     <div className='flex mx-auto w-[80%] bg-white min-h-[100vh]'>{children}</div>
   )
 }
+
+//w-full no container

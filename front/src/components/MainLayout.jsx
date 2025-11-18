@@ -12,13 +12,13 @@ import { Route, Routes } from 'react-router-dom'
 
 export const MainLayout = () => {
   return (
-    <div className='flex space-x-12 min-h-[100vh]'>
+    <div className='flex w-full'>
 
-      <aside className='h-full'>
+      <aside className='w-1/5'>
         <Header />
       </aside>
 
-      <main className='mt-8'>
+      <main className='mt-8 w-4/5 px-8'>
         <Routes>
           <Route path='/' element={<Home />} />
           <Route path='/clientes' element={<Clientes />} />
