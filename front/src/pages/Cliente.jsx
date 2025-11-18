@@ -15,8 +15,8 @@ export const Cliente = () => {
 
   return (
     
-    <div className='cliente bg-gray-400 my-4 cursor-pointer
-                     hover:bg-gray-600 transiton duration-300 mt-12'>
+    <div className='cliente bg-gray-300 my-4 cursor-pointer hover:bg-gray-400 transiton duration-300 mt-12 space-y-4 p-2'>
+      <h2 className='text-xl mb-4 border-b pb-2 border-gray-200'>Detalhes do cliente</h2>
       <p>Id: {clienteInfo.id}</p>
       <p>Nome: {clienteInfo.nome}</p>
       <p>Telefone: {clienteInfo.telefone}</p>
@@ -24,8 +24,6 @@ export const Cliente = () => {
       <p>{clienteInfo.cpf && `CPF: ${clienteInfo.cpf}`}</p>
       <p>Data de nascimento: {clienteInfo.data_nascimento}</p>
       <p>{clienteInfo.observacoes && `Observações: ${clienteInfo.observacoes}`}</p>
-      {/* <button className='px-2 py-1 rounded bg-red-500 cursor-pointer'>Excluir</button>
-      <button className='px-2 py-1 rounded bg-gray-500 cursor-pointer'>Editar</button> */}
     </div>
   )
 }

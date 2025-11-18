@@ -1,1 +1,24 @@
 @import "tailwindcss";
+/* alguns css de form normal e form cadastro */
+
+form input{
+    outline: none;
+}
+
+.form-cadastro .c_nome, .form-cadastro .c_telefone, .form-cadastro .c_email, .form-cadastro .c_cpf, .form-cadastro .c_data_nascimento, .form-cadastro .c_observacoes {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.form-edit .nome, .form-edit .telefone, .form-edit .email, .form-edit .cpf, .form-edit .data_nascimento, .form-edit .observacoes {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.form-cadastro input, .form-edit input{
+    background-color: rgba(211, 211, 211, 0.7);
+    border-radius: 0.5rem;
+    padding: 0.25rem 1rem
+}

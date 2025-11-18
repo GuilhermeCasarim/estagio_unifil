@@ -18,7 +18,7 @@ export const MainLayout = () => {
         <Header />
       </aside>
 
-      <main className=''>
+      <main className='mt-8'>
         <Routes>
           <Route path='/' element={<Home />} />
           <Route path='/clientes' element={<Clientes />} />
