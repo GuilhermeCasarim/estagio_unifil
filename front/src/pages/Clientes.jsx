@@ -4,6 +4,7 @@ import validator from 'validator'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { UserPlus } from 'lucide-react'
+import { toast } from 'react-toastify';
 
 //cadastro/form clientes
 
@@ -15,19 +16,29 @@ export const Clientes = () => {
 
     const onSubmit = (data) => {
         axios.post('http://localhost:3001/clientes', data).then((res) => {
-            console.log('funcionou')
+            toast.success('Cliente cadastrado com sucesso!')
             console.log(res)
             navigate('/clientes/lista', { state: { refetch: true } })
         })
+        // .catch((e) => toast.error('Erro ao cadastrar cliente'))
+    }
+
+    const onInvalid = (errors) => {
+        // Log para depuração
+        console.log("Erros de validação do formulário:", errors);
+        
+        // Toast de erro para alertar o usuário sobre campos obrigatórios/inválidos
+        toast.error('ERRO. Revise os dados e tente novamente.')
     }
 
     return (
         <div className='form-cadastro flex flex-col items-start gap-8 shadow-md p-2'>
+            {/* <ToastContainer/> */}
             <div className="header">
                 <h1 className='flex gap-2'> <UserPlus className='text-teal-600' /> Cadastrar Novo Cliente</h1>
                 <p className='text-gray-500'>Preencha as informações do cliente abaixo</p>
             </div>
-            <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col space-y-8 p-2'>
+            <form onSubmit={handleSubmit(onSubmit, onInvalid)} className='flex flex-col space-y-8 p-2'>
                 <div className="c_nome space-x-4 flex">
                     <label htmlFor="nome">Nome</label>
                     <input type="text" name='nome' id='nome' placeholder='Nome do cliente(obrigatório)'

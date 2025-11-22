@@ -5,6 +5,7 @@ import axios from 'axios'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useEffect } from 'react'
 import { SquarePen } from 'lucide-react'
+import { toast } from 'react-toastify';
 //edicao/form clientes edit
 
 export const ClienteEdit = () => {
@@ -27,10 +28,19 @@ export const ClienteEdit = () => {
 
     const onSubmit = (data) => {
         axios.patch(`http://localhost:3001/clientes/update/${id}`, data).then((res) => {
+            toast.success('Cliente atualizado com sucesso!')
             console.log(res)
             navigate('/clientes/lista', { state: { refetch: true } })
         })
     }
+
+    const onInvalid = (errors) => {
+            // Log para depuração
+            console.log("Erros de validação do formulário:", errors);
+            
+            // Toast de erro para alertar o usuário sobre campos obrigatórios/inválidos
+            toast.error('ERRO. Revise os dados e tente novamente.')
+        }
 
     return (
         <div className='form-edit flex flex-col items-start gap-8 shadow-md p-2'>
@@ -38,7 +48,7 @@ export const ClienteEdit = () => {
                 <h1 className='flex gap-2'> <SquarePen className='text-teal-600' /> Editar Cliente</h1>
                 <p className='text-gray-500'>Edite as informações do cliente abaixo</p>
             </div>
-            <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col space-y-8 p-2'>
+            <form onSubmit={handleSubmit(onSubmit, onInvalid)} className='flex flex-col space-y-8 p-2'>
                 <div className="nome space-x-4">
                     <label htmlFor="nome">Nome</label>
                     <input type="text" name='nome' id='nome' placeholder='Seu nome(obrigatório)'

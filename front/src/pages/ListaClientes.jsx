@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import axios from 'axios'
 import { AuthContext } from '../helpers/AuthContext'
 import { Mail, Phone, SquarePen, Star, Trash2, Users } from 'lucide-react';
+import { toast } from 'react-toastify';
 //listar clientes
 
 export const ListaClientes = () => {
@@ -46,9 +47,10 @@ export const ListaClientes = () => {
 
     const handleDelete = (id) => {
         axios.delete(`http://localhost:3001/clientes/delete/${id}`).then(() => {
+            toast.success('Cliente deletado com sucesso!')
             navigate('/clientes/lista', { state: { refetch: true } })
         })
-            .catch((e) => alert(e, 'erro ao deletar cliente'))
+            .catch((e) => toast.error(e, 'Erro ao deletar cliente!'))
     }
 
     const handleEdit = (id) => {

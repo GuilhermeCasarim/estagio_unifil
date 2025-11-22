@@ -1,12 +1,12 @@
 import './index.css'
+import axios from 'axios'
 import { BrowserRouter } from 'react-router-dom'
 import { AuthContext } from './helpers/AuthContext'
 import { useEffect, useState } from 'react'
-import axios from 'axios'
-
 import { Container } from './components/Container'
-
 import { MainLayout } from './components/MainLayout'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   const [authState, setAuthState] = useState({
@@ -47,11 +47,12 @@ function App() {
   return (
     <div className='bg-gray-300'>
       <AuthContext.Provider value={{ authState, setAuthState, logout }}>
-          <Container>
-        <BrowserRouter>
+        <Container>
+          <ToastContainer position='top-center' autoClose={3000} />
+          <BrowserRouter>
             <MainLayout />
-        </BrowserRouter>
-          </Container>
+          </BrowserRouter>
+        </Container>
       </AuthContext.Provider>
     </div>
   )
