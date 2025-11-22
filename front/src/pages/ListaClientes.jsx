@@ -11,10 +11,15 @@ export const ListaClientes = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const [listaClientes, setListaClientes] = useState([])
+    const [listaClientesMutavel, setListaClientesMutavel] = useState([])
+    const [search, setSearch] = useState('')
 
     const fetchClientes = () => {
         axios.get('http://localhost:3001/clientes')
-            .then((res) => setListaClientes(res.data))
+            .then((res) => {
+                setListaClientes(res.data)
+                setListaClientesMutavel(res.data)
+            })
             .catch((error) => {
                 console.error("Erro ao buscar clientes:", error);
             });
@@ -50,6 +55,19 @@ export const ListaClientes = () => {
         navigate(`/cliente/edit/${id}`)
     }
 
+    const onSearch = (search) => {
+        const input = search ? search.toLowerCase() : '';
+        if (!search) fetchClientes(); // Se o campo de busca estiver vazio, recarrega a lista completa
+        let arrayFiltrado = listaClientes.filter((cliente) => { //arr original
+            if (cliente.nome.toLowerCase().includes(input.toLowerCase()) ||
+                cliente.email.toLowerCase().includes(input.toLowerCase()) ||
+                cliente.telefone.toLowerCase().includes(input.toLowerCase())) {
+                return cliente
+            }
+        })
+        setListaClientesMutavel(arrayFiltrado)
+    }
+
     return (
         <div className='space-y-8'>
             <div className="header border-b-2 border-gray-400 pb-2">
@@ -66,23 +84,23 @@ export const ListaClientes = () => {
                 >Novo Cliente</button>
             </div>
 
-            <div className="totalClientes bg-gray-300 rounded">
-                <span className='flex gap-4'><Users /> 4</span>
+            <div className="totalClientes bg-gray-300 rounded p-2">
+                <span className='flex gap-4'><Users /> {listaClientes.length}</span>
                 <p>Total de clientes</p>
             </div>
 
-            <div className="searchClientes bg-gray-300 p-2">
+            <div className="searchClientes bg-gray-300 p-2 space-y-4">
                 <h1>Pesquisar Clientes</h1>
-                <p>Procure o cliente via nome</p>
-                <div className="input flex gap-2">
-                    <input type="text" placeholder='Pesquisar cliente...' className='px-2 py-1 rounded bg-white outline-0' />
-                    <button className='bg-teal-400 text-white px-4 py-1 rounded-full hover:bg-teal-500 transition duration-300 cursor-pointer'
+                <p>Busque os clientes digitando o nome, email ou telefone</p>
+                <div className="input flex gap-2 justify-between">
+                    <input type="text" placeholder='Pesquisar cliente...' className='px-2 py-1 rounded bg-white outline-0 w-[75%]' value={search} onChange={e => setSearch(e.target.value)} />
+                    <button className='bg-teal-400 mr-4 text-white px-4 py-1 rounded-full hover:bg-teal-500 transition duration-300 cursor-pointer w-[20%] text-center' onClick={() => onSearch(search)}
                     >Pesquisar</button>
                 </div>
             </div>
 
-            <div className="clientesData">
-                {listaClientes.map((cliente, key) => (
+            <div className="clientesData flex space-x-8 flex-wrap">
+                {listaClientesMutavel.map((cliente, key) => (
                     <div className="cliente-card w-2/5 bg-gray-300 my-8 cursor-pointer
                      hover:bg-gray-400 transiton duration-300 p-2 flex flex-col gap-8" key={key}
                         onClick={() => navigate(`/cliente/${cliente.id}`)}>

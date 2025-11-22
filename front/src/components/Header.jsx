@@ -16,10 +16,9 @@ export const Header = () => {
       ) : (
         <nav className='navigation flex flex-col space-y-4'>
           <Link onClick={logout} className='text-blue-700 flex gap-2'> <LogOut /> Sair</Link>
-          <Link className='flex gap-2' to='/'> <Home size={24} /> Início</Link>
+          <Link className='flex gap-2' to='/'> <Home /> Início</Link>
           <Link className='flex gap-2' to='/clientes/lista'> <Users /> Clientes</Link>
           <Link className='flex gap-2' to='#'> <NotebookText />Agenda</Link>
-          {/* <Link className='flex gap-2' to='/clientes'> <Scissors /> Cadastrar cliente</Link> */}
           <Link className='flex gap-2' to='#'> <UserStar /> Profissionais</Link>
           <Link className='flex gap-2' to='#'> <Scissors /> Serviços</Link>
           <Link className='flex gap-2' to='#'> <Package /> Estoque</Link>
