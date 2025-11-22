@@ -3,8 +3,9 @@ import { useForm } from 'react-hook-form'
 import validator from 'validator'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
-import { UserPlus } from 'lucide-react'
+import { UserPlus, X } from 'lucide-react'
 import { toast } from 'react-toastify';
+
 
 //cadastro/form clientes
 
@@ -32,11 +33,16 @@ export const Clientes = () => {
     }
 
     return (
-        <div className='form-cadastro flex flex-col items-start gap-8 shadow-md p-2'>
+        <div className='form-cadastro flex flex-col gap-8 shadow-md p-2'>
             {/* <ToastContainer/> */}
-            <div className="header">
-                <h1 className='flex gap-2'> <UserPlus className='text-teal-600' /> Cadastrar Novo Cliente</h1>
-                <p className='text-gray-500'>Preencha as informações do cliente abaixo</p>
+            <div className="header flex justify-between">
+                <div className="text">
+                    <h1 className='flex gap-2'> <UserPlus className='text-teal-600' /> Cadastrar Novo Cliente</h1>
+                    <p className='text-gray-500'>Preencha as informações do cliente abaixo</p>
+                </div>
+                <button className='cursor-pointer hover:bg-gray-200 rounded-full px-2 py-1 transition duration-300' onClick={() => navigate('/clientes/lista')}>
+                    <X />
+                </button>
             </div>
             <form onSubmit={handleSubmit(onSubmit, onInvalid)} className='flex flex-col space-y-8 p-2'>
                 <div className="c_nome space-x-4 flex">

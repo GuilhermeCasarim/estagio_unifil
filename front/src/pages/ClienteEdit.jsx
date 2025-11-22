@@ -4,7 +4,7 @@ import validator from 'validator'
 import axios from 'axios'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useEffect } from 'react'
-import { SquarePen } from 'lucide-react'
+import { SquarePen, X } from 'lucide-react'
 import { toast } from 'react-toastify';
 //edicao/form clientes edit
 
@@ -35,18 +35,23 @@ export const ClienteEdit = () => {
     }
 
     const onInvalid = (errors) => {
-            // Log para depuração
-            console.log("Erros de validação do formulário:", errors);
-            
-            // Toast de erro para alertar o usuário sobre campos obrigatórios/inválidos
-            toast.error('ERRO. Revise os dados e tente novamente.')
-        }
+        // Log para depuração
+        console.log("Erros de validação do formulário:", errors);
+
+        // Toast de erro para alertar o usuário sobre campos obrigatórios/inválidos
+        toast.error('ERRO. Revise os dados e tente novamente.')
+    }
 
     return (
-        <div className='form-edit flex flex-col items-start gap-8 shadow-md p-2'>
-            <div className="header">
-                <h1 className='flex gap-2'> <SquarePen className='text-teal-600' /> Editar Cliente</h1>
-                <p className='text-gray-500'>Edite as informações do cliente abaixo</p>
+        <div className='form-edit flex flex-col gap-8 shadow-md p-2'>
+            <div className="header flex justify-between">
+                <div className="text">
+                    <h1 className='flex gap-2'> <SquarePen className='text-teal-600' /> Editar Cliente</h1>
+                    <p className='text-gray-500'>Edite as informações do cliente abaixo</p>
+                </div>
+                <button className='cursor-pointer hover:bg-gray-200 rounded-full px-2 py-1 transition duration-300' onClick={() => navigate('/clientes/lista')}>
+                    <X />
+                </button>
             </div>
             <form onSubmit={handleSubmit(onSubmit, onInvalid)} className='flex flex-col space-y-8 p-2'>
                 <div className="nome space-x-4">
