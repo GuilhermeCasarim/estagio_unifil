@@ -8,7 +8,7 @@ export const Header = () => {
 
   return (
     <div className='flex flex-col bg-gray-100 text-black 
-    space-y-2 p-2 h-full border-r-2 border-gray-400'>
+    space-y-2 p-2 h-full border-r-2 border-gray-400 '>
       <p className='text-teal-600 flex gap-2'>  <Star /> BelezaGest</p>
       <p className='text-gray-400 flex gap-2'> <KeyRound /> Tipo de login</p>
       {authState.status == false ? ( //renderiza insta

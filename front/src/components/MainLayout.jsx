@@ -12,7 +12,7 @@ import { Route, Routes } from 'react-router-dom'
 
 export const MainLayout = () => {
   return (
-    <div className='flex w-full'>
+    <div className='flex h-full min-h-screen'>
 
       <aside className='w-1/5'>
         <Header />

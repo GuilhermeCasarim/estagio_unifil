@@ -86,7 +86,7 @@ export const ListaClientes = () => {
                 >Novo Cliente</button>
             </div>
 
-            <div className="totalClientes bg-gray-300 rounded p-2">
+            <div className="totalClientes bg-gray-300 p-2">
                 <span className='flex gap-4'><Users /> {listaClientes.length}</span>
                 <p>Total de clientes</p>
             </div>

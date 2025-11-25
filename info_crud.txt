@@ -1,17 +1,15 @@
-1 - Cadastro de clientes:
-nome, telefone, email, cpf(opcional), data de nascimento
-historico de agendamemtos e atendimentos
-observacoes(preferencias, restricoes, cor de tinta)
+// Rosa pastel
+bg-rose-200 / text-rose-300 / border-rose-200
 
+// Rosa médio
+bg-rose-300 / text-rose-400
 
-Ferramentas/comandos:
-npm init -y
-npm i express cors mysql2 nodemon dotenv sequelize sequelize-cli axios react-hook-form bcrypt jsonwebtoken
-npx sequelize init
+// Bege/Neutro
+bg-stone-200 / text-stone-400 / bg-neutral-100
 
-Iniciar front: npm run dev
-Iniciar back: npm start
+// Lavanda
+bg-purple-200 / text-purple-300
 
-Coisas para fazer:
-estrutura mvc; arquivo .env;
+// Pêssego
+bg-orange-200 / text-orange-300
 

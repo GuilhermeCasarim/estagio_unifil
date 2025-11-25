@@ -45,14 +45,12 @@ function App() {
   }
 
   return (
-    <div className='bg-gray-300'>
+    <div className='h-full min-h-screen'>
       <AuthContext.Provider value={{ authState, setAuthState, logout }}>
-        <Container>
           <ToastContainer position='top-center' autoClose={3000} />
           <BrowserRouter>
             <MainLayout />
           </BrowserRouter>
-        </Container>
       </AuthContext.Provider>
     </div>
   )
