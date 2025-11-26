@@ -15,7 +15,7 @@ export const Cliente = () => {
 
   return (
     
-    <div className='cliente bg-gray-300 my-4 cursor-pointer hover:bg-gray-400 transiton duration-300 mt-12 space-y-4 p-2'>
+    <div className='cliente bg-gray-50 my-4 cursor-pointer mt-12 space-y-4 p-2'>
       <h2 className='text-xl mb-4 border-b pb-2 border-gray-200'>Detalhes do cliente</h2>
       <p>Id: {clienteInfo.id}</p>
       <p>Nome: {clienteInfo.nome}</p>

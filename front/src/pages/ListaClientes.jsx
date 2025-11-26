@@ -3,7 +3,7 @@ import { useEffect, useState, useContext } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import axios from 'axios'
 import { AuthContext } from '../helpers/AuthContext'
-import { Mail, Phone, SquarePen, Star, Trash2, Users } from 'lucide-react';
+import { Mail, Phone, Search, SquarePen, Star, Trash2, Users } from 'lucide-react';
 import { toast } from 'react-toastify';
 //listar clientes
 
@@ -86,25 +86,25 @@ export const ListaClientes = () => {
                 >Novo Cliente</button>
             </div>
 
-            <div className="totalClientes bg-gray-300 p-2">
+            <div className="totalClientes bg-blue-200 p-2 rounded">
                 <span className='flex gap-4'><Users /> {listaClientes.length}</span>
                 <p>Total de clientes</p>
             </div>
 
-            <div className="searchClientes bg-gray-300 p-2 space-y-4">
-                <h1>Pesquisar Clientes</h1>
-                <p>Busque os clientes digitando o nome, email ou telefone</p>
+            <div className="searchClientes bg-white p-2 space-y-4 rounded">
+                <h1 className='flex gap-2'><Search /> Pesquisar Clientes</h1>
+                <p className='text-gray-400'>Busque os clientes digitando o nome, email ou telefone</p>
                 <div className="input flex gap-2 justify-between">
-                    <input type="text" placeholder='Pesquisar cliente...' className='px-2 py-1 rounded bg-white outline-0 w-[75%]' value={search} onChange={e => setSearch(e.target.value)} />
+                    <input type="text" placeholder='Pesquisar cliente...' className='px-2 py-1 rounded bg-rose-100 outline-0 w-[75%]' value={search} onChange={e => setSearch(e.target.value)} />
                     <button className='bg-teal-400 mr-4 text-white px-4 py-1 rounded-full hover:bg-teal-500 transition duration-300 cursor-pointer w-[20%] text-center' onClick={() => onSearch(search)}
                     >Pesquisar</button>
                 </div>
             </div>
 
-            <div className="clientesData flex space-x-8 flex-wrap">
+            <div className="clientesData flex space-x-8 flex-wrap justify-center  bg-blue-200">
                 {listaClientesMutavel.map((cliente, key) => (
-                    <div className="cliente-card w-2/5 bg-gray-300 my-8 cursor-pointer
-                     hover:bg-gray-400 transiton duration-300 p-2 flex flex-col gap-8" key={key}
+                    <div className="cliente-card w-1/5 bg-white my-8 cursor-pointer
+                     hover:bg-gray-200 transiton duration-300 p-2 flex flex-col gap-8" key={key}
                         onClick={() => navigate(`/cliente/${cliente.id}`)}>
 
                         <div className="card-header flex justify-center space-x-4 items-center">

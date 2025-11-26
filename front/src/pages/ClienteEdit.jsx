@@ -43,7 +43,7 @@ export const ClienteEdit = () => {
     }
 
     return (
-        <div className='form-edit flex flex-col gap-8 shadow-md p-2'>
+        <div className='form-edit flex flex-col gap-8 shadow-md p-2 bg-gray-50'>
             <div className="header flex justify-between">
                 <div className="text">
                     <h1 className='flex gap-2'> <SquarePen className='text-teal-600' /> Editar Cliente</h1>
