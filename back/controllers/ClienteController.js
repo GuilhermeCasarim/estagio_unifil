@@ -1,10 +1,42 @@
 const { Clientes } = require('../models')
+const { Op } = require('sequelize');
 
 class ClienteController {
     async getAll(req, res) {
         try {
-            const listaClientes = await Clientes.findAll()
-            return res.json(listaClientes)
+            const page = parseInt(req.query.page) || 1; //pagina atual
+            const limit = parseInt(req.query.limit) || 4; //qnts registro
+            const search = req.query.search || '';
+            const offset = (page - 1) * limit; //qnt de pagina pra pular
+            let whereCondition = {}
+            if (search) {
+                const searchTerm = `%${search}%`; //filtro
+                whereCondition = {
+                    [Op.or]: [
+                        { nome: { [Op.like]: searchTerm } },
+                        { email: { [Op.like]: searchTerm } },
+                        { telefone: { [Op.like]: searchTerm } }
+                    ]
+                };
+            }
+            
+            const totalClientes = await Clientes.count();
+
+            const listaClientes = await Clientes.findAll({
+                where: whereCondition,
+                limit: limit,
+                offset: offset,
+                order: [['nome', 'ASC']]
+            });
+            const totalPages = Math.ceil(totalClientes / limit);
+            return res.json({
+                clientes: listaClientes,
+                currentPage: page,
+                totalPages: totalPages,
+                totalClientes: totalClientes
+            });
+            // const listaClientes = await Clientes.findAll()
+            // return res.json(listaClientes)
         } catch (error) {
             return res.status(500).json({ error: 'Erro ao buscar clientes.' })
         }

@@ -17,11 +17,11 @@ export const Cliente = () => {
 
   return (
 
-    <div className='cliente bg-gray-50 cursor-pointer shadow-md 
-    mt-12 space-y-4 hover:bg-gray-300 transition duration-300 flex flex-col'>
+    <div className='cliente bg-gray-50 shadow-md 
+    mt-12 space-y-4  flex flex-col'>
       <div className="header flex justify-between items-center border-b border-gray-200 p-2">
         <h2 className='text-xl mb-4'>Detalhes do cliente</h2>
-        <button className='cursor-pointer  rounded-full px-2 py-1 ' onClick={() => navigate('/clientes/lista')}>
+        <button className='cursor-pointer  rounded-full px-2 py-1 hover:bg-gray-300 transition duration-300 ' onClick={() => navigate('/clientes/lista')}>
           <X />
         </button>
       </div>
