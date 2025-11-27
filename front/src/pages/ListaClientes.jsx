@@ -161,6 +161,7 @@ export const ListaClientes = () => {
                                 <button className='px-2 py-1 rounded text-red-500 cursor-pointer' onClick={(e) => {
                                     e.stopPropagation()
                                     handleDelete(cliente.id)
+                                    setCurrentPage(1) //volta pra pagina 1 apos deletar
                                 }
                                 }>
                                     <Trash2 />
