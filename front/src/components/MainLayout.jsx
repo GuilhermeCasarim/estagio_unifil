@@ -14,11 +14,11 @@ export const MainLayout = () => {
   return (
     <div className='flex min-h-screen h-full bg-neutral-100'>
 
-      <aside className='w-1/5'>
+      <aside className='w-1/5 fixed h-screen top-0 left-0 bg-neutral-100 z-50'>
         <Header />
       </aside>
 
-      <main className='mt-8 w-4/5 px-8'>
+      <main className='my-8 px-8 w-4/5 ml-[20%] '>
         <Routes>
           <Route path='/' element={<Home />} />
           <Route path='/clientes' element={<Clientes />} />
