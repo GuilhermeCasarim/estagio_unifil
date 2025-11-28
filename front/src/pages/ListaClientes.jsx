@@ -105,27 +105,25 @@ export const ListaClientes = () => {
                 </div>
             </div>
 
-            <div className="searchClientes bg-white p-2 space-y-4 rounded">
+            <div className="searchClientes bg-white p-2 space-y-4 rounded flex flex-col">
                 <h1 className='flex gap-2'><Search /> Pesquisar Clientes</h1>
                 <p className='text-gray-400'>Busque os clientes digitando o nome, email ou telefone</p>
-                <div className="input flex gap-2">
+                <div className="input flex flex-col gap-2 lg:flex-row items-center ">
                     <input type="text" placeholder='Pesquisar cliente...' className='px-2 py-1 rounded bg-rose-100 outline-0 w-[80%]' value={search} onChange={e => setSearch(e.target.value)} />
                     <div className="pages w-[20%] flex flex-col items-center">
                         <p className=''>Página {currentPage} de {totalPages} </p>
                         <div className="buttons flex justify-center space-x-4">
                             <button
-                                // Lógica: Reduz a página em 1, mas nunca abaixo de 1
                                 onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                                disabled={currentPage === 1} // Desabilita se estiver na primeira página
+                                disabled={currentPage === 1} // desabilitar na pagina 1 pra nao ir para a pagina 0 ou crashar
                                 className='bg-teal-400 text-white px-3 py-1 rounded hover:bg-teal-500 disabled:bg-gray-400 transition duration-300'
                             >
                                 Anterior
                             </button>
                            
                             <button
-                                // Lógica: Aumenta a página em 1, mas nunca acima do totalPages
                                 onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                                disabled={currentPage === totalPages} // Desabilita se estiver na última página
+                                disabled={currentPage === totalPages} // desabilita se estiver na última página
                                 className='bg-teal-400 text-white px-3 py-1 rounded hover:bg-teal-500 disabled:bg-gray-400 transition duration-300'
                             >
                                 Próxima
@@ -135,14 +133,14 @@ export const ListaClientes = () => {
                 </div>
             </div>
 
-            <div className="clientesData flex gap-8 flex-wrap justify-center  bg-blue-200">
+            <div className="clientesData grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 bg-blue-200 p-4">
                 {listaClientesMutavel.map((cliente, key) => (
-                    <div className="cliente-card w-1/5 bg-white my-8 cursor-pointer
+                    <div className="cliente-card  bg-white  cursor-pointer
                      hover:bg-gray-200 transiton duration-300 p-2 flex flex-col gap-8" key={key}
                         onClick={() => navigate(`/cliente/${cliente.id}`)}>
 
-                        <div className="card-header flex justify-center space-x-4 items-center">
-                            <div className="info1 flex flex-col justify-center gap-2">
+                        <div className="card-header flex justify-between items-center">
+                            <div className="info1 flex flex-col gap-2">
                                 <span className=''>{cliente.nome}</span>
                                 <div className="others-info flex gap-1">
                                     <button className='bg-teal-400 text-white px-4 py-1 rounded-full hover:bg-teal-500 transition duration-300'>Ativo</button>
@@ -170,8 +168,8 @@ export const ListaClientes = () => {
                             </div>
                         </div>
                         {/* <Phone /> */}
-                        <div className="card-bottom info2 space-y-4">
-                            <p className='flex gap-2 items-center'><Mail size={16} />{cliente.email}</p>
+                        <div className="card-bottom info2 space-y-4 text-sm overflow-hidden">
+                            <p className='flex gap-2 items-center flex-wrap'><Mail size={16} />{cliente.email}</p>
                             <p className='flex gap-2 items-center'><Phone size={16} />{cliente.telefone}</p>
                             <p className='flex gap-2 items-center'>{cliente.observacoes && (
                                 <>
