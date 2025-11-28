@@ -5,7 +5,7 @@ class ClienteController {
     async getAll(req, res) {
         try {
             const page = parseInt(req.query.page) || 1; //pagina atual
-            const limit = parseInt(req.query.limit) || 4; //qnts registro
+            const limit = parseInt(req.query.limit) || 12; //qnts registro
             const search = req.query.search || '';
             const offset = (page - 1) * limit; //qnt de pagina pra pular
             let whereCondition = {}

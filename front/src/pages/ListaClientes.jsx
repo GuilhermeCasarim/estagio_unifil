@@ -16,7 +16,7 @@ export const ListaClientes = () => {
     const [listaClientesMutavel, setListaClientesMutavel] = useState([])
     const [search, setSearch] = useState('')
     const [currentPage, setCurrentPage] = useState(1); // pagina atual inicio 1
-    const [limit] = useState(4); // items por pagina
+    const [limit] = useState(12); // items por pagina
     const [totalPages, setTotalPages] = useState(0); //qnt paginas totais
     const [totalClientes, setTotalClientes] = useState(0);
 
@@ -135,7 +135,7 @@ export const ListaClientes = () => {
                 </div>
             </div>
 
-            <div className="clientesData flex space-x-8 flex-wrap justify-center  bg-blue-200">
+            <div className="clientesData flex gap-8 flex-wrap justify-center  bg-blue-200">
                 {listaClientesMutavel.map((cliente, key) => (
                     <div className="cliente-card w-1/5 bg-white my-8 cursor-pointer
                      hover:bg-gray-200 transiton duration-300 p-2 flex flex-col gap-8" key={key}
