@@ -9,6 +9,7 @@ import { ListaClientes } from '../pages/ListaClientes'
 import { Agendamento } from '../pages/Agendamento'
 import { Error } from '../pages/Error'
 import { Route, Routes } from 'react-router-dom'
+import { ListaProfissionais } from '../pages/ListaProfissionais'
 
 export const MainLayout = () => {
   return (
@@ -27,6 +28,7 @@ export const MainLayout = () => {
           <Route path='/cliente/edit/:id' element={<ClienteEdit />} />
           <Route path='/clientes/lista' element={<ListaClientes />} />
           <Route path='/agendamento' element={<Agendamento />} />
+          <Route path='/profissionais/lista' element={<ListaProfissionais />} />
           <Route path='*' element={<Error />} />
         </Routes>
       </main>

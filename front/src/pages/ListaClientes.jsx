@@ -5,6 +5,7 @@ import axios from 'axios'
 import { AuthContext } from '../helpers/AuthContext'
 import { Mail, Phone, Search, SquarePen, Star, Trash2, Users } from 'lucide-react';
 import { toast } from 'react-toastify';
+import Swal from 'sweetalert2'
 //listar clientes
 //comeca a desformatar em < 1500px
 
@@ -42,7 +43,7 @@ export const ListaClientes = () => {
         }, 300);
 
         return () => clearTimeout(timer);
-    }, [authState.status, navigate, currentPage, search]); 
+    }, [authState.status, navigate, currentPage, search]);
     //funciona como filtro em tempo real
 
     useEffect(() => {
@@ -53,9 +54,22 @@ export const ListaClientes = () => {
 
 
     const handleDelete = (id) => {
-        axios.delete(`http://localhost:3001/clientes/delete/${id}`).then(() => {
-            toast.success('Cliente deletado com sucesso!')
-            navigate('/clientes/lista', { state: { refetch: true } })
+        Swal.fire({
+            title: 'Tem certeza?',
+            text: "Você não poderá reverter esta ação!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33', // Cor do botão de confirmar (vermelho)
+            cancelButtonColor: '#3085d6', // Cor do botão de cancelar (azul)
+            confirmButtonText: 'Sim, deletar!',
+            cancelButtonText: 'Cancelar'
+        }).then((res) => {
+            if (res.isConfirmed) {
+                axios.delete(`http://localhost:3001/clientes/delete/${id}`).then(() => {
+                    toast.success('Cliente deletado com sucesso!')
+                    navigate('/clientes/lista', { state: { refetch: true } })
+                })
+            }
         })
             .catch((e) => toast.error(e, 'Erro ao deletar cliente!'))
     }
@@ -65,17 +79,17 @@ export const ListaClientes = () => {
     }
 
     // const onSearch = (termoBusca) => {
-        // Reseta para a primeira página ao realizar uma nova busca
-        // const input = search ? search.toLowerCase() : '';
-        // if (!search) fetchClientes(); // Se o campo de busca estiver vazio, recarrega a lista completa
-        // let arrayFiltrado = listaClientes.filter((cliente) => { //arr original
-        //     if (cliente.nome.toLowerCase().includes(input.toLowerCase()) ||
-        //         cliente.email.toLowerCase().includes(input.toLowerCase()) ||
-        //         cliente.telefone.toLowerCase().includes(input.toLowerCase())) {
-        //         return cliente
-        //     }
-        // })
-        // setListaClientesMutavel(arrayFiltrado)
+    // Reseta para a primeira página ao realizar uma nova busca
+    // const input = search ? search.toLowerCase() : '';
+    // if (!search) fetchClientes(); // Se o campo de busca estiver vazio, recarrega a lista completa
+    // let arrayFiltrado = listaClientes.filter((cliente) => { //arr original
+    //     if (cliente.nome.toLowerCase().includes(input.toLowerCase()) ||
+    //         cliente.email.toLowerCase().includes(input.toLowerCase()) ||
+    //         cliente.telefone.toLowerCase().includes(input.toLowerCase())) {
+    //         return cliente
+    //     }
+    // })
+    // setListaClientesMutavel(arrayFiltrado)
     // }
 
     return (
@@ -120,7 +134,7 @@ export const ListaClientes = () => {
                             >
                                 Anterior
                             </button>
-                           
+
                             <button
                                 onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                                 disabled={currentPage === totalPages} // desabilita se estiver na última página

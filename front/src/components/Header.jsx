@@ -7,7 +7,7 @@ export const Header = () => {
   const { authState, logout } = useContext(AuthContext)
 
   return (
-    <div className='flex flex-col  text-black 
+    <div className='flex flex-col text-black 
     space-y-2 p-2 h-full border-r-2 border-gray-400 '>
       <p className='text-teal-600 flex gap-2'>  <Star /> BelezaGest</p>
       <p className='text-gray-400 flex gap-2'> <KeyRound /> Tipo de login</p>
@@ -18,8 +18,8 @@ export const Header = () => {
           <Link onClick={logout} className='text-blue-700 flex gap-2'> <LogOut /> Sair</Link>
           <Link className='flex gap-2' to='/'> <Home /> Início</Link>
           <Link className='flex gap-2' to='/clientes/lista'> <Users /> Clientes</Link>
-          <Link className='flex gap-2' to='#'> <NotebookText />Agenda</Link>
-          <Link className='flex gap-2' to='#'> <UserStar /> Profissionais</Link>
+          <Link className='flex gap-2' to='/agendamento'> <NotebookText />Agenda</Link>
+          <Link className='flex gap-2' to='/profissionais/lista'> <UserStar /> Profissionais</Link>
           <Link className='flex gap-2' to='#'> <Scissors /> Serviços</Link>
           <Link className='flex gap-2' to='#'> <Package /> Estoque</Link>
           <Link className='flex gap-2' to='#'> <DollarSign /> Financeiro</Link>
