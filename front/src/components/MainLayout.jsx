@@ -21,10 +21,10 @@ export const MainLayout = () => {
 
       <main className='my-8 px-8 w-4/5 ml-[20%] '>
         <Routes>
+          <Route path='/login' element={<Login />} />
           <Route path='/' element={<Home />} />
           <Route path='/clientes' element={<Clientes />} />
           <Route path='/cliente/:id' element={<Cliente />} />
-          <Route path='/login' element={<Login />} />
           <Route path='/cliente/edit/:id' element={<ClienteEdit />} />
           <Route path='/clientes/lista' element={<ListaClientes />} />
           <Route path='/agendamento' element={<Agendamento />} />

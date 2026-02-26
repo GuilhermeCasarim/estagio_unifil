@@ -1,11 +1,6 @@
 import React from 'react'
-import { useEffect, useState, useContext } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
-import axios from 'axios'
-import { AuthContext } from '../helpers/AuthContext'
-import { Mail, Phone, Search, SquarePen, Star, Trash2, Users } from 'lucide-react';
-import { toast } from 'react-toastify';
-import Swal from 'sweetalert2'
+import { useNavigate } from 'react-router-dom'
+import { Search, Users } from 'lucide-react';
 
 export const ListaProfissionais = () => {
 

@@ -19,7 +19,7 @@ class ClienteController {
                     ]
                 };
             }
-            
+
             const totalClientes = await Clientes.count();
 
             const listaClientes = await Clientes.findAll({
@@ -82,12 +82,16 @@ class ClienteController {
     async delete(req, res) {
         const idCliente = req.params.id
         try {
-            await Clientes.destroy({
+            const resultado = await Clientes.destroy({
                 where: {
                     id: idCliente
                 }
             })
-            res.json('usuario deletado')
+            if (resultado > 0) {
+                res.json('cliente deletado')
+            } else {
+                res.json('cliente não encontrado ou já deletado')
+            }
         } catch (e) {
             res.json({ error: 'erro ao deletar cliente' })
         }

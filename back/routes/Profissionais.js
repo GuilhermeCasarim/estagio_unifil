@@ -6,10 +6,10 @@ module.exports = router;
 //rota base: /profissionais
 router.get('/', ProfissionalController.getAll)
 
-// router.get('/byId/:id', ProfissionalController.getById)
+router.get('/byId/:id', ProfissionalController.getById)
 
-// router.post('/', ProfissionalController.create)
+router.post('/', ProfissionalController.create)
 
-// router.patch('/update/:id', ProfissionalController.update)
+router.patch('/update/:id', ProfissionalController.update)
 
-// router.delete('/delete/:id', ProfissionalController.delete)
+router.delete('/delete/:id', ProfissionalController.delete)
