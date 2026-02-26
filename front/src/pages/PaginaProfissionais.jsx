@@ -1,11 +1,25 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Search, Users } from 'lucide-react';
+import axios from 'axios';
 
-export const ListaProfissionais = () => {
+export const PaginaProfissionais = () => {
 
     const navigate = useNavigate();
+    const [profissionais, setProfissionais] = useState([]);
 
+    const fetchProfissionais = () => {
+        axios.get('http://localhost:3001/profissionais', {
+        })
+            .then((res) => {
+                console.log(res.data);
+                setProfissionais(res.data);
+            })
+    }
+
+    useEffect(() => {
+        fetchProfissionais();
+    }, [])
 
     return (
         <div className='space-y-8'>
@@ -20,7 +34,7 @@ export const ListaProfissionais = () => {
                 </div>
                 <button className='bg-teal-400 text-white px-4 py-1 rounded-full hover:bg-teal-500 transition duration-300 cursor-pointer'
                     onClick={() => navigate('/')}
-                >Novo Cliente</button>
+                >Novo Profissional</button>
             </div>
 
             <div className="totalProf bg-blue-200 p-2 rounded space-y-4 flex justify-between">
@@ -61,18 +75,17 @@ export const ListaProfissionais = () => {
             </div>
 
             <div className="clientesData grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 bg-blue-200 p-4">
-                <div className='profissional'>
-                    <p>nome</p>
-                    <p>email</p>
-                    <p>telefone</p>
-                    <p>horario</p>
-                </div>
-                <div className='profissional'>
-                    <p>Ana costa</p>
-                    <p>ana.costa@email.com</p>
-                    <p>(11) 99999-9999</p>
-                    <p>08:00 às 18:00</p>
-                </div>
+                {profissionais.map(profissional => (
+                    <div className='profissional'>
+                        <p>{profissional.nome}</p>
+                        <p>{profissional.telefone}</p>
+                        <p>{profissional.email}</p>
+                        <p>{profissional.horario_inicio}</p>
+                        <p>{profissional.horario_fim}</p>
+                        <p>{profissional.dias_ativos}</p>
+                        <p>{profissional.especialidades}</p>
+                    </div>
+                ))}
             </div>
         </div>
     )

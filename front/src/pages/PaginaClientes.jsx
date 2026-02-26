@@ -9,7 +9,7 @@ import Swal from 'sweetalert2'
 //listar clientes
 //comeca a desformatar em < 1500px
 
-export const ListaClientes = () => {
+export const PaginaClientes = () => {
     const { authState } = useContext(AuthContext)
     const navigate = useNavigate();
     const location = useLocation();
@@ -67,7 +67,7 @@ export const ListaClientes = () => {
             if (res.isConfirmed) {
                 axios.delete(`http://localhost:3001/clientes/delete/${id}`).then(() => {
                     toast.success('Cliente deletado com sucesso!')
-                    navigate('/clientes/lista', { state: { refetch: true } })
+                    navigate('/clientes', { state: { refetch: true } })
                 })
             }
         })
@@ -104,7 +104,7 @@ export const ListaClientes = () => {
                     <p>Pesquise e gerencie os clientes</p>
                 </div>
                 <button className='bg-teal-400 text-white px-4 py-1 rounded-full hover:bg-teal-500 transition duration-300 cursor-pointer'
-                    onClick={() => navigate('/clientes')}
+                    onClick={() => navigate('/cliente/novo')}
                 >Novo Cliente</button>
             </div>
 

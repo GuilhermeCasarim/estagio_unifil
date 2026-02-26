@@ -17,9 +17,9 @@ export const Header = () => {
         <nav className='navigation flex flex-col space-y-4'>
           <Link onClick={logout} className='text-blue-700 flex gap-2'> <LogOut /> Sair</Link>
           <Link className='flex gap-2' to='/'> <Home /> Início</Link>
-          <Link className='flex gap-2' to='/clientes/lista'> <Users /> Clientes</Link>
+          <Link className='flex gap-2' to='/clientes'> <Users /> Clientes</Link>
           <Link className='flex gap-2' to='/agendamento'> <NotebookText />Agenda</Link>
-          <Link className='flex gap-2' to='/profissionais/lista'> <UserStar /> Profissionais</Link>
+          <Link className='flex gap-2' to='/profissionais'> <UserStar /> Profissionais</Link>
           <Link className='flex gap-2' to='#'> <Scissors /> Serviços</Link>
           <Link className='flex gap-2' to='#'> <Package /> Estoque</Link>
           <Link className='flex gap-2' to='#'> <DollarSign /> Financeiro</Link>

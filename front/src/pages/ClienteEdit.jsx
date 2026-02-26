@@ -30,7 +30,7 @@ export const ClienteEdit = () => {
         axios.patch(`http://localhost:3001/clientes/update/${id}`, data).then((res) => {
             toast.success('Cliente atualizado com sucesso!')
             console.log(res)
-            navigate('/clientes/lista', { state: { refetch: true } })
+            navigate('/clientes', { state: { refetch: true } })
         })
     }
 
@@ -49,7 +49,7 @@ export const ClienteEdit = () => {
                     <h1 className='flex gap-2'> <SquarePen className='text-teal-600' /> Editar Cliente</h1>
                     <p className='text-gray-500'>Edite as informações do cliente abaixo</p>
                 </div>
-                <button className='cursor-pointer hover:bg-gray-200 rounded-full px-2 py-1 transition duration-300' onClick={() => navigate('/clientes/lista')}>
+                <button className='cursor-pointer hover:bg-gray-200 rounded-full px-2 py-1 transition duration-300' onClick={() => navigate('/clientes')}>
                     <X />
                 </button>
             </div>

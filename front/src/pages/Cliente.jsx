@@ -21,7 +21,7 @@ export const Cliente = () => {
     mt-12 space-y-4  flex flex-col'>
       <div className="header flex justify-between items-center border-b border-gray-200 p-2">
         <h2 className='text-xl mb-4'>Detalhes do cliente</h2>
-        <button className='cursor-pointer  rounded-full px-2 py-1 hover:bg-gray-300 transition duration-300 ' onClick={() => navigate('/clientes/lista')}>
+        <button className='cursor-pointer  rounded-full px-2 py-1 hover:bg-gray-300 transition duration-300 ' onClick={() => navigate('/clientes')}>
           <X />
         </button>
       </div>

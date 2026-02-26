@@ -9,7 +9,7 @@ import { maskCPF, maskPhone, maskName, validatePastDate } from '../utils/masks.j
 
 //cadastro/form clientes
 
-export const Clientes = () => {
+export const ClienteNovo = () => {
 
     const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm();
     const navigate = useNavigate()
@@ -27,7 +27,7 @@ export const Clientes = () => {
         axios.post('http://localhost:3001/clientes', cleanData).then((res) => {
             toast.success('Cliente cadastrado com sucesso!')
             console.log(res)
-            navigate('/clientes/lista', { state: { refetch: true } })
+            navigate('/clientes', { state: { refetch: true } })
         })
         // .catch((e) => toast.error('Erro ao cadastrar cliente'))
     }
@@ -48,7 +48,7 @@ export const Clientes = () => {
                     <h1 className='flex gap-2'> <UserPlus className='text-teal-600' /> Cadastrar Novo Cliente</h1>
                     <p className='text-gray-500'>Preencha as informações do cliente abaixo</p>
                 </div>
-                <button className='cursor-pointer hover:bg-gray-200 rounded-full px-2 py-1 transition duration-300' onClick={() => navigate('/clientes/lista')}>
+                <button className='cursor-pointer hover:bg-gray-200 rounded-full px-2 py-1 transition duration-300' onClick={() => navigate('/clientes')}>
                     <X />
                 </button>
             </div>
