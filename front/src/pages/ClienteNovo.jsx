@@ -1,6 +1,5 @@
 import React from 'react'
 import { useForm } from 'react-hook-form'
-import validator from 'validator'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { UserPlus, X } from 'lucide-react'
@@ -52,8 +51,8 @@ export const ClienteNovo = () => {
                     <X />
                 </button>
             </div>
+            
             <form onSubmit={handleSubmit(onSubmit, onInvalid)} className='flex flex-col space-y-8 p-2'>
-
                 <div className="c_nome space-x-4 flex">
                     <label htmlFor="nome">Nome</label>
                     <input
@@ -71,7 +70,6 @@ export const ClienteNovo = () => {
                         }}
                     />
                     {errors?.nome?.type == 'required' && <p className='text-red-500 text-sm'>Nome obrigatório!</p>}
-                    {/* {errors?.nome?.type == 'pattern' && <p className='text-red-500 text-sm'>O nome não pode conter números ou caracteres especiais</p>} */}
                 </div>
 
                 <div className="c_telefone space-x-4">
@@ -102,7 +100,7 @@ export const ClienteNovo = () => {
                     <label htmlFor="email">Email</label>
                     <input type="email" name='email' id='email' placeholder='Email do cliente (obrigatório)' {...register('email', {
                         required: true,
-                        validate: (value) => validator.isEmail(value)
+                        
                     })}
                     />
                     {errors?.email?.type == 'required' &&

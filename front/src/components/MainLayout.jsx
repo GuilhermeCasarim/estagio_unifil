@@ -10,6 +10,9 @@ import { Agendamento } from '../pages/Agendamento'
 import { Error } from '../pages/Error'
 import { Route, Routes } from 'react-router-dom'
 import { PaginaProfissionais } from '../pages/PaginaProfissionais'
+import { ProfissionalNovo } from '../pages/ProfissionalNovo'
+import { Profissional } from '../pages/Profissional'
+import { ProfissionalEdit } from '../pages/ProfissionalEdit'
 
 export const MainLayout = () => {
   return (
@@ -29,6 +32,10 @@ export const MainLayout = () => {
           <Route path='/clientes' element={<PaginaClientes />} />
           <Route path='/agendamento' element={<Agendamento />} />
           <Route path='/profissionais' element={<PaginaProfissionais />} />
+          <Route path='/profissional/novo' element={<ProfissionalNovo />} />
+          <Route path='/profissional/:id' element={<Profissional />} />
+          <Route path='/profissional/edit/:id' element={<ProfissionalEdit />} />
+
           <Route path='*' element={<Error />} />
         </Routes>
       </main>

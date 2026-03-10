@@ -43,18 +43,24 @@ export const maskPhone = (value) => {
 };
 
 export const validatePastDate = (value) => {
-    if (!value) return true;
+    if(!value) return true
+    const selectDate = new Date(value)
+    const today = new Date()
+    today.setHours(0,0,0,0)
+    if(selectDate < today){
+        return true
+    }
+    return 'A data de nascimento deve ser anterior ao dia atual'
+}
 
-    const selectedDate = new Date(value);
-    const today = new Date();
+export const validateTimeRange = (startTime, endTime) => {
+    if (!startTime || !endTime) return true;
 
-    today.setHours(0, 0, 0, 0);
-
-    if (selectedDate < today) {
+    if (endTime > startTime) {
         return true;
     }
 
-    return 'A data de nascimento deve ser anterior ao dia atual.';
+    return 'O horário de término deve ser posterior ao horário de início.';
 };
 
 export const maskName = (value) => {
