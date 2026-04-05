@@ -22,8 +22,8 @@ registerRouter('/profissionais', profissionaisRouter) //caminho padrao começa c
 const usuariosRouter = require('./routes/Usuarios')
 registerRouter('/auth', usuariosRouter)
 
-// const produtosRouter = require('./routes/Produtos')
-// registerRouter('/produtos', produtosRouter) //caminho padrao começa com /produtos
+const produtosRouter = require('./routes/Produtos')
+registerRouter('/produtos', produtosRouter) //caminho padrao começa com /produtos
 
 registerRoutesExplorer(app, registeredRouters, {
 	environment: process.env.NODE_ENV || 'development'
