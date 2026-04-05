@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  # Serviço do Banco de Dados
+  db:
+    image: mysql:8.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=bg_estagio
+    networks:
+      - app-net
+    restart: unless-stopped
+
+  # Serviço do Backend (Node.js)
+  backend:
+    build: ./back
+    ports:
+      - "3001:3001"
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASSWORD=root
+      - DB_NAME=bg_estagio
+    volumes:
+      - ./back:/app
+    networks:
+      - app-net
+
+  # Serviço do Frontend (React/Vite)
+  frontend:
+    build: ./front
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./front:/app
+      - /app/node_modules
+    networks:
+      - app-net
+
+# Definição da rede para comunicação interna
+networks:
+  app-net:
+    driver: bridge
