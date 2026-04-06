@@ -12,4 +12,6 @@ router.post('/', ProdutoController.create)
 
 router.patch('/update/:id', ProdutoController.update)
 
+router.patch('/update-estoque/:id', ProdutoController.updateEstoque)
+
 router.delete('/delete/:id', ProdutoController.delete)
