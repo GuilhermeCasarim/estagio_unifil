@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Package, Tag, Layers, SquarePen, Trash2, Boxes } from 'lucide-react'
+import { Package, Tag, Layers, SquarePen, Trash2, Boxes, AlertTriangle, AlertOctagon } from 'lucide-react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import Swal from 'sweetalert2'
@@ -8,6 +8,17 @@ import Swal from 'sweetalert2'
 export const PaginaProdutos = () => {
   const navigate = useNavigate()
   const [produtos, setProdutos] = useState([])
+
+  const totalProdutos = produtos.length
+  const baixoEstoque = produtos.filter((produto) => {
+    const estoqueAtual = Number(produto.estoque_atual) || 0
+    const estoqueMinimo = Number(produto.estoque_minimo) || 0
+    return estoqueAtual > 0 && estoqueAtual < estoqueMinimo
+  }).length
+  const estoqueCritico = produtos.filter((produto) => {
+    const estoqueAtual = Number(produto.estoque_atual) || 0
+    return estoqueAtual <= 0
+  }).length
 
   const fetchProdutos = () => {
     axios.get('http://localhost:3001/produtos')
@@ -62,9 +73,9 @@ export const PaginaProdutos = () => {
   }
 
   const getEstoqueAtualClass = (estoqueAtual, estoqueMinimo) => {
-    if (estoqueAtual > estoqueMinimo) return 'text-green-600'
-    if (estoqueAtual === estoqueMinimo) return 'text-yellow-600'
-    return 'text-red-600'
+    if (estoqueAtual === 0) return 'text-red-600'
+    if (estoqueAtual < estoqueMinimo) return 'text-yellow-600'
+    return 'text-green-600'
   }
 
   return (
@@ -84,6 +95,30 @@ export const PaginaProdutos = () => {
         >
           Novo Produto
         </button>
+      </div>
+
+      <div className='bg-gray-200 rounded-xl p-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between'>
+        <div className='flex items-center gap-3 rounded-lg bg-sky-200/70 px-4 py-2 text-sm'>
+          <span className='flex items-center gap-2 font-semibold text-sky-700'>
+            <Boxes size={18} />
+            Total de itens
+          </span>
+          <span className='ml-auto rounded-md bg-white/70 px-2 py-0.5 text-sky-800'>{totalProdutos}</span>
+        </div>
+        <div className='flex items-center gap-3 rounded-lg bg-yellow-200/80 px-4 py-2 text-sm'>
+          <span className='flex items-center gap-2 font-semibold text-yellow-800'>
+            <AlertTriangle size={18} />
+            Estoque baixo
+          </span>
+          <span className='ml-auto rounded-md bg-white/70 px-2 py-0.5 text-yellow-900'>{baixoEstoque}</span>
+        </div>
+        <div className='flex items-center gap-3 rounded-lg bg-red-300/80 px-4 py-2 text-sm'>
+          <span className='flex items-center gap-2 font-semibold text-red-800'>
+            <AlertOctagon size={18} />
+            Critico
+          </span>
+          <span className='ml-auto rounded-md bg-white/70 px-2 py-0.5 text-red-900'>{estoqueCritico}</span>
+        </div>
       </div>
 
       <div className='produtosData grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 bg-blue-200 p-4'>
