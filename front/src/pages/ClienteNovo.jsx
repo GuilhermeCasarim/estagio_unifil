@@ -2,7 +2,7 @@ import React from 'react'
 import { useForm } from 'react-hook-form'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
-import { UserPlus, X } from 'lucide-react'
+import { UserPlus, X, Phone, Mail, Calendar, FileText, User } from 'lucide-react'
 import { toast } from 'react-toastify';
 import { maskCPF, maskPhone, maskName, validatePastDate } from '../utils/masks.js';
 
@@ -40,26 +40,25 @@ export const ClienteNovo = () => {
     }
 
     return (
-        <div className='form-cadastro flex flex-col gap-8 p-2 bg-gray-50'>
-            {/* <ToastContainer/> */}
-            <div className="header flex justify-between">
-                <div className="text">
-                    <h1 className='flex gap-2'> <UserPlus className='text-teal-600' /> Cadastrar Novo Cliente</h1>
-                    <p className='text-gray-500'>Preencha as informações do cliente abaixo</p>
-                </div>
-                <button className='cursor-pointer hover:bg-gray-200 rounded-full px-2 py-1 transition duration-300' onClick={() => navigate('/clientes')}>
-                    <X />
+        <div className='flex flex-col gap-8 p-4 bg-gray-50 min-h-screen'>
+            <div className="flex justify-between items-center bg-white p-4 rounded-lg shadow-sm">
+                <h1 className='flex gap-2 text-2xl font-bold items-center'>
+                    <UserPlus className='text-teal-600' /> Novo Cliente
+                </h1>
+                <button onClick={() => navigate('/clientes')} className='p-2 hover:bg-gray-100 rounded-full'>
+                    <X size={24} />
                 </button>
             </div>
-            
-            <form onSubmit={handleSubmit(onSubmit, onInvalid)} className='flex flex-col space-y-8 p-2'>
-                <div className="c_nome space-x-4 flex">
-                    <label htmlFor="nome">Nome</label>
+
+            <form onSubmit={handleSubmit(onSubmit, onInvalid)} className='flex flex-col space-y-6 max-w-4xl bg-white p-8 rounded-lg shadow-sm mx-auto w-full'>
+                <div className="flex flex-col gap-2">
+                    <label className='font-semibold flex items-center gap-2'><User size={18} /> Nome</label>
                     <input
                         type="text"
                         name='nome'
                         id='nome'
-                        placeholder='Nome do cliente (obrigatório)'
+                        placeholder='Nome do cliente (obrigatorio)'
+                        className={`border p-3 rounded-md outline-none ${errors.nome ? 'border-red-500' : 'border-gray-300 focus:border-teal-500'}`}
                         value={nomeValue || ''}
                         {...register('nome', {
                             required: true,
@@ -72,77 +71,105 @@ export const ClienteNovo = () => {
                     {errors?.nome?.type == 'required' && <p className='text-red-500 text-sm'>Nome obrigatório!</p>}
                 </div>
 
-                <div className="c_telefone space-x-4">
-                    <label htmlFor="telefone">Telefone</label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="flex flex-col gap-2">
+                        <label className='font-semibold flex items-center gap-2'><Phone size={18} /> Telefone</label>
+                        <input
+                            type="text"
+                            name="telefone"
+                            id="telefone"
+                            placeholder="Telefone do cliente (obrigatorio)"
+                            className={`border p-3 rounded-md outline-none ${errors.telefone ? 'border-red-500' : 'border-gray-300'}`}
+                            {...register("telefone", {
+                                required: true,
+                                minLength: 15,
+                                maxLength: 15,
+                            })}
+                            value={telefoneValue || ""}
+                            onChange={(e) => {
+                                const masked = maskPhone(e.target.value);
+                                setValue("telefone", masked, { shouldValidate: true, shouldTouch: true });
+                            }}
+                        />
+                        {errors?.telefone?.type == 'required' &&
+                            <p className='text-red-500 text-sm'>Telefone necessário!</p>}
+                        {errors?.telefone?.type == 'minLength' &&
+                            <p className='text-red-500 text-sm'>Digite o telefone no formato correto (XX) XXXXX-XXXX</p>}
+                    </div>
+
+                    <div className="flex flex-col gap-2">
+                        <label className='font-semibold flex items-center gap-2'><Mail size={18} /> Email</label>
+                        <input
+                            type="email"
+                            name='email'
+                            id='email'
+                            placeholder='Email do cliente (obrigatorio)'
+                            className={`border p-3 rounded-md outline-none ${errors.email ? 'border-red-500' : 'border-gray-300 focus:border-teal-500'}`}
+                            {...register('email', {
+                                required: true,
+                            })}
+                        />
+                        {errors?.email?.type == 'required' &&
+                            <p className='text-red-500 text-sm'>Email necessário!</p>}
+                        {errors?.email?.type == 'validate' &&
+                            <p className='text-red-500 text-sm'>Email inválido!</p>}
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="flex flex-col gap-2">
+                        <label className='font-semibold flex items-center gap-2'><FileText size={18} /> CPF</label>
+                        <input
+                            type="text"
+                            name='cpf'
+                            id='cpf'
+                            placeholder='Cpf do cliente (opcional)'
+                            className='border p-3 rounded-md border-gray-300 outline-none'
+                            value={cpfValue || ''}
+                            {...register("cpf", {
+                                required: false,
+                                minLength: cpfValue ? 14 : 0,
+                            })}
+                            onChange={(e) => {
+                                const maskedValue = maskCPF(e.target.value);
+                                setValue('cpf', maskedValue, { shouldValidate: true, shouldTouch: true });
+                            }}
+                        />
+                        {errors?.cpf?.type == 'minLength' &&
+                            <p className='text-red-500 text-sm'>Caso for colocar CPF, digite no formato correto (000.000.000-00)</p>}
+                    </div>
+
+                    <div className="flex flex-col gap-2">
+                        <label className='font-semibold flex items-center gap-2'><Calendar size={18} /> Data de nascimento</label>
+                        <input
+                            type="date"
+                            name='data_nascimento'
+                            id='data_nascimento'
+                            className={`border p-3 rounded-md outline-none ${errors.data_nascimento ? 'border-red-500' : 'border-gray-300'}`}
+                            {...register('data_nascimento', { required: true, validate: validatePastDate })}
+                        />
+                        {errors?.data_nascimento?.type == 'required' &&
+                            <p className='text-red-500 text-sm'>Data de nascimento necessária!</p>}
+                        {errors?.data_nascimento?.type == 'validate' &&
+                            <p className='text-red-500 text-sm'>Data de nascimento deve ser maior que o dia atual!</p>}
+                    </div>
+                </div>
+
+                <div className="flex flex-col gap-2">
+                    <label className='font-semibold flex items-center gap-2'><FileText size={18} /> Observacoes</label>
                     <input
                         type="text"
-                        name="telefone"
-                        id="telefone"
-                        placeholder="Telefone do cliente (obrigatório)"
-                        {...register("telefone", {
-                            required: true,
-                            minLength: 15,
-                            maxLength: 15,
-                        })}
-                        value={telefoneValue || ""}
-                        onChange={(e) => {
-                            const masked = maskPhone(e.target.value);
-                            setValue("telefone", masked, { shouldValidate: true, shouldTouch: true });
-                        }}
+                        name='observacoes'
+                        id='observacoes'
+                        placeholder='Ex: Corte preferido (opcional)'
+                        className='border p-3 rounded-md border-gray-300 outline-none'
+                        {...register('observacoes')}
                     />
-                    {errors?.telefone?.type == 'required' &&
-                        <p className='text-red-500 text-sm'>Telefone necessário!</p>}
-                    {errors?.telefone?.type == 'minLength' &&
-                        <p className='text-red-500 text-sm'>Digite o telefone no formato correto (XX) XXXXX-XXXX</p>}
                 </div>
 
-                <div className="c_email space-x-4">
-                    <label htmlFor="email">Email</label>
-                    <input type="email" name='email' id='email' placeholder='Email do cliente (obrigatório)' {...register('email', {
-                        required: true,
-                        
-                    })}
-                    />
-                    {errors?.email?.type == 'required' &&
-                        <p className='text-red-500 text-sm'>Email necessário!</p>}
-                    {errors?.email?.type == 'validate' &&
-                        <p className='text-red-500 text-sm'>Email inválido!</p>}
-                </div>
-
-                <div className="c_cpf space-x-4">
-                    <label htmlFor="cpf">Cpf</label>
-                    <input type="text" name='cpf' id='cpf' placeholder='Cpf do cliente (opcional)' value={cpfValue || ''}
-                        {...register("cpf", {
-                            required: false,
-                            minLength: cpfValue ? 14 : 0,
-                        })}
-                        onChange={(e) => {
-                            const maskedValue = maskCPF(e.target.value);
-                            setValue('cpf', maskedValue, { shouldValidate: true, shouldTouch: true });
-                        }}
-                    />
-                    {errors?.cpf?.type == 'minLength' &&
-                        <p className='text-red-500 text-sm'>Caso for colocar CPF, digite no formato correto (000.000.000-00)</p>}
-                </div>
-
-                <div className="c_data_nascimento space-x-4">
-                    <label htmlFor="data_nascimento">Data de nascimento (obrigatório)</label>
-                    <input type="date" name='data_nascimento' id='data_nascimento' placeholder='Sua data de nascimento (obrigatório)' {...register('data_nascimento', { required: true , validate: validatePastDate})}
-                    />
-                    {errors?.data_nascimento?.type == 'required' &&
-                        <p className='text-red-500 text-sm'>Data de nascimento necessária!</p>}
-                    {errors?.data_nascimento?.type == 'validate' &&
-                        <p className='text-red-500 text-sm'>Data de nascimento deve ser maior que o dia atual!</p>}
-                </div>
-
-                <div className="c_observacoes space-x-4">
-                    <label htmlFor="observacoes">Observações</label>
-                    <input type="text" name='observacoes' id='observacoes' placeholder='Ex: Corte preferido (opcional)' {...register('observacoes')} />
-                </div>
-                
-                <div className="botao">
-                    <button type='submit' className='py-1 px-2 bg-purple-400 rounded cursor-pointer hover:bg-purple-600 transition duration-300'>Cadastrar cliente</button>
-                </div>
+                <button type='submit' className='w-full py-4 bg-teal-600 text-white font-bold rounded hover:bg-teal-700 transition duration-300 cursor-pointer'>
+                    CADASTRAR CLIENTE
+                </button>
             </form>
         </div>
     )
