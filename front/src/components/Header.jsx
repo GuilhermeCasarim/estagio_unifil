@@ -20,7 +20,7 @@ export const Header = () => {
           <Link className='flex gap-2' to='/clientes'> <Users /> Clientes</Link>
           <Link className='flex gap-2' to='/agendamento'> <NotebookText />Agenda</Link>
           <Link className='flex gap-2' to='/profissionais'> <UserStar /> Profissionais</Link>
-          <Link className='flex gap-2' to='#'> <Scissors /> Serviços</Link>
+          <Link className='flex gap-2' to='/servicos'> <Scissors /> Servicos</Link>
           <Link className='flex gap-2' to='/produtos'> <Package /> Estoque</Link>
           <Link className='flex gap-2' to='#'> <DollarSign /> Financeiro</Link>
           <Link className='flex gap-2' to='#'> <ChartColumnIncreasing /> Relatórios</Link>

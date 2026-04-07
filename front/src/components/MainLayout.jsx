@@ -17,6 +17,10 @@ import { PaginaProdutos } from '../pages/PaginaProdutos'
 import { ProdutoNovo } from '../pages/ProdutoNovo'
 import { Produto } from '../pages/Produto'
 import { ProdutoEdit } from '../pages/ProdutoEdit'
+import { PaginaServicos } from '../pages/PaginaServicos'
+import { ServicoNovo } from '../pages/ServicoNovo'
+import { Servico } from '../pages/Servico'
+import { ServicoEdit } from '../pages/ServicoEdit'
 
 export const MainLayout = () => {
   return (
@@ -43,6 +47,10 @@ export const MainLayout = () => {
           <Route path='/produto/novo' element={<ProdutoNovo />} />
           <Route path='/produto/:id' element={<Produto />} />
           <Route path='/produto/edit/:id' element={<ProdutoEdit />} />
+          <Route path='/servicos' element={<PaginaServicos />} />
+          <Route path='/servico/novo' element={<ServicoNovo />} />
+          <Route path='/servico/:id' element={<Servico />} />
+          <Route path='/servico/edit/:id' element={<ServicoEdit />} />
 
           <Route path='*' element={<Error />} />
         </Routes>
