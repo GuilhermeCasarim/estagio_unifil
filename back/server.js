@@ -28,6 +28,9 @@ registerRouter('/produtos', produtosRouter) //caminho padrao começa com /produt
 const servicosRouter = require('./routes/Servicos')
 registerRouter('/servicos', servicosRouter) //caminho padrao começa com /servicos
 
+const financeiroRouter = require('./routes/Financeiro')
+registerRouter('/financeiro', financeiroRouter) //caminho padrao começa com /financeiro
+
 registerRoutesExplorer(app, registeredRouters, {
 	environment: process.env.NODE_ENV || 'development'
 })
