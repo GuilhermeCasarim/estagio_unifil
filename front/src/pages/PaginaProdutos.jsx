@@ -86,7 +86,7 @@ export const PaginaProdutos = () => {
 
       <div className='intro flex items-center justify-between'>
         <div className='texto'>
-          <p>Gestao de produtos</p>
+          <p>Gestão de produtos</p>
           <p>Visualize e gerencie o estoque de produtos</p>
         </div>
         <button

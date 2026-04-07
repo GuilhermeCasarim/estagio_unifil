@@ -61,7 +61,7 @@ export const PaginaServicos = () => {
 
       <div className='intro flex items-center justify-between'>
         <div className='texto'>
-          <p>Gestao de serviços</p>
+          <p>Gestão de serviços</p>
           <p>Visualize e gerencie os serviços disponiveis</p>
         </div>
         <button
