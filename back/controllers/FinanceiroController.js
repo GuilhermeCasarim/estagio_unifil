@@ -58,7 +58,14 @@ class FinanceiroController {
             });
             return res.status(201).json(novaTransacao);
         } catch (e) {
-            return res.status(400).json({ error: 'Erro ao criar transacao.' });
+            return res.status(400).json({
+                error: 'Erro ao criar transacao.',
+                details: e?.message,
+                fields: Array.isArray(e?.errors) ? e.errors.map((err) => ({
+                    field: err.path,
+                    message: err.message
+                })) : []
+            });
         }
     }
 

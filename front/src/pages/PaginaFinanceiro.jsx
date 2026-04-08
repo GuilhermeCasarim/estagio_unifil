@@ -66,7 +66,7 @@ export const PaginaFinanceiro = () => {
 
       <div className='intro flex items-center justify-between'>
         <div className='texto'>
-          <p>Gestao financeira</p>
+          <p>Gestão financeira</p>
           <p>Registre entradas e saidas do caixa</p>
         </div>
         <button

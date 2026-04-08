@@ -44,6 +44,9 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             allowNull: true, // quem registrou (Secretária ou adm)
         }
+    }, {
+        freezeTableName: true,
+        tableName: 'Financeiro'
     });
 
     return Financeiro;
