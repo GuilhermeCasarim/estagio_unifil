@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { Search, Users } from 'lucide-react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -9,20 +9,32 @@ import { Clock, Mail, Phone, Calendar, Briefcase, SquarePen, Trash2 } from 'luci
 export const PaginaProfissionais = () => {
 
     const navigate = useNavigate();
+    const location = useLocation();
     const [profissionais, setProfissionais] = useState([]);
+    const [search, setSearch] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [limit] = useState(12);
+    const [totalPages, setTotalPages] = useState(0);
+    const [totalProfissionais, setTotalProfissionais] = useState(0);
 
     const fetchProfissionais = () => {
-        axios.get('http://localhost:3001/profissionais', {
-        })
+        axios.get(`http://localhost:3001/profissionais?page=${currentPage}&limit=${limit}&search=${search}`)
             .then((res) => {
-                console.log(res.data);
-                setProfissionais(res.data);
+                setProfissionais(res.data.profissionais || []);
+                setTotalPages(res.data.totalPages || 0);
+                setTotalProfissionais(res.data.totalProfissionais || 0);
             })
     }
 
     useEffect(() => {
         fetchProfissionais();
-    }, [])
+    }, [currentPage, search])
+
+    useEffect(() => {
+        if (location.state?.refetch) {
+            fetchProfissionais();
+        }
+    }, [location.state])
 
     const handleDelete = (id) => {
         Swal.fire({
@@ -68,11 +80,11 @@ export const PaginaProfissionais = () => {
 
             <div className="totalProf bg-blue-200 p-2 rounded space-y-4 flex justify-between">
                 <div className="clientesPagina">
-                    <span className='flex gap-4'><Users /> 5</span>
+                    <span className='flex gap-4'><Users /> {profissionais.length}</span>
                     <p>Total de profissionais na página</p>
                 </div>
                 <div className="clientesTotal">
-                    <span className='flex gap-4'><Users /> 5</span>
+                    <span className='flex gap-4'><Users /> {totalProfissionais}</span>
                     <p>Total de profissionais no salão</p>
                 </div>
             </div>
@@ -81,19 +93,30 @@ export const PaginaProfissionais = () => {
                 <h1 className='flex gap-2'><Search /> Pesquisar Profissionais</h1>
                 <p className='text-gray-400'>Busque os profissionais digitando o nome, email ou telefone</p>
                 <div className="input flex flex-col gap-2 lg:flex-row items-center ">
-                    <input type="text" placeholder='Pesquisar profissional...' className='px-2 py-1 rounded bg-rose-100 outline-0 w-[80%]' />
+                    <input
+                        type="text"
+                        placeholder='Pesquisar profissional...'
+                        className='px-2 py-1 rounded bg-rose-100 outline-0 w-[80%]'
+                        value={search}
+                        onChange={(e) => {
+                            setSearch(e.target.value)
+                            setCurrentPage(1)
+                        }}
+                    />
                     <div className="pages w-[20%] flex flex-col items-center">
-                        <p className=''>Página </p>
+                        <p className=''>Página {currentPage} de {totalPages} </p>
                         <div className="buttons flex justify-center space-x-4">
                             <button
-                                // desabilitar na pagina 1 pra nao ir para a pagina 0 ou crashar
+                                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                                disabled={currentPage === 1}
                                 className='bg-teal-400 text-white px-3 py-1 rounded hover:bg-teal-500 disabled:bg-gray-400 transition duration-300'
                             >
                                 Anterior
                             </button>
 
                             <button
-                                // desabilita se estiver na última página
+                                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                                disabled={currentPage === totalPages}
                                 className='bg-teal-400 text-white px-3 py-1 rounded hover:bg-teal-500 disabled:bg-gray-400 transition duration-300'
                             >
                                 Próxima

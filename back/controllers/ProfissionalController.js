@@ -4,16 +4,39 @@ const { Op } = require('sequelize');
 class ProfissionalController {
     async getAll(req, res) {
         try {
-            const profissionais = await Profissionais.findAll({
+            const page = parseInt(req.query.page) || 1;
+            const limit = parseInt(req.query.limit) || 12;
+            const search = req.query.search || '';
+            const offset = (page - 1) * limit;
+            let whereCondition = {};
+
+            if (search) {
+                const searchTerm = `%${search}%`;
+                whereCondition = {
+                    [Op.or]: [
+                        { nome: { [Op.like]: searchTerm } },
+                        { email: { [Op.like]: searchTerm } },
+                        { telefone: { [Op.like]: searchTerm } },
+                        { especialidades: { [Op.like]: searchTerm } }
+                    ]
+                };
+            }
+
+            const totalProfissionais = await Profissionais.count();
+            const listaProfissionais = await Profissionais.findAll({
+                where: whereCondition,
+                limit: limit,
+                offset: offset,
                 order: [['nome', 'ASC']]
             });
-            if (profissionais.length === 0) {
-                return res.status(200).json({
-                    message: "Nenhum profissional encontrado.",
-                    data: []
-                });
-            }
-            return res.status(200).json(profissionais);
+            const totalPages = Math.ceil(totalProfissionais / limit);
+
+            return res.status(200).json({
+                profissionais: listaProfissionais,
+                currentPage: page,
+                totalPages: totalPages,
+                totalProfissionais: totalProfissionais
+            });
         } catch (error) {
             console.error("Erro ao buscar profissionais:", error);
             return res.status(500).json({
