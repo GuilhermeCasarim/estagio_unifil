@@ -63,7 +63,7 @@ export const ProfissionalNovo = () => {
                         type="text"
                         name='nome'
                         id='nome'
-                        placeholder='Nome do cliente (obrigatório)'
+                        placeholder='Nome do profissional'
                         value={nomeValue || ''}
                         {...register('nome', {
                             required: true,
@@ -83,7 +83,7 @@ export const ProfissionalNovo = () => {
                             type="text"
                             name="telefone"
                             id="telefone"
-                            placeholder="Telefone do cliente (obrigatório)"
+                            placeholder="Telefone do profissional"
                             {...register("telefone", {
                                 required: true,
                                 minLength: 15,
@@ -102,7 +102,7 @@ export const ProfissionalNovo = () => {
                     </div>
                     <div className="flex flex-col gap-2">
                         <label className='font-semibold'>Email</label>
-                        <input type="email" name='email' id='email' placeholder='Email do cliente (obrigatório)' {...register('email', {
+                        <input type="email" name='email' id='email' placeholder='Email do profissional' {...register('email', {
                             required: true,
 
                         })}

@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { X, Scissors, Tag, Clock, Users, DollarSign } from 'lucide-react'
+import { X, Scissors, Tag, Clock, Users, DollarSign, Package } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 
@@ -55,6 +55,24 @@ export const Servico = () => {
             <Users size={18} className='text-teal-600' />
             <strong>Profissionais ativos:</strong> {servicoInfo.profissionais_ativos}
           </p>
+        </div>
+
+        <div className='border-t pt-4 space-y-2'>
+          <p className='flex items-center gap-2'>
+            <Package size={18} className='text-teal-600' />
+            <strong>Produtos utilizados:</strong>
+          </p>
+          {Array.isArray(servicoInfo.Produtos) && servicoInfo.Produtos.length > 0 ? (
+            <ul className='space-y-1 pl-6 list-disc'>
+              {servicoInfo.Produtos.map((produto) => (
+                <li key={produto.id}>
+                  {produto.nome} (x{produto.ServicoProduto?.quant ?? 1})
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className='text-sm text-gray-500'>Nenhum produto informado.</p>
+          )}
         </div>
       </div>
     </div>

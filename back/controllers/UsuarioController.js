@@ -4,7 +4,7 @@ const { sign } = require('jsonwebtoken');
 
 class UsuarioController {
     async create(req, res) {
-        const { login, senha, tipo_login = 'tipoLogin' } = req.body
+        const { login, senha, tipo_login = 'secretaria' } = req.body
         bcrypt.hash(senha, 10).then((hash) => {
             Usuarios.create({
                 login,
@@ -22,7 +22,7 @@ class UsuarioController {
 
         bcrypt.compare(senha, usuario.senha).then((match) => {
             if (!match) return res.json({ error: 'senha errada' }) //se fizer login(info certas), faz o token
-            const accessToken = sign({ login: usuario.login, id: usuario.id }, "macaco")
+            const accessToken = sign({ login: usuario.login, id: usuario.id }, process.env.JWT_SECRET)
             console.log(accessToken)
             //token -> credencial de login; a funcao sign cria o token
             return res.json({ token: accessToken, login: usuario.login, id: usuario.id })

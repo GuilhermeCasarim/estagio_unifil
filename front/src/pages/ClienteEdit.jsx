@@ -65,7 +65,7 @@ export const ClienteEdit = () => {
                         type="text"
                         name='nome'
                         id='nome'
-                        placeholder='Seu nome (obrigatorio)'
+                        placeholder='Seu nome'
                         className={`border p-3 rounded-md outline-none ${errors.nome ? 'border-red-500' : 'border-gray-300 focus:border-teal-500'}`}
                         {...register('nome', { required: true })}
                     />
@@ -80,7 +80,7 @@ export const ClienteEdit = () => {
                             type="text"
                             name='telefone'
                             id='telefone'
-                            placeholder='Seu telefone (obrigatorio)'
+                            placeholder='Seu telefone'
                             className={`border p-3 rounded-md outline-none ${errors.telefone ? 'border-red-500' : 'border-gray-300'}`}
                             {...register('telefone', { required: true, minLength: 11 })}
                         />
@@ -95,7 +95,7 @@ export const ClienteEdit = () => {
                             type="email"
                             name='email'
                             id='email'
-                            placeholder='Seu email (obrigatorio)'
+                            placeholder='Seu email'
                             className={`border p-3 rounded-md outline-none ${errors.email ? 'border-red-500' : 'border-gray-300 focus:border-teal-500'}`}
                             {...register('email', {
                                 required: true,

@@ -5,7 +5,7 @@ const validateToken = (req, res, next) => {
     if (!accessToken) return res.json({ error: 'usuario deve realizar login' })
 
     try {
-        const validToken = verify(accessToken, "macaco")
+        const validToken = verify(accessToken, process.env.JWT_SECRET)
         req.usuario = validToken
         if (validToken) return next();
     } catch (e) {

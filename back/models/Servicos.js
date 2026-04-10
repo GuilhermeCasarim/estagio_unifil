@@ -22,5 +22,13 @@ module.exports = (sequelize, DataTypes) => {
         },
         
     })
+
+    Servicos.associate = (models) => {
+        Servicos.belongsToMany(models.Produtos, {
+            through: models.ServicoProduto,
+            foreignKey: 'servico_id',
+            otherKey: 'produto_id'
+        });
+    };
     return Servicos;
 }

@@ -26,7 +26,7 @@ export const FinanceiroEdit = () => {
         reset(payload)
       })
       .catch((error) => {
-        console.error('Erro ao buscar dados da transacao:', error)
+        console.error('Erro ao buscar dados da transação:', error)
         toast.error('Erro ao carregar dados.')
       })
   }, [id, reset])
@@ -39,12 +39,12 @@ export const FinanceiroEdit = () => {
 
     axios.patch(`http://localhost:3001/financeiro/update/${id}`, payload)
       .then(() => {
-        toast.success('Transacao atualizada com sucesso!')
+        toast.success('Transação atualizada com sucesso!')
         navigate('/financeiro', { state: { refetch: true } })
       })
       .catch((err) => {
         console.error(err)
-        toast.error('Erro ao atualizar transacao.')
+        toast.error('Erro ao atualizar transação.')
       })
   }
 
@@ -57,7 +57,7 @@ export const FinanceiroEdit = () => {
       <div className='header flex justify-between items-center border-b pb-4'>
         <div className='text'>
           <h1 className='flex gap-2 text-2xl font-bold items-center text-gray-800'>
-            <SquarePen className='text-teal-600' /> Editar Transacao
+            <SquarePen className='text-teal-600' /> Editar Transação
           </h1>
           <p className='text-gray-500'>Atualize as informacoes financeiras</p>
         </div>

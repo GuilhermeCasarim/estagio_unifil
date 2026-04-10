@@ -53,7 +53,7 @@ export const ProdutoNovo = () => {
           <label className='font-semibold'>Nome</label>
           <input
             type='text'
-            placeholder='Nome do produto (obrigatorio)'
+            placeholder='Nome do produto'
             {...register('nome', { required: true })}
           />
           {errors?.nome?.type == 'required' && <p className='text-red-500 text-sm'>Nome obrigatorio!</p>}
@@ -64,7 +64,7 @@ export const ProdutoNovo = () => {
             <label className='font-semibold'>Marca</label>
             <input
               type='text'
-              placeholder='Marca do produto (obrigatorio)'
+              placeholder='Marca do produto'
               {...register('marca', { required: true })}
             />
             {errors?.marca?.type == 'required' && <p className='text-red-500 text-sm'>Marca obrigatoria!</p>}
@@ -73,7 +73,7 @@ export const ProdutoNovo = () => {
             <label className='font-semibold'>Categoria</label>
             <input
               type='text'
-              placeholder='Categoria do produto (obrigatorio)'
+              placeholder='Categoria do produto'
               {...register('categoria', { required: true })}
             />
             {errors?.categoria?.type == 'required' && <p className='text-red-500 text-sm'>Categoria obrigatoria!</p>}

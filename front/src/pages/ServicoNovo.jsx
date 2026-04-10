@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
@@ -13,12 +13,54 @@ export const ServicoNovo = () => {
   } = useForm()
 
   const navigate = useNavigate()
+  const [produtos, setProdutos] = useState([])
+  const [produtosSelecionados, setProdutosSelecionados] = useState({})
+
+  useEffect(() => {
+    axios.get('http://localhost:3001/produtos')
+      .then((res) => {
+        const payload = Array.isArray(res.data) ? res.data : (res.data.data || [])
+        setProdutos(payload)
+      })
+      .catch((error) => {
+        console.error('Erro ao buscar produtos:', error)
+        toast.error('Erro ao carregar produtos.')
+      })
+  }, [])
+
+  const handleProdutoToggle = (produtoId, checked) => {
+    setProdutosSelecionados((prev) => ({
+      ...prev,
+      [produtoId]: {
+        checked,
+        quant: prev[produtoId]?.quant ?? 1
+      }
+    }))
+  }
+
+  const handleProdutoQuant = (produtoId, quant) => {
+    setProdutosSelecionados((prev) => ({
+      ...prev,
+      [produtoId]: {
+        checked: prev[produtoId]?.checked ?? false,
+        quant
+      }
+    }))
+  }
+
+  const buildProdutosPayload = () => Object.entries(produtosSelecionados)
+    .filter(([, item]) => item.checked)
+    .map(([produtoId, item]) => ({
+      produto_id: Number(produtoId),
+      quant: Number(item.quant) || 1
+    }))
 
   const onSubmit = (data) => {
     const payload = {
       ...data,
       preco: Number(data.preco),
-      duracao: Number(data.duracao)
+      duracao: Number(data.duracao),
+      produtos_utilizados: buildProdutosPayload()
     }
 
     axios.post('http://localhost:3001/servicos', payload)
@@ -53,7 +95,7 @@ export const ServicoNovo = () => {
           <label className='font-semibold'>Nome</label>
           <input
             type='text'
-            placeholder='Nome do serviço (obrigatorio)'
+            placeholder='Nome do serviço'
             {...register('nome', { required: true })}
           />
           {errors?.nome?.type == 'required' && <p className='text-red-500 text-sm'>Nome obrigatorio!</p>}
@@ -64,7 +106,7 @@ export const ServicoNovo = () => {
             <label className='font-semibold'>Categoria</label>
             <input
               type='text'
-              placeholder='Categoria do serviço (obrigatorio)'
+              placeholder='Categoria do serviço'
               {...register('categoria', { required: true })}
             />
             {errors?.categoria?.type == 'required' && <p className='text-red-500 text-sm'>Categoria obrigatoria!</p>}
@@ -101,6 +143,36 @@ export const ServicoNovo = () => {
               {...register('profissionais_ativos', { required: true })}
             />
             {errors?.profissionais_ativos?.type == 'required' && <p className='text-red-500 text-sm'>Campo obrigatorio!</p>}
+          </div>
+        </div>
+
+        <div className='flex flex-col gap-4'>
+          <label className='font-semibold'>Produtos utilizados</label>
+          <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+            {produtos.map((produto) => {
+              const selecionado = produtosSelecionados[produto.id]?.checked ?? false
+              const quant = produtosSelecionados[produto.id]?.quant ?? 1
+              return (
+                <div key={produto.id} className='flex items-center justify-between gap-3 border rounded-md p-3'>
+                  <label className='flex items-center gap-2'>
+                    <input
+                      type='checkbox'
+                      checked={selecionado}
+                      onChange={(e) => handleProdutoToggle(produto.id, e.target.checked)}
+                    />
+                    <span>{produto.nome}</span>
+                  </label>
+                  <input
+                    type='number'
+                    min='1'
+                    className='w-20'
+                    value={quant}
+                    disabled={!selecionado}
+                    onChange={(e) => handleProdutoQuant(produto.id, e.target.value)}
+                  />
+                </div>
+              )
+            })}
           </div>
         </div>
 

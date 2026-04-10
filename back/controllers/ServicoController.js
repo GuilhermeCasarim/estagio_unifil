@@ -1,4 +1,4 @@
-const { Servicos } = require('../models');
+const { Servicos, Produtos, ServicoProduto } = require('../models');
 
 class ServicoController {
     async getAll(req, res) {
@@ -27,7 +27,14 @@ class ServicoController {
     async getById(req, res) {
         const id = req.params.id;
         try {
-            const servico = await Servicos.findByPk(id);
+            const servico = await Servicos.findByPk(id, {
+                include: [{
+                    model: Produtos,
+                    through: {
+                        attributes: ['quant', 'data_hora']
+                    }
+                }]
+            });
             if (servico) {
                 return res.json(servico);
             }
@@ -38,10 +45,39 @@ class ServicoController {
     }
 
     async create(req, res) {
-        const servico = req.body;
+        const { produtos_utilizados, ...servico } = req.body;
         try {
-            const novoServico = await Servicos.create(servico);
-            return res.status(201).json(novoServico);
+            const transaction = await Servicos.sequelize.transaction();
+            try {
+                const novoServico = await Servicos.create(servico, { transaction });
+
+                if (Array.isArray(produtos_utilizados) && produtos_utilizados.length > 0) {
+                    const itens = produtos_utilizados.map((item) => ({
+                        servico_id: novoServico.id,
+                        produto_id: item.produto_id,
+                        quant: item.quant ?? 1,
+                        data_hora: item.data_hora ?? new Date()
+                    }));
+
+                    await ServicoProduto.bulkCreate(itens, { transaction });
+                }
+
+                await transaction.commit();
+
+                const servicoCriado = await Servicos.findByPk(novoServico.id, {
+                    include: [{
+                        model: Produtos,
+                        through: {
+                            attributes: ['quant', 'data_hora']
+                        }
+                    }]
+                });
+
+                return res.status(201).json(servicoCriado);
+            } catch (error) {
+                await transaction.rollback();
+                throw error;
+            }
         } catch (e) {
             return res.status(400).json({ error: 'Erro ao criar servico.' });
         }
@@ -49,18 +85,41 @@ class ServicoController {
 
     async update(req, res) {
         const idServico = req.params.id;
-        const { nome, categoria, preco, profissionais_ativos, duracao } = req.body;
+        const { nome, categoria, preco, profissionais_ativos, duracao, produtos_utilizados } = req.body;
         try {
-            const [updated] = await Servicos.update(
-                { nome, categoria, preco, profissionais_ativos, duracao },
-                { where: { id: idServico } }
-            );
+            const transaction = await Servicos.sequelize.transaction();
+            try {
+                const [updated] = await Servicos.update(
+                    { nome, categoria, preco, profissionais_ativos, duracao },
+                    { where: { id: idServico }, transaction }
+                );
 
-            if (updated) {
+                if (!updated) {
+                    await transaction.rollback();
+                    return res.status(404).json({ error: 'Servico nao encontrado' });
+                }
+
+                if (Array.isArray(produtos_utilizados)) {
+                    await ServicoProduto.destroy({ where: { servico_id: idServico }, transaction });
+
+                    if (produtos_utilizados.length > 0) {
+                        const itens = produtos_utilizados.map((item) => ({
+                            servico_id: idServico,
+                            produto_id: item.produto_id,
+                            quant: item.quant ?? 1,
+                            data_hora: item.data_hora ?? new Date()
+                        }));
+
+                        await ServicoProduto.bulkCreate(itens, { transaction });
+                    }
+                }
+
+                await transaction.commit();
                 return res.json('Servico atualizado');
+            } catch (error) {
+                await transaction.rollback();
+                throw error;
             }
-
-            return res.status(404).json({ error: 'Servico nao encontrado' });
         } catch (e) {
             return res.status(500).json({ error: 'Erro ao atualizar servico' });
         }

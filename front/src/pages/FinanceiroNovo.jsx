@@ -22,12 +22,12 @@ export const FinanceiroNovo = () => {
 
     axios.post('http://localhost:3001/financeiro', payload)
       .then(() => {
-        toast.success('Transacao cadastrada com sucesso!')
+        toast.success('Transação cadastrada com sucesso!')
         navigate('/financeiro')
       })
       .catch((err) => {
         console.error(err)
-        toast.error('Erro ao cadastrar transacao.')
+        toast.error('Erro ao cadastrar transação.')
       })
   }
 
@@ -40,7 +40,7 @@ export const FinanceiroNovo = () => {
     <div className='flex flex-col gap-8 p-4 bg-gray-50 min-h-screen'>
       <div className='flex justify-between items-center bg-white p-4 rounded-lg shadow-sm'>
         <h1 className='flex gap-2 text-2xl font-bold items-center'>
-          <DollarSign className='text-teal-600' /> Nova Transacao
+          <DollarSign className='text-teal-600' /> Nova Transação
         </h1>
         <button onClick={() => navigate('/financeiro')} className='p-2 hover:bg-gray-100 rounded-full'>
           <X size={24} />
@@ -52,7 +52,7 @@ export const FinanceiroNovo = () => {
           <label className='font-semibold'>Descricao</label>
           <input
             type='text'
-            placeholder='Descricao da transacao (obrigatorio)'
+            placeholder='Descricao da transação'
             {...register('descricao', { required: true })}
           />
           {errors?.descricao?.type == 'required' && <p className='text-red-500 text-sm'>Descricao obrigatoria!</p>}
@@ -86,7 +86,7 @@ export const FinanceiroNovo = () => {
             <label className='font-semibold'>Categoria</label>
             <input
               type='text'
-              placeholder='Categoria (obrigatorio)'
+              placeholder='Categoria'
               {...register('categoria', { required: true })}
             />
             {errors?.categoria?.type == 'required' && <p className='text-red-500 text-sm'>Categoria obrigatoria!</p>}
@@ -120,7 +120,7 @@ export const FinanceiroNovo = () => {
         </div>
 
         <button type='submit' className='w-full py-4 bg-teal-600 text-white font-bold rounded hover:bg-teal-700 transition duration-300 cursor-pointer'>
-          CADASTRAR TRANSACAO
+          CADASTRAR TRANSAÇÃO
         </button>
       </form>
     </div>

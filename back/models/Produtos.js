@@ -25,5 +25,13 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         }
     })
+
+    Produtos.associate = (models) => {
+        Produtos.belongsToMany(models.Servicos, {
+            through: models.ServicoProduto,
+            foreignKey: 'produto_id',
+            otherKey: 'servico_id'
+        });
+    };
     return Produtos;
 }

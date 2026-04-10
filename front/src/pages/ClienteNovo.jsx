@@ -57,7 +57,7 @@ export const ClienteNovo = () => {
                         type="text"
                         name='nome'
                         id='nome'
-                        placeholder='Nome do cliente (obrigatorio)'
+                        placeholder='Nome do cliente'
                         className={`border p-3 rounded-md outline-none ${errors.nome ? 'border-red-500' : 'border-gray-300 focus:border-teal-500'}`}
                         value={nomeValue || ''}
                         {...register('nome', {
@@ -78,7 +78,7 @@ export const ClienteNovo = () => {
                             type="text"
                             name="telefone"
                             id="telefone"
-                            placeholder="Telefone do cliente (obrigatorio)"
+                            placeholder="Telefone do cliente"
                             className={`border p-3 rounded-md outline-none ${errors.telefone ? 'border-red-500' : 'border-gray-300'}`}
                             {...register("telefone", {
                                 required: true,
@@ -103,7 +103,7 @@ export const ClienteNovo = () => {
                             type="email"
                             name='email'
                             id='email'
-                            placeholder='Email do cliente (obrigatorio)'
+                            placeholder='Email do cliente'
                             className={`border p-3 rounded-md outline-none ${errors.email ? 'border-red-500' : 'border-gray-300 focus:border-teal-500'}`}
                             {...register('email', {
                                 required: true,
