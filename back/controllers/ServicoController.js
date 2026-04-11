@@ -79,7 +79,11 @@ class ServicoController {
                 throw error;
             }
         } catch (e) {
-            return res.status(400).json({ error: 'Erro ao criar servico.' });
+            console.error('Erro ao criar servico:', e);
+            return res.status(400).json({
+                error: 'Erro ao criar servico.',
+                details: e.message
+            });
         }
     }
 
@@ -121,7 +125,11 @@ class ServicoController {
                 throw error;
             }
         } catch (e) {
-            return res.status(500).json({ error: 'Erro ao atualizar servico' });
+            console.error('Erro ao atualizar servico:', e);
+            return res.status(500).json({
+                error: 'Erro ao atualizar servico',
+                details: e.message
+            });
         }
     }
 
