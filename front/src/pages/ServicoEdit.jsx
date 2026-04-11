@@ -131,16 +131,6 @@ export const ServicoEdit = () => {
 
         <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
           <div className='flex flex-col gap-2'>
-            <label className='font-semibold'>Categoria</label>
-            <input
-              type='text'
-              className={`border p-3 rounded-md outline-none ${errors.categoria ? 'border-red-500' : 'border-gray-300'}`}
-              {...register('categoria', { required: 'Categoria obrigatoria' })}
-            />
-            {errors.categoria && <p className='text-red-500 text-sm'>{errors.categoria.message}</p>}
-          </div>
-
-          <div className='flex flex-col gap-2'>
             <label className='font-semibold'>Preco</label>
             <input
               type='number'

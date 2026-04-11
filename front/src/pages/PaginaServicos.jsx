@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Scissors, Tag, Clock, Users, SquarePen, Trash2, DollarSign } from 'lucide-react'
+import { Scissors, Clock, Users, SquarePen, Trash2, DollarSign } from 'lucide-react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import Swal from 'sweetalert2'
@@ -10,7 +10,6 @@ export const PaginaServicos = () => {
   const [servicos, setServicos] = useState([])
 
   const totalServicos = servicos.length
-  const categorias = new Set(servicos.map((servico) => servico.categoria).filter(Boolean))
 
   const fetchServicos = () => {
     axios.get('http://localhost:3001/servicos')
@@ -80,13 +79,6 @@ export const PaginaServicos = () => {
           </span>
           <span className='ml-auto rounded-md bg-white/70 px-2 py-0.5 text-sky-800'>{totalServicos}</span>
         </div>
-        <div className='flex items-center gap-3 rounded-lg bg-yellow-200/80 px-4 py-2 text-sm'>
-          <span className='flex items-center gap-2 font-semibold text-yellow-800'>
-            <Tag size={18} />
-            Categorias
-          </span>
-          <span className='ml-auto rounded-md bg-white/70 px-2 py-0.5 text-yellow-900'>{categorias.size}</span>
-        </div>
       </div>
 
       <div className='servicosData grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 bg-blue-200 p-4'>
@@ -100,9 +92,6 @@ export const PaginaServicos = () => {
               <div className='info1 flex flex-col gap-2'>
                 <span className='font-bold'>{servico.nome}</span>
                 <div className='others-info flex gap-1 items-center'>
-                  <button className='bg-teal-400 text-white px-3 py-0.5 rounded-full hover:bg-teal-500 transition duration-300 text-xs'>
-                    {servico.categoria}
-                  </button>
                   <p className='flex gap-1 items-center text-gray-500 text-xs'>
                     <DollarSign size={12} /> R$ {servico.preco}
                   </p>

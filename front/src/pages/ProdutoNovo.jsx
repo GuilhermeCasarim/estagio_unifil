@@ -69,15 +69,6 @@ export const ProdutoNovo = () => {
             />
             {errors?.marca?.type == 'required' && <p className='text-red-500 text-sm'>Marca obrigatoria!</p>}
           </div>
-          <div className='flex flex-col gap-2'>
-            <label className='font-semibold'>Categoria</label>
-            <input
-              type='text'
-              placeholder='Categoria do produto'
-              {...register('categoria', { required: true })}
-            />
-            {errors?.categoria?.type == 'required' && <p className='text-red-500 text-sm'>Categoria obrigatoria!</p>}
-          </div>
         </div>
 
         <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>

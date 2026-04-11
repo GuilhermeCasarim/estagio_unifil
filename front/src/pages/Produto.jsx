@@ -40,10 +40,6 @@ export const Produto = () => {
             <strong>Marca:</strong> {produtoInfo.marca}
           </p>
 
-          <p className='flex items-center gap-2'>
-            <Package size={18} className='text-teal-600' />
-            <strong>Categoria:</strong> {produtoInfo.categoria}
-          </p>
         </div>
 
         <div className='border-t pt-4 space-y-2'>

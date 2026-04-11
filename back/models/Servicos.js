@@ -4,10 +4,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        categoria: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
         preco: {
             type: DataTypes.DECIMAL(5, 2),
             allowNull: false

@@ -103,15 +103,6 @@ export const ServicoNovo = () => {
 
         <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
           <div className='flex flex-col gap-2'>
-            <label className='font-semibold'>Categoria</label>
-            <input
-              type='text'
-              placeholder='Categoria do serviço'
-              {...register('categoria', { required: true })}
-            />
-            {errors?.categoria?.type == 'required' && <p className='text-red-500 text-sm'>Categoria obrigatoria!</p>}
-          </div>
-          <div className='flex flex-col gap-2'>
             <label className='font-semibold'>Preco</label>
             <input
               type='number'

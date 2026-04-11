@@ -89,12 +89,12 @@ class ServicoController {
 
     async update(req, res) {
         const idServico = req.params.id;
-        const { nome, categoria, preco, profissionais_ativos, duracao, produtos_utilizados } = req.body;
+        const { nome, preco, profissionais_ativos, duracao, produtos_utilizados } = req.body;
         try {
             const transaction = await Servicos.sequelize.transaction();
             try {
                 const [updated] = await Servicos.update(
-                    { nome, categoria, preco, profissionais_ativos, duracao },
+                    { nome, preco, profissionais_ativos, duracao },
                     { where: { id: idServico }, transaction }
                 );
 

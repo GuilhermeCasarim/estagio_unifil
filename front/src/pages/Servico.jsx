@@ -36,11 +36,6 @@ export const Servico = () => {
           <p className='flex items-center gap-2'><strong>Nome:</strong> {servicoInfo.nome}</p>
 
           <p className='flex items-center gap-2'>
-            <Tag size={18} className='text-gray-400' />
-            <strong>Categoria:</strong> {servicoInfo.categoria}
-          </p>
-
-          <p className='flex items-center gap-2'>
             <DollarSign size={18} className='text-teal-600' />
             <strong>Preco:</strong> R$ {servicoInfo.preco}
           </p>

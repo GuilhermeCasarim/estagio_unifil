@@ -48,10 +48,10 @@ class ProdutoController {
 
     async update(req, res) {
         const idProduto = req.params.id;
-        const { nome, marca, categoria, observacoes, estoque_minimo, estoque_atual } = req.body;
+        const { nome, marca, observacoes, estoque_minimo, estoque_atual } = req.body;
         try {
             const [updated] = await Produtos.update(
-                { nome, marca, categoria, observacoes, estoque_minimo, estoque_atual },
+                { nome, marca, observacoes, estoque_minimo, estoque_atual },
                 { where: { id: idProduto } }
             );
             

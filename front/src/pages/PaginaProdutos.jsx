@@ -132,9 +132,6 @@ export const PaginaProdutos = () => {
               <div className='info1 flex flex-col gap-2'>
                 <span className='font-bold'>{produto.nome}</span>
                 <div className='others-info flex gap-1 items-center'>
-                  <button className='bg-teal-400 text-white px-3 py-0.5 rounded-full hover:bg-teal-500 transition duration-300 text-xs'>
-                    {produto.categoria}
-                  </button>
                   <p className='flex gap-1 items-center text-gray-500 text-xs'>
                     <Tag size={12} /> {produto.marca}
                   </p>

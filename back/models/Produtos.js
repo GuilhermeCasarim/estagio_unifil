@@ -8,10 +8,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false
         },
-        categoria: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
         observacoes: {
             type: DataTypes.STRING,
             allowNull: true
