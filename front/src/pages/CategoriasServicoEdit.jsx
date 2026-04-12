@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { SquarePen, X } from 'lucide-react'
 import { toast } from 'react-toastify'
 
-export const CategoriaServicoEdit = () => {
+export const CategoriasServicoEdit = () => {
   const {
     register,
     handleSubmit,

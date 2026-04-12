@@ -5,7 +5,7 @@ import axios from 'axios'
 import { toast } from 'react-toastify'
 import Swal from 'sweetalert2'
 
-export const PaginaCategoriaServicos = () => {
+export const PaginaCategoriasServico = () => {
   const navigate = useNavigate()
   const [categorias, setCategorias] = useState([])
 

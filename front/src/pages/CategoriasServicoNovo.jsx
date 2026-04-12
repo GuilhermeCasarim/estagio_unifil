@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { Tag, X } from 'lucide-react'
 import { toast } from 'react-toastify'
 
-export const CategoriaServicoNovo = () => {
+export const CategoriasServicoNovo = () => {
   const {
     register,
     handleSubmit,

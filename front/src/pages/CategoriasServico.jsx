@@ -3,7 +3,7 @@ import { X, Tag } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 
-export const CategoriaServico = () => {
+export const CategoriasServico = () => {
   let { id } = useParams()
   const [categoriaInfo, setCategoriaInfo] = useState({})
   const navigate = useNavigate()
