@@ -15,6 +15,7 @@ export const ServicoNovo = () => {
   const navigate = useNavigate()
   const [produtos, setProdutos] = useState([])
   const [produtosSelecionados, setProdutosSelecionados] = useState({})
+  const [categorias, setCategorias] = useState([])
 
   useEffect(() => {
     axios.get('http://localhost:3001/produtos')
@@ -25,6 +26,18 @@ export const ServicoNovo = () => {
       .catch((error) => {
         console.error('Erro ao buscar produtos:', error)
         toast.error('Erro ao carregar produtos.')
+      })
+  }, [])
+
+  useEffect(() => {
+    axios.get('http://localhost:3001/categorias-servico')
+      .then((res) => {
+        const payload = Array.isArray(res.data) ? res.data : (res.data.data || [])
+        setCategorias(payload)
+      })
+      .catch((error) => {
+        console.error('Erro ao buscar categorias:', error)
+        toast.error('Erro ao carregar categorias.')
       })
   }, [])
 
@@ -58,6 +71,7 @@ export const ServicoNovo = () => {
   const onSubmit = (data) => {
     const payload = {
       ...data,
+      categoria_servico_id: Number(data.categoria_servico_id),
       preco: Number(data.preco),
       duracao: Number(data.duracao),
       produtos_utilizados: buildProdutosPayload()
@@ -112,6 +126,19 @@ export const ServicoNovo = () => {
               {...register('preco', { required: true, min: 0 })}
             />
             {errors?.preco?.type == 'required' && <p className='text-red-500 text-sm'>Preco obrigatorio!</p>}
+          </div>
+          <div className='flex flex-col gap-2'>
+            <label className='font-semibold'>Categoria</label>
+            <select
+              {...register('categoria_servico_id', { required: true })}
+              defaultValue=''
+            >
+              <option value='' disabled>Selecione</option>
+              {categorias.map((categoria) => (
+                <option key={categoria.id} value={categoria.id}>{categoria.nome}</option>
+              ))}
+            </select>
+            {errors?.categoria_servico_id?.type == 'required' && <p className='text-red-500 text-sm'>Categoria obrigatoria!</p>}
           </div>
         </div>
 

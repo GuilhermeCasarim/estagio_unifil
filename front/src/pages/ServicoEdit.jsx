@@ -17,6 +17,7 @@ export const ServicoEdit = () => {
   let { id } = useParams()
   const [produtos, setProdutos] = useState([])
   const [produtosSelecionados, setProdutosSelecionados] = useState({})
+  const [categorias, setCategorias] = useState([])
 
   useEffect(() => {
     axios.get(`http://localhost:3001/servicos/byId/${id}`)
@@ -51,6 +52,18 @@ export const ServicoEdit = () => {
       })
   }, [])
 
+  useEffect(() => {
+    axios.get('http://localhost:3001/categorias-servico')
+      .then((res) => {
+        const payload = Array.isArray(res.data) ? res.data : (res.data.data || [])
+        setCategorias(payload)
+      })
+      .catch((error) => {
+        console.error('Erro ao buscar categorias:', error)
+        toast.error('Erro ao carregar categorias.')
+      })
+  }, [])
+
   const handleProdutoToggle = (produtoId, checked) => {
     setProdutosSelecionados((prev) => ({
       ...prev,
@@ -81,6 +94,7 @@ export const ServicoEdit = () => {
   const onSubmit = (data) => {
     const payload = {
       ...data,
+      categoria_servico_id: Number(data.categoria_servico_id),
       preco: Number(data.preco),
       duracao: Number(data.duracao),
       produtos_utilizados: buildProdutosPayload()
@@ -140,6 +154,19 @@ export const ServicoEdit = () => {
               {...register('preco', { required: 'Preco obrigatorio', min: 0 })}
             />
             {errors.preco && <p className='text-red-500 text-sm'>{errors.preco.message}</p>}
+          </div>
+          <div className='flex flex-col gap-2'>
+            <label className='font-semibold'>Categoria</label>
+            <select
+              className={`border p-3 rounded-md outline-none ${errors.categoria_servico_id ? 'border-red-500' : 'border-gray-300'}`}
+              {...register('categoria_servico_id', { required: 'Categoria obrigatoria' })}
+            >
+              <option value=''>Selecione</option>
+              {categorias.map((categoria) => (
+                <option key={categoria.id} value={categoria.id}>{categoria.nome}</option>
+              ))}
+            </select>
+            {errors.categoria_servico_id && <p className='text-red-500 text-sm'>{errors.categoria_servico_id.message}</p>}
           </div>
         </div>
 

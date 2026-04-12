@@ -1,9 +1,14 @@
-const { Servicos, Produtos, ServicoProduto } = require('../models');
+const { Servicos, Produtos, ServicoProduto, CategoriasServico } = require('../models');
 
 class ServicoController {
     async getAll(req, res) {
         try {
             const servicos = await Servicos.findAll({
+                include: [{
+                    model: CategoriasServico,
+                    as: 'categoria',
+                    attributes: ['id', 'nome']
+                }],
                 order: [['nome', 'ASC']]
             });
 
@@ -28,12 +33,19 @@ class ServicoController {
         const id = req.params.id;
         try {
             const servico = await Servicos.findByPk(id, {
-                include: [{
-                    model: Produtos,
-                    through: {
-                        attributes: ['quant', 'data_hora']
+                include: [
+                    {
+                        model: CategoriasServico,
+                        as: 'categoria',
+                        attributes: ['id', 'nome']
+                    },
+                    {
+                        model: Produtos,
+                        through: {
+                            attributes: ['quant', 'data_hora']
+                        }
                     }
-                }]
+                ]
             });
             if (servico) {
                 return res.json(servico);
@@ -65,12 +77,19 @@ class ServicoController {
                 await transaction.commit();
 
                 const servicoCriado = await Servicos.findByPk(novoServico.id, {
-                    include: [{
-                        model: Produtos,
-                        through: {
-                            attributes: ['quant', 'data_hora']
+                    include: [
+                        {
+                            model: CategoriasServico,
+                            as: 'categoria',
+                            attributes: ['id', 'nome']
+                        },
+                        {
+                            model: Produtos,
+                            through: {
+                                attributes: ['quant', 'data_hora']
+                            }
                         }
-                    }]
+                    ]
                 });
 
                 return res.status(201).json(servicoCriado);
@@ -89,12 +108,12 @@ class ServicoController {
 
     async update(req, res) {
         const idServico = req.params.id;
-        const { nome, preco, profissionais_ativos, duracao, produtos_utilizados } = req.body;
+        const { nome, preco, profissionais_ativos, duracao, categoria_servico_id, produtos_utilizados } = req.body;
         try {
             const transaction = await Servicos.sequelize.transaction();
             try {
                 const [updated] = await Servicos.update(
-                    { nome, preco, profissionais_ativos, duracao },
+                    { nome, preco, profissionais_ativos, duracao, categoria_servico_id },
                     { where: { id: idServico }, transaction }
                 );
 

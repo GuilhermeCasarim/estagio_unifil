@@ -39,6 +39,10 @@ export const Servico = () => {
             <DollarSign size={18} className='text-teal-600' />
             <strong>Preco:</strong> R$ {servicoInfo.preco}
           </p>
+          <p className='flex items-center gap-2'>
+            <Tag size={18} className='text-teal-600' />
+            <strong>Categoria:</strong> {servicoInfo.categoria?.nome || '-'}
+          </p>
         </div>
 
         <div className='border-t pt-4 space-y-2'>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Scissors, Clock, Users, SquarePen, Trash2, DollarSign } from 'lucide-react'
+import { Scissors, Clock, Users, SquarePen, Trash2, DollarSign, Tag } from 'lucide-react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import Swal from 'sweetalert2'
@@ -63,12 +63,20 @@ export const PaginaServicos = () => {
           <p>Gestão de serviços</p>
           <p>Visualize e gerencie os serviços disponiveis</p>
         </div>
-        <button
-          className='bg-teal-400 text-white px-4 py-1 rounded-full hover:bg-teal-500 transition duration-300 cursor-pointer'
-          onClick={() => navigate('/servico/novo')}
-        >
-          Novo Serviço
-        </button>
+        <div className='flex items-center gap-3'>
+          <button
+            className='bg-sky-400 text-white px-4 py-1 rounded-full hover:bg-sky-500 transition duration-300 cursor-pointer'
+            onClick={() => navigate('/categorias-servico')}
+          >
+            Categorias
+          </button>
+          <button
+            className='bg-teal-400 text-white px-4 py-1 rounded-full hover:bg-teal-500 transition duration-300 cursor-pointer'
+            onClick={() => navigate('/servico/novo')}
+          >
+            Novo Serviço
+          </button>
+        </div>
       </div>
 
       <div className='bg-gray-200 rounded-xl p-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between'>
@@ -95,6 +103,11 @@ export const PaginaServicos = () => {
                   <p className='flex gap-1 items-center text-gray-500 text-xs'>
                     <DollarSign size={12} /> R$ {servico.preco}
                   </p>
+                  {servico.categoria?.nome && (
+                    <p className='flex gap-1 items-center text-gray-500 text-xs'>
+                      <Tag size={12} /> {servico.categoria.nome}
+                    </p>
+                  )}
                 </div>
               </div>
               <div className='buttons space-x-2 flex'>

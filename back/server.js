@@ -29,6 +29,9 @@ registerRouter('/produtos', produtosRouter) //caminho padrao começa com /produt
 const servicosRouter = require('./routes/Servicos')
 registerRouter('/servicos', servicosRouter) //caminho padrao começa com /servicos
 
+const categoriasServicoRouter = require('./routes/CategoriasServico')
+registerRouter('/categorias-servico', categoriasServicoRouter)
+
 const financeiroRouter = require('./routes/Financeiro')
 registerRouter('/financeiro', financeiroRouter) //caminho padrao começa com /financeiro
 
