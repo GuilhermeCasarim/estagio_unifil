@@ -8,6 +8,13 @@ export const Servico = () => {
   const [servicoInfo, setServicoInfo] = useState({})
   const navigate = useNavigate()
 
+  const getProfissionaisLabel = (servico) => {
+    const nomes = Array.isArray(servico.Profissionais)
+      ? servico.Profissionais.map((profissional) => profissional.nome).filter(Boolean)
+      : []
+    return nomes.length > 0 ? nomes.join(', ') : '-'
+  }
+
   useEffect(() => {
     axios.get(`http://localhost:3001/servicos/byId/${id}`).then((res) => {
       setServicoInfo(res.data)
@@ -52,7 +59,7 @@ export const Servico = () => {
           </p>
           <p className='flex items-center gap-2'>
             <Users size={18} className='text-teal-600' />
-            <strong>Profissionais ativos:</strong> {servicoInfo.profissionais_ativos}
+            <strong>Profissionais ativos:</strong> {getProfissionaisLabel(servicoInfo)}
           </p>
         </div>
 

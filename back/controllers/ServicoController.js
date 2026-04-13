@@ -1,4 +1,4 @@
-const { Servicos, Produtos, ServicoProduto, CategoriasServico } = require('../models');
+const { Servicos, Produtos, ServicoProduto, CategoriasServico, Profissionais, ProfissionaisServico } = require('../models');
 
 class ServicoController {
     async getAll(req, res) {
@@ -8,6 +8,12 @@ class ServicoController {
                     model: CategoriasServico,
                     as: 'categoria',
                     attributes: ['id', 'nome']
+                },
+                {
+                    model: Profissionais,
+                    through: {
+                        attributes: []
+                    }
                 }],
                 order: [['nome', 'ASC']]
             });
@@ -44,6 +50,12 @@ class ServicoController {
                         through: {
                             attributes: ['quant', 'data_hora']
                         }
+                    },
+                    {
+                        model: Profissionais,
+                        through: {
+                            attributes: []
+                        }
                     }
                 ]
             });
@@ -57,7 +69,13 @@ class ServicoController {
     }
 
     async create(req, res) {
-        const { produtos_utilizados, ...servico } = req.body;
+        const { produtos_utilizados, profissionais_ids, ...servico } = req.body;
+        const profissionaisIds = Array.isArray(profissionais_ids)
+            ? profissionais_ids.map((id) => Number(id)).filter((id) => Number.isInteger(id))
+            : [];
+        if (!servico.profissionais_ativos && profissionaisIds.length > 0) {
+            servico.profissionais_ativos = profissionaisIds.join(',');
+        }
         try {
             const transaction = await Servicos.sequelize.transaction();
             try {
@@ -74,6 +92,14 @@ class ServicoController {
                     await ServicoProduto.bulkCreate(itens, { transaction });
                 }
 
+                if (profissionaisIds.length > 0) {
+                    const vinculos = profissionaisIds.map((profissionalId) => ({
+                        servico_id: novoServico.id,
+                        profissional_id: profissionalId
+                    }));
+                    await ProfissionaisServico.bulkCreate(vinculos, { transaction });
+                }
+
                 await transaction.commit();
 
                 const servicoCriado = await Servicos.findByPk(novoServico.id, {
@@ -87,6 +113,12 @@ class ServicoController {
                             model: Produtos,
                             through: {
                                 attributes: ['quant', 'data_hora']
+                            }
+                        },
+                        {
+                            model: Profissionais,
+                            through: {
+                                attributes: []
                             }
                         }
                     ]
@@ -108,12 +140,18 @@ class ServicoController {
 
     async update(req, res) {
         const idServico = req.params.id;
-        const { nome, preco, profissionais_ativos, duracao, categoria_servico_id, produtos_utilizados } = req.body;
+        const { nome, preco, profissionais_ativos, duracao, categoria_servico_id, produtos_utilizados, profissionais_ids } = req.body;
+        const profissionaisIds = Array.isArray(profissionais_ids)
+            ? profissionais_ids.map((id) => Number(id)).filter((id) => Number.isInteger(id))
+            : null;
+        const profissionaisAtivosValue = profissionaisIds && profissionaisIds.length > 0 && !profissionais_ativos
+            ? profissionaisIds.join(',')
+            : profissionais_ativos;
         try {
             const transaction = await Servicos.sequelize.transaction();
             try {
                 const [updated] = await Servicos.update(
-                    { nome, preco, profissionais_ativos, duracao, categoria_servico_id },
+                    { nome, preco, profissionais_ativos: profissionaisAtivosValue, duracao, categoria_servico_id },
                     { where: { id: idServico }, transaction }
                 );
 
@@ -134,6 +172,18 @@ class ServicoController {
                         }));
 
                         await ServicoProduto.bulkCreate(itens, { transaction });
+                    }
+                }
+
+                if (Array.isArray(profissionaisIds)) {
+                    await ProfissionaisServico.destroy({ where: { servico_id: idServico }, transaction });
+
+                    if (profissionaisIds.length > 0) {
+                        const vinculos = profissionaisIds.map((profissionalId) => ({
+                            servico_id: idServico,
+                            profissional_id: profissionalId
+                        }));
+                        await ProfissionaisServico.bulkCreate(vinculos, { transaction });
                     }
                 }
 

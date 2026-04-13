@@ -9,13 +9,16 @@ export const ServicoNovo = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors }
+    formState: { errors },
+    setValue
   } = useForm()
 
   const navigate = useNavigate()
   const [produtos, setProdutos] = useState([])
   const [produtosSelecionados, setProdutosSelecionados] = useState({})
   const [categorias, setCategorias] = useState([])
+  const [profissionais, setProfissionais] = useState([])
+  const [profissionaisSelecionados, setProfissionaisSelecionados] = useState({})
 
   useEffect(() => {
     axios.get('http://localhost:3001/produtos')
@@ -41,6 +44,18 @@ export const ServicoNovo = () => {
       })
   }, [])
 
+  useEffect(() => {
+    axios.get('http://localhost:3001/profissionais?limit=1000')
+      .then((res) => {
+        const payload = Array.isArray(res.data) ? res.data : (res.data.profissionais || res.data.data || [])
+        setProfissionais(payload)
+      })
+      .catch((error) => {
+        console.error('Erro ao buscar profissionais:', error)
+        toast.error('Erro ao carregar profissionais.')
+      })
+  }, [])
+
   const handleProdutoToggle = (produtoId, checked) => {
     setProdutosSelecionados((prev) => ({
       ...prev,
@@ -61,6 +76,23 @@ export const ServicoNovo = () => {
     }))
   }
 
+  const buildProfissionaisIds = (selecionados) => Object.entries(selecionados)
+    .filter(([, checked]) => checked)
+    .map(([profissionalId]) => Number(profissionalId))
+    .filter((id) => Number.isInteger(id))
+
+  const handleProfissionalToggle = (profissionalId, checked) => {
+    setProfissionaisSelecionados((prev) => {
+      const next = {
+        ...prev,
+        [profissionalId]: checked
+      }
+      const ids = buildProfissionaisIds(next)
+      setValue('profissionais_ativos', ids.join(','), { shouldValidate: true })
+      return next
+    })
+  }
+
   const buildProdutosPayload = () => Object.entries(produtosSelecionados)
     .filter(([, item]) => item.checked)
     .map(([produtoId, item]) => ({
@@ -74,7 +106,8 @@ export const ServicoNovo = () => {
       categoria_servico_id: Number(data.categoria_servico_id),
       preco: Number(data.preco),
       duracao: Number(data.duracao),
-      produtos_utilizados: buildProdutosPayload()
+      produtos_utilizados: buildProdutosPayload(),
+      profissionais_ids: buildProfissionaisIds(profissionaisSelecionados)
     }
 
     axios.post('http://localhost:3001/servicos', payload)
@@ -153,14 +186,31 @@ export const ServicoNovo = () => {
             />
             {errors?.duracao?.type == 'required' && <p className='text-red-500 text-sm'>Duracao obrigatoria!</p>}
           </div>
-          <div className='flex flex-col gap-2'>
-            <label className='font-semibold'>Profissionais ativos</label>
-            <input
-              type='text'
-              placeholder='Ex: Joao, Maria'
-              {...register('profissionais_ativos', { required: true })}
-            />
-            {errors?.profissionais_ativos?.type == 'required' && <p className='text-red-500 text-sm'>Campo obrigatorio!</p>}
+        </div>
+
+        <div className='flex flex-col gap-4'>
+          <label className='font-semibold'>Profissionais ativos</label>
+          <input
+            type='hidden'
+            {...register('profissionais_ativos', {
+              validate: (value) => (value && value.split(',').filter(Boolean).length > 0) || 'Selecione pelo menos um profissional'
+            })}
+          />
+          {errors?.profissionais_ativos && <p className='text-red-500 text-sm'>{errors.profissionais_ativos.message}</p>}
+          <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+            {profissionais.map((profissional) => {
+              const selecionado = profissionaisSelecionados[profissional.id] ?? false
+              return (
+                <label key={profissional.id} className='flex items-center gap-2 border rounded-md p-3'>
+                  <input
+                    type='checkbox'
+                    checked={selecionado}
+                    onChange={(e) => handleProfissionalToggle(profissional.id, e.target.checked)}
+                  />
+                  <span>{profissional.nome}</span>
+                </label>
+              )
+            })}
           </div>
         </div>
 

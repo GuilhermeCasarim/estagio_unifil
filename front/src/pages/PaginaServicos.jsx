@@ -52,6 +52,13 @@ export const PaginaServicos = () => {
     navigate(`/servico/edit/${id}`)
   }
 
+  const getProfissionaisLabel = (servico) => {
+    const nomes = Array.isArray(servico.Profissionais)
+      ? servico.Profissionais.map((profissional) => profissional.nome).filter(Boolean)
+      : []
+    return nomes.length > 0 ? nomes.join(', ') : '-'
+  }
+
   return (
     <div className='space-y-8'>
       <div className='header border-b-2 border-gray-400 pb-2'>
@@ -139,7 +146,7 @@ export const PaginaServicos = () => {
               </p>
               <p className='flex gap-2 items-center'>
                 <Users size={16} className='text-gray-400' />
-                Profissionais: {servico.profissionais_ativos}
+                Profissionais: {getProfissionaisLabel(servico)}
               </p>
             </div>
           </div>

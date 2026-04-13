@@ -29,5 +29,12 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     })
+    Profissionais.associate = (models) => {
+        Profissionais.belongsToMany(models.Servicos, {
+            through: models.ProfissionaisServico,
+            foreignKey: 'profissional_id',
+            otherKey: 'servico_id'
+        });
+    };
     return Profissionais;
 }
