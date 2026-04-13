@@ -1,6 +1,6 @@
 const { CategoriasServico } = require('../models')
 
-class CategoriaServicoController {
+class CategoriasServicoController {
     async getAll(req, res) {
         try {
             const categorias = await CategoriasServico.findAll({
@@ -83,4 +83,4 @@ class CategoriaServicoController {
     }
 }
 
-module.exports = new CategoriaServicoController()
+module.exports = new CategoriasServicoController()

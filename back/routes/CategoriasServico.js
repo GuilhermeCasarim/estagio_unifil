@@ -1,15 +1,15 @@
 const express = require('express')
 const router = express.Router()
-const CategoriaServicoController = require('../controllers/CategoriaServicoController')
+const CategoriasServicoController = require('../controllers/CategoriasServicoController')
 module.exports = router
 
 // rota base: /categorias-servico
-router.get('/', CategoriaServicoController.getAll)
+router.get('/', CategoriasServicoController.getAll)
 
-router.get('/byId/:id', CategoriaServicoController.getById)
+router.get('/byId/:id', CategoriasServicoController.getById)
 
-router.post('/', CategoriaServicoController.create)
+router.post('/', CategoriasServicoController.create)
 
-router.patch('/update/:id', CategoriaServicoController.update)
+router.patch('/update/:id', CategoriasServicoController.update)
 
-router.delete('/delete/:id', CategoriaServicoController.delete)
+router.delete('/delete/:id', CategoriasServicoController.delete)

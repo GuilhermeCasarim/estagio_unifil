@@ -70,6 +70,11 @@ class ServicoController {
 
     async create(req, res) {
         const { produtos_utilizados, profissionais_ids, ...servico } = req.body;
+        if (!Array.isArray(produtos_utilizados) || produtos_utilizados.length === 0) {
+            return res.status(400).json({
+                error: 'Selecione ao menos um produto utilizado.'
+            });
+        }
         const profissionaisIds = Array.isArray(profissionais_ids)
             ? profissionais_ids.map((id) => Number(id)).filter((id) => Number.isInteger(id))
             : [];

@@ -10,7 +10,9 @@ export const ServicoNovo = () => {
     register,
     handleSubmit,
     formState: { errors },
-    setValue
+    setValue,
+    setError,
+    clearErrors
   } = useForm()
 
   const navigate = useNavigate()
@@ -57,13 +59,21 @@ export const ServicoNovo = () => {
   }, [])
 
   const handleProdutoToggle = (produtoId, checked) => {
-    setProdutosSelecionados((prev) => ({
-      ...prev,
-      [produtoId]: {
-        checked,
-        quant: prev[produtoId]?.quant ?? 1
+    setProdutosSelecionados((prev) => {
+      const next = {
+        ...prev,
+        [produtoId]: {
+          checked,
+          quant: prev[produtoId]?.quant ?? 1
+        }
       }
-    }))
+      const totalSelecionados = Object.values(next).filter((item) => item?.checked).length
+      setValue('produtos_utilizados', totalSelecionados, { shouldValidate: true })
+      if (totalSelecionados > 0) {
+        clearErrors('produtos_utilizados')
+      }
+      return next
+    })
   }
 
   const handleProdutoQuant = (produtoId, quant) => {
@@ -108,6 +118,14 @@ export const ServicoNovo = () => {
       duracao: Number(data.duracao),
       produtos_utilizados: buildProdutosPayload(),
       profissionais_ids: buildProfissionaisIds(profissionaisSelecionados)
+    }
+
+    if (payload.produtos_utilizados.length === 0) {
+      setError('produtos_utilizados', {
+        type: 'validate',
+        message: 'Selecione pelo menos um produto'
+      })
+      return
     }
 
     axios.post('http://localhost:3001/servicos', payload)
@@ -216,6 +234,13 @@ export const ServicoNovo = () => {
 
         <div className='flex flex-col gap-4'>
           <label className='font-semibold'>Produtos utilizados</label>
+          <input
+            type='hidden'
+            {...register('produtos_utilizados', {
+              validate: (value) => Number(value) > 0 || 'Selecione pelo menos um produto'
+            })}
+          />
+          {errors?.produtos_utilizados && <p className='text-red-500 text-sm'>{errors.produtos_utilizados.message}</p>}
           <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
             {produtos.map((produto) => {
               const selecionado = produtosSelecionados[produto.id]?.checked ?? false
