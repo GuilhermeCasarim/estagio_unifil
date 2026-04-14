@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
         }
     }, {
         freezeTableName: true,
-        tableName: 'ServicoProduto'
+        tableName: 'ServicosProduto'
     });
 
     ServicosProduto.associate = (models) => {
