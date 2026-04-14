@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
         },
         forma_pagamento: {
-            type: DataTypes.STRING,
+            type: DataTypes.ENUM('Dinheiro', 'Debito', 'Credito', 'Pix'),
             allowNull: false,
         },
         categoria: {

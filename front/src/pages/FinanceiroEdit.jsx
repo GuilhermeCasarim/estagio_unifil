@@ -114,11 +114,16 @@ export const FinanceiroEdit = () => {
           </div>
           <div className='flex flex-col gap-2'>
             <label className='font-semibold'>Forma de pagamento</label>
-            <input
-              type='text'
+            <select
               className={`border p-3 rounded-md outline-none ${errors.forma_pagamento ? 'border-red-500' : 'border-gray-300'}`}
               {...register('forma_pagamento', { required: 'Forma obrigatoria' })}
-            />
+            >
+              <option value=''>Selecione</option>
+              <option value='Dinheiro'>Dinheiro</option>
+              <option value='Debito'>Debito</option>
+              <option value='Credito'>Credito</option>
+              <option value='Pix'>Pix</option>
+            </select>
             {errors.forma_pagamento && <p className='text-red-500 text-sm'>{errors.forma_pagamento.message}</p>}
           </div>
         </div>

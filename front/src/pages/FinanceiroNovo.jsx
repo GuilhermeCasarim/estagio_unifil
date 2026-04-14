@@ -93,11 +93,13 @@ export const FinanceiroNovo = () => {
           </div>
           <div className='flex flex-col gap-2'>
             <label className='font-semibold'>Forma de pagamento</label>
-            <input
-              type='text'
-              placeholder='Ex: Cartao, Pix, Dinheiro'
-              {...register('forma_pagamento', { required: true })}
-            />
+            <select className='border p-3 rounded-md' {...register('forma_pagamento', { required: true })}>
+              <option value=''>Selecione</option>
+              <option value='Dinheiro'>Dinheiro</option>
+              <option value='Debito'>Debito</option>
+              <option value='Credito'>Credito</option>
+              <option value='Pix'>Pix</option>
+            </select>
             {errors?.forma_pagamento?.type == 'required' && <p className='text-red-500 text-sm'>Forma obrigatoria!</p>}
           </div>
         </div>
