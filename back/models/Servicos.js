@@ -12,10 +12,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DECIMAL(5, 2),
             allowNull: false
         },
-        profissionais_ativos: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
         duracao: {
             type: DataTypes.INTEGER,
             allowNull: false

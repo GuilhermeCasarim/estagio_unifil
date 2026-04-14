@@ -78,9 +78,6 @@ class ServicoController {
         const profissionaisIds = Array.isArray(profissionais_ids)
             ? profissionais_ids.map((id) => Number(id)).filter((id) => Number.isInteger(id))
             : [];
-        if (!servico.profissionais_ativos && profissionaisIds.length > 0) {
-            servico.profissionais_ativos = profissionaisIds.join(',');
-        }
         try {
             const transaction = await Servicos.sequelize.transaction();
             try {
@@ -145,18 +142,15 @@ class ServicoController {
 
     async update(req, res) {
         const idServico = req.params.id;
-        const { nome, preco, profissionais_ativos, duracao, categoria_servico_id, produtos_utilizados, profissionais_ids } = req.body;
+        const { nome, preco, duracao, categoria_servico_id, produtos_utilizados, profissionais_ids } = req.body;
         const profissionaisIds = Array.isArray(profissionais_ids)
             ? profissionais_ids.map((id) => Number(id)).filter((id) => Number.isInteger(id))
             : null;
-        const profissionaisAtivosValue = profissionaisIds && profissionaisIds.length > 0 && !profissionais_ativos
-            ? profissionaisIds.join(',')
-            : profissionais_ativos;
         try {
             const transaction = await Servicos.sequelize.transaction();
             try {
                 const [updated] = await Servicos.update(
-                    { nome, preco, profissionais_ativos: profissionaisAtivosValue, duracao, categoria_servico_id },
+                    { nome, preco, duracao, categoria_servico_id },
                     { where: { id: idServico }, transaction }
                 );
 
