@@ -1,4 +1,4 @@
-const { Servicos, Produtos, ServicoProduto, CategoriasServico, Profissionais, ProfissionaisServico } = require('../models');
+const { Servicos, Produtos, ServicosProduto, CategoriasServico, Profissionais, ProfissionaisServico } = require('../models');
 
 class ServicoController {
     async getAll(req, res) {
@@ -94,7 +94,7 @@ class ServicoController {
                         data_hora: item.data_hora ?? new Date()
                     }));
 
-                    await ServicoProduto.bulkCreate(itens, { transaction });
+                    await ServicosProduto.bulkCreate(itens, { transaction });
                 }
 
                 if (profissionaisIds.length > 0) {
@@ -166,7 +166,7 @@ class ServicoController {
                 }
 
                 if (Array.isArray(produtos_utilizados)) {
-                    await ServicoProduto.destroy({ where: { servico_id: idServico }, transaction });
+                    await ServicosProduto.destroy({ where: { servico_id: idServico }, transaction });
 
                     if (produtos_utilizados.length > 0) {
                         const itens = produtos_utilizados.map((item) => ({
@@ -176,7 +176,7 @@ class ServicoController {
                             data_hora: item.data_hora ?? new Date()
                         }));
 
-                        await ServicoProduto.bulkCreate(itens, { transaction });
+                        await ServicosProduto.bulkCreate(itens, { transaction });
                     }
                 }
 

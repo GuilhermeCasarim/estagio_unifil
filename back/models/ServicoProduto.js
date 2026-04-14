@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    const ServicoProduto = sequelize.define('ServicoProduto', {
+    const ServicosProduto = sequelize.define('ServicosProduto', {
         servico_id: {
             type: DataTypes.INTEGER,
             allowNull: false
@@ -23,10 +23,10 @@ module.exports = (sequelize, DataTypes) => {
         tableName: 'ServicoProduto'
     });
 
-    ServicoProduto.associate = (models) => {
-        ServicoProduto.belongsTo(models.Servicos, { foreignKey: 'servico_id' });
-        ServicoProduto.belongsTo(models.Produtos, { foreignKey: 'produto_id' });
+    ServicosProduto.associate = (models) => {
+        ServicosProduto.belongsTo(models.Servicos, { foreignKey: 'servico_id' });
+        ServicosProduto.belongsTo(models.Produtos, { foreignKey: 'produto_id' });
     };
 
-    return ServicoProduto;
+    return ServicosProduto;
 };

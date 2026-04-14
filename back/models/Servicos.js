@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
             as: 'categoria'
         })
         Servicos.belongsToMany(models.Produtos, {
-            through: models.ServicoProduto,
+            through: models.ServicosProduto,
             foreignKey: 'servico_id',
             otherKey: 'produto_id'
         });
