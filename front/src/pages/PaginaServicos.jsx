@@ -77,6 +77,12 @@ export const PaginaServicos = () => {
           >
             Categorias
           </button>
+            <button
+              className='bg-indigo-400 text-white px-4 py-1 rounded-full hover:bg-indigo-500 transition duration-300 cursor-pointer'
+              onClick={() => navigate('/nomes-servico')}
+            >
+              Nome do servico
+            </button>
           <button
             className='bg-teal-400 text-white px-4 py-1 rounded-full hover:bg-teal-500 transition duration-300 cursor-pointer'
             onClick={() => navigate('/servico/novo')}
@@ -105,7 +111,7 @@ export const PaginaServicos = () => {
           >
             <div className='card-header flex justify-between items-center'>
               <div className='info1 flex flex-col gap-2'>
-                <span className='font-bold'>{servico.nome}</span>
+                <span className='font-bold'>{servico.nome_servico?.nome || '-'}</span>
                 <div className='others-info flex gap-1 items-center'>
                   <p className='flex gap-1 items-center text-gray-500 text-xs'>
                     <DollarSign size={12} /> R$ {servico.preco}

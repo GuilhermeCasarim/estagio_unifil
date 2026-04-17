@@ -1,8 +1,8 @@
 module.exports = (sequelize, DataTypes) => {
     const Servicos = sequelize.define('Servicos', { //nome tabela
-        nome: {
-            type: DataTypes.STRING,
-            allowNull: false,
+        nome_servico_id: {
+            type: DataTypes.INTEGER,
+            allowNull: true
         },
         categoria_servico_id: {
             type: DataTypes.INTEGER,
@@ -20,6 +20,10 @@ module.exports = (sequelize, DataTypes) => {
     })
 
     Servicos.associate = (models) => {
+        Servicos.belongsTo(models.NomesServico, {
+            foreignKey: 'nome_servico_id',
+            as: 'nome_servico'
+        })
         Servicos.belongsTo(models.CategoriasServico, {
             foreignKey: 'categoria_servico_id',
             as: 'categoria'

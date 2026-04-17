@@ -25,6 +25,10 @@ import { PaginaCategoriasServico } from '../pages/PaginaCategoriasServico'
 import { CategoriasServicoNovo } from '../pages/CategoriasServicoNovo'
 import { CategoriasServico } from '../pages/CategoriasServico'
 import { CategoriasServicoEdit } from '../pages/CategoriasServicoEdit'
+import { PaginaNomesServico } from '../pages/PaginaNomesServico'
+import { NomesServicoNovo } from '../pages/NomesServicoNovo'
+import { NomesServico } from '../pages/NomesServico'
+import { NomesServicoEdit } from '../pages/NomesServicoEdit'
 import { PaginaFinanceiro } from '../pages/PaginaFinanceiro'
 import { FinanceiroNovo } from '../pages/FinanceiroNovo'
 import { Financeiro } from '../pages/Financeiro'
@@ -63,6 +67,10 @@ export const MainLayout = () => {
           <Route path='/categoria-servico/novo' element={<CategoriasServicoNovo />} />
           <Route path='/categoria-servico/:id' element={<CategoriasServico />} />
           <Route path='/categoria-servico/edit/:id' element={<CategoriasServicoEdit />} />
+          <Route path='/nomes-servico' element={<PaginaNomesServico />} />
+          <Route path='/nome-servico/novo' element={<NomesServicoNovo />} />
+          <Route path='/nome-servico/:id' element={<NomesServico />} />
+          <Route path='/nome-servico/edit/:id' element={<NomesServicoEdit />} />
           <Route path='/financeiro' element={<PaginaFinanceiro />} />
           <Route path='/financeiro/novo' element={<FinanceiroNovo />} />
           <Route path='/financeiro/:id' element={<Financeiro />} />

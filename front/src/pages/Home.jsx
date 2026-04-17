@@ -38,11 +38,11 @@ export const Home = () => {
 
                 <div className="cliente flex flex-col space-y-4 bg-blue-300 rounded p-2 w-[40%]">
                     <div className='flex justify-center space-x-8'>
-                        <p>Roberto Carlos</p>
-                        <p>09:00</p>
+                        <p>Dwight Manfredi</p>
+                        <p>16:00</p>
                         <p>Status: Confirmado</p>
                     </div>
-                    <p className='text-center'>Barba | Carlos Gaiva</p>
+                    <p className='text-center'>Cabelo masculino | Carlos Gaiva</p>
                 </div>
 
             </div>

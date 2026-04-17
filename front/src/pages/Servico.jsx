@@ -40,7 +40,7 @@ export const Servico = () => {
       <div className='info p-6 space-y-6 text-gray-700'>
         <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
           <p className='flex items-center gap-2'><strong>ID:</strong> {servicoInfo.id}</p>
-          <p className='flex items-center gap-2'><strong>Nome:</strong> {servicoInfo.nome}</p>
+          <p className='flex items-center gap-2'><strong>Nome:</strong> {servicoInfo.nome_servico?.nome || '-'}</p>
 
           <p className='flex items-center gap-2'>
             <DollarSign size={18} className='text-teal-600' />

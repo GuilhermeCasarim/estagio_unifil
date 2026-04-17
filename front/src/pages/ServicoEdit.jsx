@@ -19,6 +19,7 @@ export const ServicoEdit = () => {
   const [produtos, setProdutos] = useState([])
   const [produtosSelecionados, setProdutosSelecionados] = useState({})
   const [categorias, setCategorias] = useState([])
+  const [nomesServico, setNomesServico] = useState([])
   const [profissionais, setProfissionais] = useState([])
   const [profissionaisSelecionados, setProfissionaisSelecionados] = useState({})
 
@@ -72,6 +73,18 @@ export const ServicoEdit = () => {
       .catch((error) => {
         console.error('Erro ao buscar categorias:', error)
         toast.error('Erro ao carregar categorias.')
+      })
+  }, [])
+
+  useEffect(() => {
+    axios.get('http://localhost:3001/nomes-servico')
+      .then((res) => {
+        const payload = Array.isArray(res.data) ? res.data : (res.data.data || [])
+        setNomesServico(payload)
+      })
+      .catch((error) => {
+        console.error('Erro ao buscar nomes de servico:', error)
+        toast.error('Erro ao carregar nomes de servico.')
       })
   }, [])
 
@@ -175,13 +188,17 @@ export const ServicoEdit = () => {
 
       <form onSubmit={handleSubmit(onSubmit, onInvalid)} className='flex flex-col space-y-6'>
         <div className='flex flex-col gap-2'>
-          <label className='font-semibold'>Nome</label>
-          <input
-            type='text'
-            className={`border p-3 rounded-md outline-none ${errors.nome ? 'border-red-500' : 'border-gray-300 focus:border-teal-500'}`}
-            {...register('nome', { required: 'Nome obrigatorio' })}
-          />
-          {errors.nome && <p className='text-red-500 text-sm'>{errors.nome.message}</p>}
+          <label className='font-semibold'>Nome do servico</label>
+          <select
+            className={`border p-3 rounded-md outline-none ${errors.nome_servico_id ? 'border-red-500' : 'border-gray-300 focus:border-teal-500'}`}
+            {...register('nome_servico_id', { required: 'Nome obrigatorio' })}
+          >
+            <option value=''>Selecione</option>
+            {nomesServico.map((nome) => (
+              <option key={nome.id} value={nome.id}>{nome.nome}</option>
+            ))}
+          </select>
+          {errors.nome_servico_id && <p className='text-red-500 text-sm'>{errors.nome_servico_id.message}</p>}
         </div>
 
         <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>

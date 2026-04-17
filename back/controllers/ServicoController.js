@@ -1,10 +1,15 @@
-const { Servicos, Produtos, ServicosProduto, CategoriasServico, Profissionais, ProfissionaisServico } = require('../models');
+const { Servicos, Produtos, ServicosProduto, CategoriasServico, NomesServico, Profissionais, ProfissionaisServico } = require('../models');
 
 class ServicoController {
     async getAll(req, res) {
         try {
             const servicos = await Servicos.findAll({
                 include: [{
+                    model: NomesServico,
+                    as: 'nome_servico',
+                    attributes: ['id', 'nome']
+                },
+                {
                     model: CategoriasServico,
                     as: 'categoria',
                     attributes: ['id', 'nome']
@@ -15,7 +20,7 @@ class ServicoController {
                         attributes: []
                     }
                 }],
-                order: [['nome', 'ASC']]
+                order: [[{ model: NomesServico, as: 'nome_servico' }, 'nome', 'ASC']]
             });
 
             if (servicos.length === 0) {
@@ -40,6 +45,11 @@ class ServicoController {
         try {
             const servico = await Servicos.findByPk(id, {
                 include: [
+                    {
+                        model: NomesServico,
+                        as: 'nome_servico',
+                        attributes: ['id', 'nome']
+                    },
                     {
                         model: CategoriasServico,
                         as: 'categoria',
@@ -70,6 +80,9 @@ class ServicoController {
 
     async create(req, res) {
         const { produtos_utilizados, profissionais_ids, ...servico } = req.body;
+        if (servico.nome_servico_id !== undefined) {
+            servico.nome_servico_id = Number(servico.nome_servico_id) || null;
+        }
         if (!Array.isArray(produtos_utilizados) || produtos_utilizados.length === 0) {
             return res.status(400).json({
                 error: 'Selecione ao menos um produto utilizado.'
@@ -107,6 +120,11 @@ class ServicoController {
                 const servicoCriado = await Servicos.findByPk(novoServico.id, {
                     include: [
                         {
+                            model: NomesServico,
+                            as: 'nome_servico',
+                            attributes: ['id', 'nome']
+                        },
+                        {
                             model: CategoriasServico,
                             as: 'categoria',
                             attributes: ['id', 'nome']
@@ -142,7 +160,7 @@ class ServicoController {
 
     async update(req, res) {
         const idServico = req.params.id;
-        const { nome, preco, duracao, categoria_servico_id, produtos_utilizados, profissionais_ids } = req.body;
+        const { nome_servico_id, preco, duracao, categoria_servico_id, produtos_utilizados, profissionais_ids } = req.body;
         const profissionaisIds = Array.isArray(profissionais_ids)
             ? profissionais_ids.map((id) => Number(id)).filter((id) => Number.isInteger(id))
             : null;
@@ -150,7 +168,12 @@ class ServicoController {
             const transaction = await Servicos.sequelize.transaction();
             try {
                 const [updated] = await Servicos.update(
-                    { nome, preco, duracao, categoria_servico_id },
+                    {
+                        nome_servico_id: nome_servico_id !== undefined ? Number(nome_servico_id) || null : null,
+                        preco,
+                        duracao,
+                        categoria_servico_id
+                    },
                     { where: { id: idServico }, transaction }
                 );
 

@@ -19,6 +19,7 @@ export const ServicoNovo = () => {
   const [produtos, setProdutos] = useState([])
   const [produtosSelecionados, setProdutosSelecionados] = useState({})
   const [categorias, setCategorias] = useState([])
+  const [nomesServico, setNomesServico] = useState([])
   const [profissionais, setProfissionais] = useState([])
   const [profissionaisSelecionados, setProfissionaisSelecionados] = useState({})
 
@@ -43,6 +44,18 @@ export const ServicoNovo = () => {
       .catch((error) => {
         console.error('Erro ao buscar categorias:', error)
         toast.error('Erro ao carregar categorias.')
+      })
+  }, [])
+
+  useEffect(() => {
+    axios.get('http://localhost:3001/nomes-servico')
+      .then((res) => {
+        const payload = Array.isArray(res.data) ? res.data : (res.data.data || [])
+        setNomesServico(payload)
+      })
+      .catch((error) => {
+        console.error('Erro ao buscar nomes de servico:', error)
+        toast.error('Erro ao carregar nomes de servico.')
       })
   }, [])
 
@@ -157,13 +170,17 @@ export const ServicoNovo = () => {
 
       <form onSubmit={handleSubmit(onSubmit, onInvalid)} className='flex flex-col space-y-6 max-w-4xl bg-white p-8 rounded-lg shadow-sm mx-auto w-full'>
         <div className='flex flex-col gap-2'>
-          <label className='font-semibold'>Nome</label>
-          <input
-            type='text'
-            placeholder='Nome do serviço'
-            {...register('nome', { required: true })}
-          />
-          {errors?.nome?.type == 'required' && <p className='text-red-500 text-sm'>Nome obrigatorio!</p>}
+          <label className='font-semibold'>Nome do servico</label>
+          <select
+            {...register('nome_servico_id', { required: true })}
+            defaultValue=''
+          >
+            <option value='' disabled>Selecione</option>
+            {nomesServico.map((nome) => (
+              <option key={nome.id} value={nome.id}>{nome.nome}</option>
+            ))}
+          </select>
+          {errors?.nome_servico_id?.type == 'required' && <p className='text-red-500 text-sm'>Nome obrigatorio!</p>}
         </div>
 
         <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
