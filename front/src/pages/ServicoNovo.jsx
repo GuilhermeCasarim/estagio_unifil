@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
@@ -9,7 +9,7 @@ export const ServicoNovo = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, submitCount },
     setValue,
     setError,
     clearErrors
@@ -22,6 +22,7 @@ export const ServicoNovo = () => {
   const [nomesServico, setNomesServico] = useState([])
   const [profissionais, setProfissionais] = useState([])
   const [profissionaisSelecionados, setProfissionaisSelecionados] = useState({})
+  const [nomeServicoSelecionado, setNomeServicoSelecionado] = useState('')
 
   useEffect(() => {
     axios.get('http://localhost:3001/produtos')
@@ -104,6 +105,48 @@ export const ServicoNovo = () => {
     .map(([profissionalId]) => Number(profissionalId))
     .filter((id) => Number.isInteger(id))
 
+  const profissionalTemEspecialidade = (profissional, nomeId) => {
+    const id = Number(nomeId)
+    if (!id) return false
+    return Array.isArray(profissional.NomesServicos) && profissional.NomesServicos.some((nome) => {
+      return Number(nome?.id) === id
+    })
+  }
+
+  const profissionaisFiltrados = useMemo(() => (
+    nomeServicoSelecionado
+      ? profissionais.filter((profissional) => profissionalTemEspecialidade(profissional, nomeServicoSelecionado))
+      : []
+  ), [nomeServicoSelecionado, profissionais])
+
+  useEffect(() => {
+    if (!nomeServicoSelecionado) {
+      setProfissionaisSelecionados({})
+      setValue('profissionais_ativos', '', { shouldValidate: false })
+      return
+    }
+
+    const permitidos = new Set(profissionaisFiltrados.map((profissional) => profissional.id))
+    setProfissionaisSelecionados((prev) => {
+      const next = {}
+      Object.entries(prev).forEach(([profissionalId, checked]) => {
+        if (checked && permitidos.has(Number(profissionalId))) {
+          next[profissionalId] = true
+        }
+      })
+      const nextKeys = Object.keys(next)
+      const prevKeys = Object.entries(prev)
+        .filter(([, checked]) => checked)
+        .map(([profissionalId]) => profissionalId)
+        .filter((profissionalId) => permitidos.has(Number(profissionalId)))
+      if (nextKeys.length === prevKeys.length && nextKeys.every((key) => prevKeys.includes(key))) {
+        return prev
+      }
+      setValue('profissionais_ativos', nextKeys.join(','), { shouldValidate: false })
+      return next
+    })
+  }, [nomeServicoSelecionado, profissionaisFiltrados, setValue])
+
   const handleProfissionalToggle = (profissionalId, checked) => {
     setProfissionaisSelecionados((prev) => {
       const next = {
@@ -111,7 +154,10 @@ export const ServicoNovo = () => {
         [profissionalId]: checked
       }
       const ids = buildProfissionaisIds(next)
-      setValue('profissionais_ativos', ids.join(','), { shouldValidate: true })
+      setValue('profissionais_ativos', ids.join(','), { shouldValidate: false })
+      if (ids.length > 0) {
+        clearErrors('profissionais_ativos')
+      }
       return next
     })
   }
@@ -172,7 +218,12 @@ export const ServicoNovo = () => {
         <div className='flex flex-col gap-2'>
           <label className='font-semibold'>Nome do servico</label>
           <select
-            {...register('nome_servico_id', { required: true })}
+            {...register('nome_servico_id', {
+              required: true,
+              onChange: (event) => {
+                setNomeServicoSelecionado(event.target.value)
+              }
+            })}
             defaultValue=''
           >
             <option value='' disabled>Selecione</option>
@@ -225,15 +276,16 @@ export const ServicoNovo = () => {
 
         <div className='flex flex-col gap-4'>
           <label className='font-semibold'>Profissionais ativos</label>
-          <input
-            type='hidden'
-            {...register('profissionais_ativos', {
-              validate: (value) => (value && value.split(',').filter(Boolean).length > 0) || 'Selecione pelo menos um profissional'
-            })}
-          />
-          {errors?.profissionais_ativos && <p className='text-red-500 text-sm'>{errors.profissionais_ativos.message}</p>}
+          <input type='hidden' {...register('profissionais_ativos')} />
           <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-            {profissionais.map((profissional) => {
+            {profissionaisFiltrados.length === 0 && (
+              <p className='text-gray-500 text-sm'>
+                {nomeServicoSelecionado
+                  ? 'Nenhum profissional com essa especialidade.'
+                  : 'Selecione um nome de servico para ver profissionais disponiveis.'}
+              </p>
+            )}
+            {profissionaisFiltrados.map((profissional) => {
               const selecionado = profissionaisSelecionados[profissional.id] ?? false
               return (
                 <label key={profissional.id} className='flex items-center gap-2 border rounded-md p-3'>

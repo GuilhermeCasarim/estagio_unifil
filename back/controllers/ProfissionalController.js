@@ -1,4 +1,4 @@
-const { Profissionais, Servicos, ProfissionaisServico, NomesServico } = require('../models')
+const { Profissionais, NomesServico, ProfissionaisNomesServico } = require('../models')
 const { Op } = require('sequelize');
 
 class ProfissionalController {
@@ -30,15 +30,9 @@ class ProfissionalController {
                 distinct: true,
                 include: [
                     {
-                        model: Servicos,
+                        model: NomesServico,
                         through: { attributes: [] },
-                        include: [
-                            {
-                                model: NomesServico,
-                                as: 'nome_servico',
-                                attributes: ['id', 'nome']
-                            }
-                        ]
+                        attributes: ['id', 'nome']
                     }
                 ],
                 order: [['nome', 'ASC']]
@@ -66,15 +60,9 @@ class ProfissionalController {
             const profissional = await Profissionais.findByPk(id, {
                 include: [
                     {
-                        model: Servicos,
+                        model: NomesServico,
                         through: { attributes: [] },
-                        include: [
-                            {
-                                model: NomesServico,
-                                as: 'nome_servico',
-                                attributes: ['id', 'nome']
-                            }
-                        ]
+                        attributes: ['id', 'nome']
                     }
                 ]
             })
@@ -107,18 +95,6 @@ class ProfissionalController {
                 return res.status(400).json({ error: 'Alguns nomes de servico nao foram encontrados.' })
             }
 
-            const servicos = await Servicos.findAll({
-                where: { nome_servico_id: { [Op.in]: nomesUnicos } },
-                attributes: ['id', 'nome_servico_id']
-            })
-
-            const nomesSemServico = nomesUnicos.filter((id) => !servicos.some((servico) => servico.nome_servico_id === id))
-            if (nomesSemServico.length > 0) {
-                return res.status(400).json({
-                    error: 'Crie um servico para todos os nomes selecionados antes de vincular ao profissional.'
-                })
-            }
-
             const transaction = await Profissionais.sequelize.transaction()
             try {
                 const especialidades = nomes.map((nome) => nome.nome).join(', ')
@@ -127,26 +103,20 @@ class ProfissionalController {
                     { transaction }
                 )
 
-                const vinculos = servicos.map((servico) => ({
-                    servico_id: servico.id,
+                const vinculos = nomesUnicos.map((nomeId) => ({
+                    nome_servico_id: nomeId,
                     profissional_id: novoProfissional.id
                 }))
-                await ProfissionaisServico.bulkCreate(vinculos, { transaction })
+                await ProfissionaisNomesServico.bulkCreate(vinculos, { transaction })
 
                 await transaction.commit()
 
                 const profissionalCriado = await Profissionais.findByPk(novoProfissional.id, {
                     include: [
                         {
-                            model: Servicos,
+                            model: NomesServico,
                             through: { attributes: [] },
-                            include: [
-                                {
-                                    model: NomesServico,
-                                    as: 'nome_servico',
-                                    attributes: ['id', 'nome']
-                                }
-                            ]
+                            attributes: ['id', 'nome']
                         }
                     ]
                 })
@@ -182,18 +152,6 @@ class ProfissionalController {
                 return res.status(400).json({ error: 'Alguns nomes de servico nao foram encontrados.' })
             }
 
-            const servicos = await Servicos.findAll({
-                where: { nome_servico_id: { [Op.in]: nomesUnicos } },
-                attributes: ['id', 'nome_servico_id']
-            })
-
-            const nomesSemServico = nomesUnicos.filter((id) => !servicos.some((servico) => servico.nome_servico_id === id))
-            if (nomesSemServico.length > 0) {
-                return res.status(400).json({
-                    error: 'Crie um servico para todos os nomes selecionados antes de vincular ao profissional.'
-                })
-            }
-
             const transaction = await Profissionais.sequelize.transaction()
             try {
                 const especialidades = nomes.map((nome) => nome.nome).join(', ')
@@ -202,13 +160,13 @@ class ProfissionalController {
                     { where: { id: idProfissional }, transaction }
                 )
 
-                await ProfissionaisServico.destroy({ where: { profissional_id: idProfissional }, transaction })
+                await ProfissionaisNomesServico.destroy({ where: { profissional_id: idProfissional }, transaction })
 
-                const vinculos = servicos.map((servico) => ({
-                    servico_id: servico.id,
+                const vinculos = nomesUnicos.map((nomeId) => ({
+                    nome_servico_id: nomeId,
                     profissional_id: idProfissional
                 }))
-                await ProfissionaisServico.bulkCreate(vinculos, { transaction })
+                await ProfissionaisNomesServico.bulkCreate(vinculos, { transaction })
 
                 await transaction.commit()
                 res.json('Profissional atualizado')

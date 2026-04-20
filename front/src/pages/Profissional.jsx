@@ -12,8 +12,8 @@ export const Profissional = () => {
   const navigate = useNavigate();
 
   const getEspecialidadesLabel = (profissional) => {
-    const nomes = Array.isArray(profissional.Servicos)
-      ? profissional.Servicos.map((servico) => servico?.nome_servico?.nome).filter(Boolean)
+    const nomes = Array.isArray(profissional.NomesServicos)
+      ? profissional.NomesServicos.map((nome) => nome?.nome).filter(Boolean)
       : []
     const unicos = [...new Set(nomes)]
     if (unicos.length > 0) {

@@ -33,12 +33,10 @@ export const ProfissionalEdit = () => {
                 // Aplica a máscara no telefone que vem do banco (sem máscara) antes de resetar o form
                 const data = res.data;
                 const nomesIds = new Set()
-                if (Array.isArray(data.Servicos)) {
-                    data.Servicos.forEach((servico) => {
-                        if (servico.nome_servico_id) {
-                            nomesIds.add(servico.nome_servico_id)
-                        } else if (servico.nome_servico && servico.nome_servico.id) {
-                            nomesIds.add(servico.nome_servico.id)
+                if (Array.isArray(data.NomesServicos)) {
+                    data.NomesServicos.forEach((nome) => {
+                        if (nome?.id) {
+                            nomesIds.add(nome.id)
                         }
                     })
                 }

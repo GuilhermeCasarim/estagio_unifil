@@ -1,4 +1,32 @@
 const { Servicos, Produtos, ServicosProduto, CategoriasServico, NomesServico, Profissionais, ProfissionaisServico } = require('../models');
+const { Op } = require('sequelize');
+
+const obterProfissionaisInvalidos = async (profissionaisIds, nomeServicoId) => {
+    if (!Array.isArray(profissionaisIds) || profissionaisIds.length === 0) {
+        return [];
+    }
+    const nomeId = Number(nomeServicoId) || null;
+    if (!nomeId) {
+        return profissionaisIds;
+    }
+
+    const profissionaisValidos = await Profissionais.findAll({
+        where: { id: { [Op.in]: profissionaisIds } },
+        attributes: ['id'],
+        include: [
+            {
+                model: NomesServico,
+                required: true,
+                attributes: ['id'],
+                through: { attributes: [] },
+                where: { id: nomeId }
+            }
+        ]
+    });
+
+    const validosSet = new Set(profissionaisValidos.map((prof) => prof.id));
+    return profissionaisIds.filter((id) => !validosSet.has(id));
+};
 
 class ServicoController {
     async getAll(req, res) {
@@ -92,6 +120,13 @@ class ServicoController {
             ? profissionais_ids.map((id) => Number(id)).filter((id) => Number.isInteger(id))
             : [];
         try {
+            const invalidos = await obterProfissionaisInvalidos(profissionaisIds, servico.nome_servico_id);
+            if (invalidos.length > 0) {
+                return res.status(400).json({
+                    error: 'Selecione apenas profissionais que possuam a especialidade do servico.'
+                });
+            }
+
             const transaction = await Servicos.sequelize.transaction();
             try {
                 const novoServico = await Servicos.create(servico, { transaction });
@@ -165,6 +200,23 @@ class ServicoController {
             ? profissionais_ids.map((id) => Number(id)).filter((id) => Number.isInteger(id))
             : null;
         try {
+            let nomeServicoIdAtual = null;
+            if (nome_servico_id !== undefined) {
+                nomeServicoIdAtual = Number(nome_servico_id) || null;
+            } else {
+                const servicoAtual = await Servicos.findByPk(idServico, { attributes: ['nome_servico_id'] });
+                nomeServicoIdAtual = servicoAtual?.nome_servico_id ?? null;
+            }
+
+            if (Array.isArray(profissionaisIds)) {
+                const invalidos = await obterProfissionaisInvalidos(profissionaisIds, nomeServicoIdAtual);
+                if (invalidos.length > 0) {
+                    return res.status(400).json({
+                        error: 'Selecione apenas profissionais que possuam a especialidade do servico.'
+                    });
+                }
+            }
+
             const transaction = await Servicos.sequelize.transaction();
             try {
                 const [updated] = await Servicos.update(

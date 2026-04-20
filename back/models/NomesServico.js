@@ -13,6 +13,11 @@ module.exports = (sequelize, DataTypes) => {
             foreignKey: 'nome_servico_id',
             as: 'servicos'
         })
+        NomesServico.belongsToMany(models.Profissionais, {
+            through: models.ProfissionaisNomesServico,
+            foreignKey: 'nome_servico_id',
+            otherKey: 'profissional_id'
+        })
     }
 
     return NomesServico
