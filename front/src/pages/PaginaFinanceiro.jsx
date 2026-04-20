@@ -73,7 +73,7 @@ export const PaginaFinanceiro = () => {
           className='bg-teal-400 text-white px-4 py-1 rounded-full hover:bg-teal-500 transition duration-300 cursor-pointer'
           onClick={() => navigate('/financeiro/novo')}
         >
-          Nova Transacao
+          Nova Transação
         </button>
       </div>
 

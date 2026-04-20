@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import axios from 'axios'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -18,6 +18,8 @@ export const ProfissionalEdit = () => {
     
     const navigate = useNavigate();
     let { id } = useParams();
+    const [nomesServico, setNomesServico] = useState([])
+    const [nomesSelecionados, setNomesSelecionados] = useState({})
 
     // Observa os valores para máscaras e validações
     const nomeValue = watch('nome');
@@ -30,6 +32,22 @@ export const ProfissionalEdit = () => {
             .then((res) => {
                 // Aplica a máscara no telefone que vem do banco (sem máscara) antes de resetar o form
                 const data = res.data;
+                const nomesIds = new Set()
+                if (Array.isArray(data.Servicos)) {
+                    data.Servicos.forEach((servico) => {
+                        if (servico.nome_servico_id) {
+                            nomesIds.add(servico.nome_servico_id)
+                        } else if (servico.nome_servico && servico.nome_servico.id) {
+                            nomesIds.add(servico.nome_servico.id)
+                        }
+                    })
+                }
+                const selecionados = {}
+                nomesIds.forEach((nomeId) => {
+                    selecionados[nomeId] = true
+                })
+                setNomesSelecionados(selecionados)
+                setValue('nomes_servico_ids', Array.from(nomesIds).join(','), { shouldValidate: true })
                 if (data.telefone) data.telefone = maskPhone(data.telefone);
                 reset(data);
             })
@@ -37,7 +55,19 @@ export const ProfissionalEdit = () => {
                 console.error("Erro ao buscar dados do profissional:", error);
                 toast.error("Erro ao carregar dados.");
             });
-    }, [id, reset]);
+    }, [id, reset, setValue]);
+
+    useEffect(() => {
+        axios.get('http://localhost:3001/nomes-servico')
+            .then((res) => {
+                const payload = Array.isArray(res.data) ? res.data : (res.data.data || [])
+                setNomesServico(payload)
+            })
+            .catch((err) => {
+                console.error('Erro ao buscar nomes de servico:', err)
+                toast.error('Erro ao carregar nomes de servico.')
+            })
+    }, [])
 
     const handleNameChange = (e) => {
         setValue('nome', maskName(e.target.value), { shouldValidate: true });
@@ -47,9 +77,27 @@ export const ProfissionalEdit = () => {
         setValue('telefone', maskPhone(e.target.value), { shouldValidate: true });
     };
 
+    const buildNomesIds = (selecionados) => Object.entries(selecionados)
+        .filter(([, checked]) => checked)
+        .map(([nomeId]) => Number(nomeId))
+        .filter((id) => Number.isInteger(id))
+
+    const handleNomeToggle = (nomeId, checked) => {
+        setNomesSelecionados((prev) => {
+            const next = {
+                ...prev,
+                [nomeId]: checked
+            }
+            const ids = buildNomesIds(next)
+            setValue('nomes_servico_ids', ids.join(','), { shouldValidate: true })
+            return next
+        })
+    }
+
     const onSubmit = (data) => {
         const payload = {
             ...data,
+            nomes_servico_ids: buildNomesIds(nomesSelecionados),
             telefone: data.telefone.replace(/\D/g, '') // Remove máscara antes de enviar
         };
 
@@ -159,11 +207,30 @@ export const ProfissionalEdit = () => {
                     </div>
                     <div className="flex flex-col gap-2">
                         <label className='font-semibold flex items-center gap-2'><Briefcase size={18}/> Especialidades</label>
-                        <input 
-                            className='border p-3 rounded-md border-gray-300' 
-                            placeholder='Corte, Barba'
-                            {...register('especialidades', { required: true })} 
+                        <input
+                            type="hidden"
+                            {...register('nomes_servico_ids', {
+                                validate: (value) => (value && value.split(',').filter(Boolean).length > 0) || 'Selecione pelo menos um servico'
+                            })}
                         />
+                        {errors?.nomes_servico_ids && (
+                            <p className='text-red-500 text-sm'>{errors.nomes_servico_ids.message}</p>
+                        )}
+                        <div className='grid grid-cols-1 md:grid-cols-2 gap-3'>
+                            {nomesServico.map((nome) => {
+                                const selecionado = nomesSelecionados[nome.id] ?? false
+                                return (
+                                    <label key={nome.id} className='flex items-center gap-2 border rounded-md p-3'>
+                                        <input
+                                            type="checkbox"
+                                            checked={selecionado}
+                                            onChange={(e) => handleNomeToggle(nome.id, e.target.checked)}
+                                        />
+                                        <span>{nome.nome}</span>
+                                    </label>
+                                )
+                            })}
+                        </div>
                     </div>
                 </div>
 

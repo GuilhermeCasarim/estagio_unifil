@@ -17,6 +17,17 @@ export const PaginaProfissionais = () => {
     const [totalPages, setTotalPages] = useState(0);
     const [totalProfissionais, setTotalProfissionais] = useState(0);
 
+    const getEspecialidadesLabel = (profissional) => {
+        const nomes = Array.isArray(profissional.Servicos)
+            ? profissional.Servicos.map((servico) => servico?.nome_servico?.nome).filter(Boolean)
+            : []
+        const unicos = [...new Set(nomes)]
+        if (unicos.length > 0) {
+            return unicos.join(', ')
+        }
+        return profissional.especialidades || 'Sem especialidades'
+    }
+
     const fetchProfissionais = () => {
         axios.get(`http://localhost:3001/profissionais?page=${currentPage}&limit=${limit}&search=${search}`)
             .then((res) => {
@@ -137,7 +148,7 @@ export const PaginaProfissionais = () => {
                                 <span className='font-bold'>{profissional.nome}</span>
                                 <div className="others-info flex gap-1 items-center">
                                     <button className='bg-teal-400 text-white px-3 py-0.5 rounded-full hover:bg-teal-500 transition duration-300 text-xs'>
-                                        {profissional.especialidades.split(',')[0]}
+                                        {getEspecialidadesLabel(profissional).split(',')[0]}
                                     </button>
                                     <p className='flex gap-1 items-center text-gray-500 text-xs'>
                                         <Clock size={12} /> {profissional.horario_inicio} - {profissional.horario_fim}
@@ -178,7 +189,7 @@ export const PaginaProfissionais = () => {
                                     <Calendar size={14} /> {profissional.dias_ativos}
                                 </p>
                                 <p className='flex gap-2 items-center text-xs text-gray-600 italic'>
-                                    <Briefcase size={14} /> {profissional.especialidades}
+                                    <Briefcase size={14} /> {getEspecialidadesLabel(profissional)}
                                 </p>
                             </div>
                         </div>

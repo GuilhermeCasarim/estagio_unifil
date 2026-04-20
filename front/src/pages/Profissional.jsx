@@ -11,6 +11,17 @@ export const Profissional = () => {
   const [profissionalInfo, setProfissionalInfo] = useState({});
   const navigate = useNavigate();
 
+  const getEspecialidadesLabel = (profissional) => {
+    const nomes = Array.isArray(profissional.Servicos)
+      ? profissional.Servicos.map((servico) => servico?.nome_servico?.nome).filter(Boolean)
+      : []
+    const unicos = [...new Set(nomes)]
+    if (unicos.length > 0) {
+      return unicos.join(', ')
+    }
+    return profissional.especialidades || 'Sem especialidades'
+  }
+
   useEffect(() => { 
     // Manda o id para buscar os dados do profissional
     axios.get(`http://localhost:3001/profissionais/byId/${id}`).then((res) => {
@@ -64,7 +75,7 @@ export const Profissional = () => {
         <div className="border-t pt-4">
           <p className="flex items-center gap-2">
             <Briefcase size={18} className="text-teal-600" /> 
-            <strong>Especialidades:</strong> {profissionalInfo.especialidades}
+            <strong>Especialidades:</strong> {getEspecialidadesLabel(profissionalInfo)}
           </p>
         </div>
       </div>

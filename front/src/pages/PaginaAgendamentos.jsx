@@ -2,20 +2,20 @@ import React from 'react'
 import { Book } from 'lucide-react';
 
 
-export const Agendamento = () => {
+export const PaginaAgendamentos = () => {
     return (
         <div className='space-y-8'>
             <div className="header border-b-2 border-gray-400 pb-2">
-                <h1 className='flex gap-4'> <Book /> Agenda </h1>
+                <h1 className='flex gap-4'> <Book /> Agendamentos </h1>
             </div>
 
             <div className="agenda_principal flex justify-between items-center">
                 <div className="agenda flex flex-col gap-4">
-                    <h1>Agenda</h1>
+                    <h1>Agendamento de serviços</h1>
                     <p>Gerencie agendamentos e horários dos profissionais</p>
                     <div className="totalClientes bg-blue-200 p-2 rounded space-y-4 flex justify-between">
                         <div className="clientesPagina">
-                            <span className='flex gap-4'><Book /> 5</span>
+                            <span className='flex gap-4'><Book /> 2</span>
                             <p>Total de agendamentos hoje:</p>
                         </div>
 

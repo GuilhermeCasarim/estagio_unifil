@@ -6,7 +6,7 @@ import { Cliente } from '../pages/Cliente'
 import { Login } from '../pages/Login'
 import { ClienteEdit } from '../pages/ClienteEdit'
 import { PaginaClientes } from '../pages/PaginaClientes'
-import { Agendamento } from '../pages/Agendamento'
+import { PaginaAgendamentos } from '../pages/PaginaAgendamentos'
 import { Error } from '../pages/Error'
 import { Route, Routes } from 'react-router-dom'
 import { PaginaProfissionais } from '../pages/PaginaProfissionais'
@@ -50,7 +50,7 @@ export const MainLayout = () => {
           <Route path='/cliente/:id' element={<Cliente />} />
           <Route path='/cliente/edit/:id' element={<ClienteEdit />} />
           <Route path='/clientes' element={<PaginaClientes />} />
-          <Route path='/agendamento' element={<Agendamento />} />
+          <Route path='/agendamentos' element={<PaginaAgendamentos />} />
           <Route path='/profissionais' element={<PaginaProfissionais />} />
           <Route path='/profissional/novo' element={<ProfissionalNovo />} />
           <Route path='/profissional/:id' element={<Profissional />} />

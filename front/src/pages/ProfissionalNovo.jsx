@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
-import { UserPlus, X, Clock, Calendar, Briefcase } from 'lucide-react'
+import { UserPlus, X, Clock } from 'lucide-react'
 import { toast } from 'react-toastify'
 import { maskPhone, maskName, validateTimeRange } from '../utils/masks.js'
 
@@ -20,9 +20,42 @@ export const ProfissionalNovo = () => {
     const telefoneValue = watch('telefone');
     const horarioInicio = watch('horario_inicio');
 
+    const [nomesServico, setNomesServico] = useState([])
+    const [nomesSelecionados, setNomesSelecionados] = useState({})
+
+    useEffect(() => {
+        axios.get('http://localhost:3001/nomes-servico')
+            .then((res) => {
+                const payload = Array.isArray(res.data) ? res.data : (res.data.data || [])
+                setNomesServico(payload)
+            })
+            .catch((err) => {
+                console.error('Erro ao buscar nomes de servico:', err)
+                toast.error('Erro ao carregar nomes de servico.')
+            })
+    }, [])
+
+    const buildNomesIds = (selecionados) => Object.entries(selecionados)
+        .filter(([, checked]) => checked)
+        .map(([nomeId]) => Number(nomeId))
+        .filter((id) => Number.isInteger(id))
+
+    const handleNomeToggle = (nomeId, checked) => {
+        setNomesSelecionados((prev) => {
+            const next = {
+                ...prev,
+                [nomeId]: checked
+            }
+            const ids = buildNomesIds(next)
+            setValue('nomes_servico_ids', ids.join(','), { shouldValidate: true })
+            return next
+        })
+    }
+
     const onSubmit = (data) => {
         const cleanData = {
             ...data,
+            nomes_servico_ids: buildNomesIds(nomesSelecionados),
             telefone: data.telefone.replace(/\D/g, '')
         };
 
@@ -148,9 +181,30 @@ export const ProfissionalNovo = () => {
                     </div>
                     <div className="flex flex-col gap-2">
                         <label className='font-semibold'>Especialidades</label>
-                        <input className='border p-3 rounded' placeholder='Corte, Barba' {...register('especialidades', { required: true })} />
-                        {errors?.especialidades?.type == 'required' &&
-                            <p className='text-red-500 text-sm'>Especialidades necessário!</p>}
+                        <input
+                            type="hidden"
+                            {...register('nomes_servico_ids', {
+                                validate: (value) => (value && value.split(',').filter(Boolean).length > 0) || 'Selecione pelo menos um servico'
+                            })}
+                        />
+                        {errors?.nomes_servico_ids && (
+                            <p className='text-red-500 text-sm'>{errors.nomes_servico_ids.message}</p>
+                        )}
+                        <div className='grid grid-cols-1 md:grid-cols-2 gap-3'>
+                            {nomesServico.map((nome) => {
+                                const selecionado = nomesSelecionados[nome.id] ?? false
+                                return (
+                                    <label key={nome.id} className='flex items-center gap-2 border rounded-md p-3'>
+                                        <input
+                                            type="checkbox"
+                                            checked={selecionado}
+                                            onChange={(e) => handleNomeToggle(nome.id, e.target.checked)}
+                                        />
+                                        <span>{nome.nome}</span>
+                                    </label>
+                                )
+                            })}
+                        </div>
                     </div>
                 </div>
 
