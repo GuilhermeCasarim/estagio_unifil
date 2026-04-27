@@ -38,6 +38,9 @@ registerRouter('/nomes-servico', nomesServicoRouter)
 const financeiroRouter = require('./routes/Financeiro')
 registerRouter('/financeiro', financeiroRouter) //caminho padrao começa com /financeiro
 
+const agendamentosRouter = require('./routes/Agendamentos')
+registerRouter('/agendamentos', agendamentosRouter) //caminho padrao começa com /agendamentos
+
 registerRoutesExplorer(app, registeredRouters, {
 	environment: process.env.NODE_ENV || 'development'
 })
