@@ -29,10 +29,10 @@ import { PaginaNomesServico } from '../pages/PaginaNomesServico'
 import { NomesServicoNovo } from '../pages/NomesServicoNovo'
 import { NomesServico } from '../pages/NomesServico'
 import { NomesServicoEdit } from '../pages/NomesServicoEdit'
+import { FinanceiroEdit } from '../pages/FinanceiroEdit'
 import { PaginaFinanceiro } from '../pages/PaginaFinanceiro'
 import { FinanceiroNovo } from '../pages/FinanceiroNovo'
 import { Financeiro } from '../pages/Financeiro'
-import { FinanceiroEdit } from '../pages/FinanceiroEdit'
 
 export const MainLayout = () => {
   return (
