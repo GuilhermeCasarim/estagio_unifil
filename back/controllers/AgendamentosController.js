@@ -1,4 +1,4 @@
-const { Agendamentos } = require('../models');
+const { Agendamentos, Clientes, Servicos, Profissionais } = require('../models');
 
 class AgendamentosController {
     async getAll(req, res) {
@@ -38,6 +38,20 @@ class AgendamentosController {
     async create(req, res) {
         const { cliente_id, servico_id, profissional_id, data_hora, status } = req.body;
         try {
+            // Validação de existência das entidades relacionadas
+            const cliente = await Clientes.findByPk(cliente_id);
+            if (!cliente) {
+                return res.status(400).json({ error: 'Cliente não encontrado.' });
+            }
+            const servico = await Servicos.findByPk(servico_id);
+            if (!servico) {
+                return res.status(400).json({ error: 'Serviço não encontrado.' });
+            }
+            const profissional = await Profissionais.findByPk(profissional_id);
+            if (!profissional) {
+                return res.status(400).json({ error: 'Profissional não encontrado.' });
+            }
+
             const novoAgendamento = await Agendamentos.create({
                 cliente_id,
                 servico_id,
@@ -45,9 +59,18 @@ class AgendamentosController {
                 data_hora,
                 status
             });
-            return res.status(201).json(novoAgendamento);
+
+            // Retornar o agendamento com os dados relacionados
+            const agendamentoCriado = await Agendamentos.findByPk(novoAgendamento.id, {
+                include: [
+                    { model: Clientes },
+                    { model: Servicos },
+                    { model: Profissionais }
+                ]
+            });
+            return res.status(201).json(agendamentoCriado);
         } catch (e) {
-            return res.status(400).json({ error: 'Erro ao criar agendamento.' });
+            return res.status(400).json({ error: 'Erro ao criar agendamento.', details: e.message });
         }
     }
 
