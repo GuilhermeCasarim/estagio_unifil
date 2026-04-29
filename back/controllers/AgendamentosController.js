@@ -13,7 +13,7 @@ class AgendamentosController {
                             { association: 'nome_servico' }
                         ]
                     },
-                    { model: Profissionais }
+                    { model: Profissionais, as: 'Profissional' }
                 ]
             });
             if (agendamentos.length === 0) {
@@ -38,8 +38,13 @@ class AgendamentosController {
             const agendamento = await Agendamentos.findByPk(id, {
                 include: [
                     { model: Clientes },
-                    { model: Servicos },
-                    { model: Profissionais }
+                    { 
+                        model: Servicos,
+                        include: [
+                            { association: 'nome_servico' }
+                        ]
+                    },
+                    { model: Profissionais, as: 'Profissional' }
                 ]
             });
             if (agendamento) {

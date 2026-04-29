@@ -40,8 +40,13 @@ export const Agendamento = () => {
         <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
           <p className='flex items-center gap-2'><strong>ID:</strong> {agendamento.id}</p>
           <p className='flex items-center gap-2'><strong>Cliente:</strong> {agendamento.Cliente?.nome || '-'}</p>
-          <p className='flex items-center gap-2'><strong>Serviço:</strong> {agendamento.Servico?.nome_servico?.nome || '-'}</p>
-          <p className='flex items-center gap-2'><strong>Profissional:</strong> {agendamento.Profissional?.nome || '-'}</p>
+          <p className='flex items-center gap-2'><strong>Serviço:</strong> {agendamento.Servico?.nome_servico?.nome || agendamento.Servico?.nome || '-'}</p>
+          <p className='flex items-center gap-2'><strong>Profissional:</strong> {
+            agendamento.Profissional?.nome
+            || (Array.isArray(agendamento.Profissionais) && agendamento.Profissionais.length > 0 && agendamento.Profissionais[0]?.nome)
+            || agendamento.profissional_id
+            || '-'
+          }</p>
           <p className='flex items-center gap-2'><strong>Data/Hora:</strong> {agendamento.data_hora ? new Date(agendamento.data_hora).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' }) : '-'}</p>
           <p className={`flex items-center gap-2 font-semibold ${getStatusColor(agendamento.status)}`}>
             <span>Status:</span>

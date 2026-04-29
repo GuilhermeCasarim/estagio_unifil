@@ -1,9 +1,11 @@
 
+
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useNavigate, useParams } from 'react-router-dom'
 import axios from 'axios'
 import { toast } from 'react-toastify'
+import { X } from 'lucide-react'
 
 export const AgendamentoEdit = () => {
   const { register, handleSubmit, formState: { errors }, setValue, setError, clearErrors, reset, watch } = useForm()
@@ -48,7 +50,6 @@ export const AgendamentoEdit = () => {
   useEffect(() => {
     if (!servicoSelecionado) {
       setProfissionaisFiltrados([])
-      setValue('profissional_id', '')
       return
     }
     const servico = servicos.find(s => String(s.id) === String(servicoSelecionado))
@@ -57,8 +58,8 @@ export const AgendamentoEdit = () => {
     } else {
       setProfissionaisFiltrados([])
     }
-    setValue('profissional_id', '')
-  }, [servicoSelecionado, servicos, setValue])
+    // Não limpar o profissional_id aqui, pois pode ser o mesmo já selecionado
+  }, [servicoSelecionado, servicos])
 
   const onSubmit = (data) => {
     axios.patch(`http://localhost:3001/agendamentos/update/${id}`, data)
@@ -74,8 +75,14 @@ export const AgendamentoEdit = () => {
 
   return (
     <div className='flex flex-col gap-8 p-4 bg-gray-50 min-h-screen'>
-      <div className='flex justify-between items-center bg-white p-4 rounded-lg shadow-sm'>
+      <div className='flex justify-between items-center bg-white p-4 rounded-lg shadow-sm border-b'>
         <h1 className='flex gap-2 text-2xl font-bold items-center'>Editar Agendamento</h1>
+        <button
+          className='cursor-pointer hover:bg-gray-200 rounded-full p-2 transition duration-300'
+          onClick={() => navigate('/agendamentos')}
+        >
+          <X size={24} />
+        </button>
       </div>
       <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col space-y-6 max-w-2xl bg-white p-8 rounded-lg shadow-sm mx-auto w-full'>
         <div className='flex flex-col gap-2'>

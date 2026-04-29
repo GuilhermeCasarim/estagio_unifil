@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
     Agendamentos.associate = (models) => {
         Agendamentos.belongsTo(models.Clientes, { foreignKey: 'cliente_id' });
         Agendamentos.belongsTo(models.Servicos, { foreignKey: 'servico_id' });
-        Agendamentos.belongsTo(models.Profissionais, { foreignKey: 'profissional_id' });
+        Agendamentos.belongsTo(models.Profissionais, { foreignKey: 'profissional_id', as: 'Profissional' });
     };
     return Agendamentos;
 }
