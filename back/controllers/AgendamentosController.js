@@ -4,7 +4,12 @@ class AgendamentosController {
     async getAll(req, res) {
         try {
             const agendamentos = await Agendamentos.findAll({
-                order: [['data_hora', 'DESC']]
+                order: [['data_hora', 'DESC']],
+                include: [
+                    { model: Clientes },
+                    { model: Servicos },
+                    { model: Profissionais }
+                ]
             });
             if (agendamentos.length === 0) {
                 return res.status(200).json({
