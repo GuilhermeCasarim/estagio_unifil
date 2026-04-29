@@ -7,7 +7,12 @@ class AgendamentosController {
                 order: [['data_hora', 'DESC']],
                 include: [
                     { model: Clientes },
-                    { model: Servicos },
+                    { 
+                        model: Servicos,
+                        include: [
+                            { association: 'nome_servico' }
+                        ]
+                    },
                     { model: Profissionais }
                 ]
             });
@@ -30,7 +35,13 @@ class AgendamentosController {
     async getById(req, res) {
         const id = req.params.id;
         try {
-            const agendamento = await Agendamentos.findByPk(id);
+            const agendamento = await Agendamentos.findByPk(id, {
+                include: [
+                    { model: Clientes },
+                    { model: Servicos },
+                    { model: Profissionais }
+                ]
+            });
             if (agendamento) {
                 return res.json(agendamento);
             }
