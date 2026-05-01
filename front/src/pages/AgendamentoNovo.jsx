@@ -100,7 +100,7 @@ export const AgendamentoNovo = () => {
         <div className='flex flex-col gap-2'>
           <label className='font-semibold'>Data e Hora</label>
           <input type='datetime-local' {...register('data_hora', { required: true })} />
-          {errors?.data_hora && <p className='text-red-500 text-sm'>Data e hora obrigatória!</p>}
+          {errors?.data_hora && <p className='text-red-500 text-sm'>{errors.data_hora.message || 'Data e hora obrigatória!'}</p>}
         </div>
         <div className='flex flex-col gap-2'>
           <label className='font-semibold'>Status</label>
