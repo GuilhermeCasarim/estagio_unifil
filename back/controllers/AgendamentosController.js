@@ -160,6 +160,49 @@ class AgendamentosController {
         const id = req.params.id;
         const { cliente_id, servico_id, profissional_id, data_hora, status } = req.body;
         try {
+            // Validação de existência das entidades relacionadas
+            const cliente = await Clientes.findByPk(cliente_id);
+            if (!cliente) {
+                return res.status(400).json({ error: 'Cliente não encontrado.' });
+            }
+            const servico = await Servicos.findByPk(servico_id);
+            if (!servico) {
+                return res.status(400).json({ error: 'Serviço não encontrado.' });
+            }
+            const profissional = await Profissionais.findByPk(profissional_id);
+            if (!profissional) {
+                return res.status(400).json({ error: 'Profissional não encontrado.' });
+            }
+
+            // Calcular data_fim usando a duração do serviço
+            const dataInicio = new Date(data_hora);
+            const dataFim = new Date(dataInicio.getTime() + servico.duracao * 60000);
+
+            // Verificar sobreposição de horário ignorando o próprio agendamento
+            const inicioDia = new Date(dataInicio);
+            inicioDia.setHours(0, 0, 0, 0);
+            const fimDia = new Date(dataInicio);
+            fimDia.setHours(23, 59, 59, 999);
+            const agendamentosNoMesmoDia = await Agendamentos.findAll({
+                where: {
+                    profissional_id,
+                    data_hora: {
+                        [Op.between]: [inicioDia, fimDia]
+                    },
+                    id: { [Op.ne]: id }
+                },
+                include: [{ model: Servicos }]
+            });
+            for (const existente of agendamentosNoMesmoDia) {
+                const inicioExistente = new Date(existente.data_hora);
+                const servicoData = existente.Servico || existente.Servicos || {};
+                const duracaoExistente = servicoData.duracao || 30;
+                const fimExistente = new Date(inicioExistente.getTime() + duracaoExistente * 60000);
+                if (dataInicio < fimExistente && dataFim > inicioExistente) {
+                    return res.status(400).json({ error: 'Este profissional já possui um agendamento neste horário' });
+                }
+            }
+
             await Agendamentos.update(
                 { cliente_id, servico_id, profissional_id, data_hora, status },
                 { where: { id } }
