@@ -8,7 +8,8 @@ const boundController = {
 	getById: AgendamentosController.getById.bind(AgendamentosController),
 	create: AgendamentosController.create.bind(AgendamentosController),
 	update: AgendamentosController.update.bind(AgendamentosController),
-	delete: AgendamentosController.delete.bind(AgendamentosController)
+	delete: AgendamentosController.delete.bind(AgendamentosController),
+	finalizarAtendimento: AgendamentosController.finalizarAtendimento.bind(AgendamentosController)
 };
 module.exports = router;
 
@@ -20,5 +21,7 @@ router.get('/byId/:id', boundController.getById);
 router.post('/', boundController.create);
 
 router.patch('/update/:id', boundController.update);
+
+router.post('/:id/finalizar', boundController.finalizarAtendimento);
 
 router.delete('/delete/:id', boundController.delete);

@@ -1,34 +1,80 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { DollarSign, X } from 'lucide-react'
 import { toast } from 'react-toastify'
 
-export const FinanceiroNovo = () => {
+const defaultValues = {
+  descricao: '',
+  tipo: 'Receita',
+  valor: '',
+  categoria: 'Serviços',
+  forma_pagamento: '',
+  status: 'Pago',
+  data_pagamento: new Date().toISOString().slice(0, 10),
+  agendamento_id: '',
+  cliente_id: ''
+}
+
+export const FinanceiroNovo = ({
+  initialValues = {},
+  onSubmitFinanceiro,
+  onSuccess,
+  onCancel,
+  title = 'Nova Transação',
+  submitLabel = 'CADASTRAR TRANSAÇÃO',
+  successMessage = 'Transação cadastrada com sucesso!',
+  isModal = false
+}) => {
   const {
     register,
     handleSubmit,
-    formState: { errors }
-  } = useForm()
+    formState: { errors },
+    reset
+  } = useForm({ defaultValues })
 
   const navigate = useNavigate()
 
-  const onSubmit = (data) => {
+  useEffect(() => {
     const payload = {
-      ...data,
-      valor: Number(data.valor)
+      ...defaultValues,
+      ...initialValues,
+      data_pagamento: initialValues.data_pagamento
+        ? String(initialValues.data_pagamento).slice(0, 10)
+        : defaultValues.data_pagamento
     }
 
-    axios.post('http://localhost:3001/financeiro', payload)
-      .then(() => {
-        toast.success('Transação cadastrada com sucesso!')
-        navigate('/financeiro')
-      })
-      .catch((err) => {
-        console.error(err)
-        toast.error('Erro ao cadastrar transação.')
-      })
+    reset(payload)
+  }, [initialValues, reset])
+
+  const onSubmit = async (data) => {
+    const payload = {
+      ...data,
+      valor: Number(data.valor),
+      cliente_id: data.cliente_id ? Number(data.cliente_id) : undefined,
+      agendamento_id: data.agendamento_id ? Number(data.agendamento_id) : undefined
+    }
+
+    try {
+      if (onSubmitFinanceiro) {
+        await onSubmitFinanceiro(payload)
+      } else {
+        await axios.post('http://localhost:3001/financeiro', payload)
+      }
+
+      toast.success(successMessage)
+
+      if (onSuccess) {
+        onSuccess(payload)
+        return
+      }
+
+      navigate('/financeiro')
+    } catch (err) {
+      console.error(err)
+      toast.error('Erro ao cadastrar transação.')
+    }
   }
 
   const onInvalid = (formErrors) => {
@@ -37,17 +83,24 @@ export const FinanceiroNovo = () => {
   }
 
   return (
-    <div className='flex flex-col gap-8 p-4 bg-gray-50 min-h-screen'>
+    <div className={isModal ? 'flex flex-col gap-6' : 'flex flex-col gap-8 p-4 bg-gray-50 min-h-screen'}>
       <div className='flex justify-between items-center bg-white p-4 rounded-lg shadow-sm'>
         <h1 className='flex gap-2 text-2xl font-bold items-center'>
-          <DollarSign className='text-teal-600' /> Nova Transação
+          <DollarSign className='text-teal-600' /> {title}
         </h1>
-        <button onClick={() => navigate('/financeiro')} className='p-2 hover:bg-gray-100 rounded-full'>
+        <button
+          onClick={onCancel || (() => navigate('/financeiro'))}
+          className='p-2 hover:bg-gray-100 rounded-full cursor-pointer'
+          type='button'
+        >
           <X size={24} />
         </button>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit, onInvalid)} className='flex flex-col space-y-6 max-w-4xl bg-white p-8 rounded-lg shadow-sm mx-auto w-full'>
+        <input type='hidden' {...register('agendamento_id')} />
+        <input type='hidden' {...register('cliente_id')} />
+
         <div className='flex flex-col gap-2'>
           <label className='font-semibold'>Descricao</label>
           <input
@@ -122,7 +175,7 @@ export const FinanceiroNovo = () => {
         </div>
 
         <button type='submit' className='w-full py-4 bg-teal-600 text-white font-bold rounded hover:bg-teal-700 transition duration-300 cursor-pointer'>
-          CADASTRAR TRANSAÇÃO
+          {submitLabel}
         </button>
       </form>
     </div>

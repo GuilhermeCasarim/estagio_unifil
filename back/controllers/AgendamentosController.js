@@ -1,4 +1,4 @@
-const { Agendamentos, Clientes, Servicos, Profissionais } = require('../models');
+const { Agendamentos, Clientes, Servicos, Profissionais, Financeiro } = require('../models');
 const { Op } = require('sequelize');
 
 
@@ -224,6 +224,65 @@ class AgendamentosController {
             }
         } catch (e) {
             res.status(400).json({ error: 'Erro ao deletar agendamento.' });
+        }
+    }
+
+    async finalizarAtendimento(req, res) {
+        const id = req.params.id;
+        const { cliente_id, ...dadosFinanceiro } = req.body;
+
+        try {
+            const agendamento = await Agendamentos.findByPk(id, {
+                include: [
+                    { model: Clientes },
+                    {
+                        model: Servicos,
+                        include: [{ association: 'nome_servico' }]
+                    },
+                    { model: Profissionais, as: 'Profissional' }
+                ]
+            });
+
+            if (!agendamento) {
+                return res.status(404).json({ error: 'Agendamento não encontrado.' });
+            }
+
+            const transaction = await Agendamentos.sequelize.transaction();
+
+            try {
+                const financeiroCriado = await Financeiro.create(
+                    {
+                        ...dadosFinanceiro,
+                        agendamento_id: id
+                    },
+                    { transaction }
+                );
+
+                await Agendamentos.update(
+                    { status: 'concluido' },
+                    { where: { id }, transaction }
+                );
+
+                await transaction.commit();
+
+                return res.status(201).json({
+                    message: 'Agendamento finalizado com sucesso.',
+                    financeiro: financeiroCriado,
+                    agendamento: {
+                        ...agendamento.toJSON(),
+                        status: 'concluido'
+                    }
+                });
+            } catch (error) {
+                await transaction.rollback();
+                throw error;
+            }
+        } catch (error) {
+            console.error('Erro ao finalizar agendamento:', error);
+            return res.status(400).json({
+                error: 'Erro ao finalizar atendimento.',
+                details: error.message
+            });
         }
     }
 }

@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react'
-import { CalendarCheck, Plus, User, Scissors, UserCheck, Clock, CheckCircle, XCircle, SquarePen, Trash2 } from 'lucide-react'
+import { CalendarCheck, User, Scissors, UserCheck, Clock, CheckCircle, XCircle, SquarePen, Trash2 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import Swal from 'sweetalert2'
+import { FinanceiroNovo } from './FinanceiroNovo'
 
 export const PaginaAgendamentos = () => {
     const navigate = useNavigate()
     const [agendamentos, setAgendamentos] = useState([])
+    const [isFinanceiroOpen, setIsFinanceiroOpen] = useState(false)
+    const [agendamentoSelecionado, setAgendamentoSelecionado] = useState(null)
 
     const fetchAgendamentos = () => {
         axios.get('http://localhost:3001/agendamentos')
@@ -48,6 +51,27 @@ export const PaginaAgendamentos = () => {
         navigate(`/agendamento/edit/${id}`)
     }
 
+    const handleFinalizar = (agendamento) => {
+        setAgendamentoSelecionado({
+            agendamento_id: agendamento.id,
+            cliente_id: agendamento.cliente_id,
+            descricao: `${agendamento.Servico?.nome_servico?.nome || agendamento.Servico?.nome || '-'} - ${agendamento.Cliente?.nome || '-'}`,
+            valor: Number(agendamento.Servico?.preco) || 0,
+            tipo: 'Receita',
+            categoria: 'Serviços',
+            forma_pagamento: '',
+            status: 'Pago',
+            data_pagamento: new Date().toISOString().slice(0, 10)
+        })
+        setIsFinanceiroOpen(true)
+    }
+
+    const handleFinalizarSuccess = () => {
+        setIsFinanceiroOpen(false)
+        setAgendamentoSelecionado(null)
+        fetchAgendamentos()
+    }
+
     const getStatusColor = (status) => {
         if (status === 'concluido') return 'text-green-600'
         if (status === 'em andamento') return 'text-yellow-600'
@@ -75,7 +99,7 @@ export const PaginaAgendamentos = () => {
                 </button>
             </div>
 
-            <div className='agendamentosData grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 bg-blue-200 p-4 rounded-xl min-h-[120px]'>
+            <div className='agendamentosData grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 bg-blue-200 p-4 rounded-xl min-h-30'>
                 {agendamentos.length === 0 ? (
                     <div className='text-gray-500 col-span-full text-center'>Nenhum agendamento cadastrado.</div>
                 ) : (
@@ -92,6 +116,14 @@ export const PaginaAgendamentos = () => {
                                 style={{ cursor: 'pointer' }}
                             >
                                 <div className='absolute top-2 right-2 flex gap-2'>
+                                    {ag.status !== 'concluido' && (
+                                        <button
+                                            className='px-2 py-1 rounded text-teal-500 cursor-pointer hover:text-teal-700'
+                                            onClick={(e) => { e.stopPropagation(); handleFinalizar(ag) }}
+                                        >
+                                            Finalizar
+                                        </button>
+                                    )}
                                     <button
                                         className='px-2 py-1 rounded text-gray-400 cursor-pointer hover:text-teal-600'
                                         onClick={(e) => { e.stopPropagation(); handleEdit(ag.id) }}
@@ -132,6 +164,26 @@ export const PaginaAgendamentos = () => {
                     })
                 )}
             </div>
+
+            {isFinanceiroOpen && agendamentoSelecionado && (
+                <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4'>
+                    <div className='max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-2xl bg-gray-50 shadow-2xl'>
+                        <FinanceiroNovo
+                            isModal
+                            title='Finalizar Atendimento'
+                            submitLabel='CADASTRAR TRANSAÇÃO'
+                            successMessage='Transação cadastrada e agendamento concluído com sucesso!'
+                            initialValues={agendamentoSelecionado}
+                            onCancel={() => {
+                                setIsFinanceiroOpen(false)
+                                setAgendamentoSelecionado(null)
+                            }}
+                            onSubmitFinanceiro={(payload) => axios.post(`http://localhost:3001/agendamentos/${agendamentoSelecionado.agendamento_id}/finalizar`, payload)}
+                            onSuccess={handleFinalizarSuccess}
+                        />
+                    </div>
+                </div>
+            )}
         </div>
     )
 }
