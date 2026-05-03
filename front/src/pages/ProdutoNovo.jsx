@@ -15,10 +15,16 @@ export const ProdutoNovo = () => {
   const navigate = useNavigate()
 
   const onSubmit = (data) => {
+    const unidadesMinimo = Number(data.estoque_minimo || 0)
+    const unidadesAtual = Number(data.estoque_atual || 0)
+    const volume = Number(data.volume_unidade) || 1
+
     const payload = {
       ...data,
-      estoque_minimo: Number(data.estoque_minimo),
-      estoque_atual: Number(data.estoque_atual)
+      estoque_minimo: unidadesMinimo * volume,
+      estoque_atual: unidadesAtual * volume,
+      volume_unidade: Number(data.volume_unidade || 0),
+      unidade_medida: data.unidade_medida || 'ml'
     }
 
     axios.post('http://localhost:3001/produtos', payload)
@@ -91,6 +97,28 @@ export const ProdutoNovo = () => {
               {...register('estoque_atual', { required: true, min: 0 })}
             />
             {errors?.estoque_atual?.type == 'required' && <p className='text-red-500 text-sm'>Estoque atual obrigatorio!</p>}
+          </div>
+        </div>
+
+        <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+          <div className='flex flex-col gap-2'>
+            <label className='font-semibold'>Volume por unidade</label>
+            <input
+              type='number'
+              step='0.01'
+              min='0'
+              placeholder='0'
+              {...register('volume_unidade')}
+            />
+          </div>
+
+          <div className='flex flex-col gap-2'>
+            <label className='font-semibold'>Unidade de medida</label>
+            <input
+              type='text'
+              placeholder='ml'
+              {...register('unidade_medida')}
+            />
           </div>
         </div>
 

@@ -41,11 +41,7 @@ export const Produto = () => {
           </p>
 
           <p className='flex items-center gap-2'>
-            <strong>Volume por unidade:</strong> {produtoInfo.volume_unidade ?? 0}
-          </p>
-
-          <p className='flex items-center gap-2'>
-            <strong>Unidade de medida:</strong> {produtoInfo.unidade_medida ?? 'ml'}
+            <strong>Volume por unidade:</strong> {Math.trunc(Number(produtoInfo.volume_unidade ?? 0))}ml
           </p>
 
         </div>
@@ -53,11 +49,31 @@ export const Produto = () => {
         <div className='border-t pt-4 space-y-2'>
           <p className='flex items-center gap-2'>
             <Boxes size={18} className='text-teal-600' />
-            <strong>Estoque atual:</strong> {produtoInfo.estoque_atual}
+            <strong>Estoque atual:</strong>{' '}
+            {(() => {
+              const volume = Number(produtoInfo.volume_unidade) || 0
+              const atual = Number(produtoInfo.estoque_atual) || 0
+
+              if (volume) {
+                return `${(atual / volume).toFixed(1)} un (${atual}ml)`
+              }
+
+              return `${atual}ml`
+            })()}
           </p>
           <p className='flex items-center gap-2'>
             <Layers size={18} className='text-teal-600' />
-            <strong>Estoque minimo:</strong> {produtoInfo.estoque_minimo}
+            <strong>Estoque minimo:</strong>{' '}
+            {(() => {
+              const volume = Number(produtoInfo.volume_unidade) || 0
+              const minimo = Number(produtoInfo.estoque_minimo) || 0
+
+              if (volume) {
+                return `${(minimo / volume).toFixed(1)} un (${minimo}ml)`
+              }
+
+              return `${minimo}ml`
+            })()}
           </p>
           {produtoInfo.observacoes && (
             <p className='flex items-center gap-2'>

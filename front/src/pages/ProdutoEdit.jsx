@@ -19,7 +19,18 @@ export const ProdutoEdit = () => {
   useEffect(() => {
     axios.get(`http://localhost:3001/produtos/byId/${id}`)
       .then((res) => {
-        reset(res.data)
+        const p = res.data || {}
+        const volume = Number(p.volume_unidade) || 0
+
+        const formValues = {
+          ...p,
+          estoque_atual: volume && p.estoque_atual ? (Number(p.estoque_atual) / volume) : (p.estoque_atual || 0),
+          estoque_minimo: volume && p.estoque_minimo ? (Number(p.estoque_minimo) / volume) : (p.estoque_minimo || 0),
+          volume_unidade: Math.trunc(Number(p.volume_unidade) || 0),
+          unidade_medida: p.unidade_medida || 'ml'
+        }
+
+        reset(formValues)
       })
       .catch((error) => {
         console.error('Erro ao buscar dados do produto:', error)
@@ -28,10 +39,16 @@ export const ProdutoEdit = () => {
   }, [id, reset])
 
   const onSubmit = (data) => {
+    const unidadesMinimo = Number(data.estoque_minimo || 0)
+    const unidadesAtual = Number(data.estoque_atual || 0)
+    const volume = Number(data.volume_unidade) || 1
+
     const payload = {
       ...data,
-      estoque_minimo: Number(data.estoque_minimo),
-      estoque_atual: Number(data.estoque_atual)
+      estoque_minimo: unidadesMinimo * volume,
+      estoque_atual: unidadesAtual * volume,
+      volume_unidade: Number(data.volume_unidade || 0),
+      unidade_medida: data.unidade_medida || 'ml'
     }
 
     axios.patch(`http://localhost:3001/produtos/update/${id}`, payload)
@@ -111,6 +128,28 @@ export const ProdutoEdit = () => {
               {...register('estoque_atual', { required: 'Estoque atual obrigatorio', min: 0 })}
             />
             {errors.estoque_atual && <p className='text-red-500 text-sm'>{errors.estoque_atual.message}</p>}
+          </div>
+        </div>
+
+        <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+          <div className='flex flex-col gap-2'>
+            <label className='font-semibold'>Volume por unidade</label>
+            <input
+              type='number'
+              step='1'
+              min='0'
+              className='border p-3 rounded-md outline-none border-gray-300'
+              {...register('volume_unidade')}
+            />
+          </div>
+
+          <div className='flex flex-col gap-2'>
+            <label className='font-semibold'>Unidade de medida</label>
+            <input
+              type='text'
+              className='border p-3 rounded-md outline-none border-gray-300'
+              {...register('unidade_medida')}
+            />
           </div>
         </div>
 

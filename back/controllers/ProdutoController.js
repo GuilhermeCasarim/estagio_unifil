@@ -37,9 +37,17 @@ class ProdutoController {
     }
 
     async create(req, res) {
-        const produto = req.body;
+        const { nome, marca, observacoes, estoque_minimo, estoque_atual, volume_unidade, unidade_medida } = req.body;
         try {
-            const novoProduto = await Produtos.create(produto);
+            const novoProduto = await Produtos.create({
+                nome,
+                marca,
+                observacoes,
+                estoque_minimo,
+                estoque_atual,
+                volume_unidade: volume_unidade || 0,
+                unidade_medida: unidade_medida || 'ml'
+            });
             return res.status(201).json(novoProduto);
         } catch (e) {
             return res.status(400).json({ error: 'Erro ao criar produto.' });
@@ -48,10 +56,10 @@ class ProdutoController {
 
     async update(req, res) {
         const idProduto = req.params.id;
-        const { nome, marca, observacoes, estoque_minimo, estoque_atual } = req.body;
+        const { nome, marca, observacoes, estoque_minimo, estoque_atual, volume_unidade, unidade_medida } = req.body;
         try {
             const [updated] = await Produtos.update(
-                { nome, marca, observacoes, estoque_minimo, estoque_atual },
+                { nome, marca, observacoes, estoque_minimo, estoque_atual, volume_unidade, unidade_medida },
                 { where: { id: idProduto } }
             );
             

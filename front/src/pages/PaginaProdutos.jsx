@@ -61,17 +61,6 @@ export const PaginaProdutos = () => {
     navigate(`/produto/edit/${id}`)
   }
 
-  const handleRemoveUnidade = (id) => {
-    axios.patch(`http://localhost:3001/produtos/update-estoque/${id}`, { quantidade: -1 })
-      .then(() => {
-        fetchProdutos()
-      })
-      .catch((error) => {
-        console.error('Erro ao atualizar estoque:', error)
-        toast.error('Erro ao remover unidade do estoque.')
-      })
-  }
-
   const getEstoqueAtualClass = (estoqueAtual, estoqueMinimo) => {
     if (estoqueAtual === 0) return 'text-red-600'
     if (estoqueAtual < estoqueMinimo) return 'text-yellow-600'
@@ -139,15 +128,6 @@ export const PaginaProdutos = () => {
               </div>
               <div className='buttons space-x-2 flex'>
                 <button
-                  className='px-2 py-1 rounded text-gray-500 cursor-pointer hover:text-red-600 bg-red-300 transition duration-300 text-xs'
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    handleRemoveUnidade(produto.id)
-                  }}
-                >
-                  -1
-                </button>
-                <button
                   className='px-2 py-1 rounded text-gray-400 cursor-pointer hover:text-teal-600'
                   onClick={(e) => {
                     e.stopPropagation()
@@ -171,11 +151,15 @@ export const PaginaProdutos = () => {
             <div className='card-bottom info2 space-y-3 text-sm overflow-hidden'>
               <p className={`flex gap-2 items-center ${getEstoqueAtualClass(produto.estoque_atual, produto.estoque_minimo)}`}>
                 <Boxes size={16} className='text-gray-400' />
-                Estoque atual: {produto.estoque_atual}
+                Estoque atual: {produto.quantidade_formatada || `${produto.estoque_atual}${produto.unidade_medida || 'ml'}`}
               </p>
               <p className='flex gap-2 items-center'>
                 <Layers size={16} className='text-gray-400' />
-                Estoque minimo: {produto.estoque_minimo}
+                Estoque minimo: {
+                  (produto.volume_unidade && produto.volume_unidade !== 0)
+                    ? `${(Number(produto.estoque_minimo) / Number(produto.volume_unidade)).toFixed(1)} un (${produto.estoque_minimo}${produto.unidade_medida || 'ml'})`
+                    : `${produto.estoque_minimo}${produto.unidade_medida || 'ml'}`
+                }
               </p>
               {produto.observacoes && (
                 <p className='flex gap-2 items-center'>
