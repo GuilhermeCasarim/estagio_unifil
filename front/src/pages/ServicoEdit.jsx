@@ -17,7 +17,7 @@ export const ServicoEdit = () => {
   const navigate = useNavigate()
   let { id } = useParams()
   const [produtos, setProdutos] = useState([])
-  const [produtosSelecionados, setProdutosSelecionados] = useState({})
+  const [produtosSelecionados, setProdutosSelecionados] = useState([])
   const [categorias, setCategorias] = useState([])
   const [nomesServico, setNomesServico] = useState([])
   const [profissionais, setProfissionais] = useState([])
@@ -29,13 +29,14 @@ export const ServicoEdit = () => {
       .then((res) => {
         reset(res.data)
         setNomeServicoSelecionado(String(res.data?.nome_servico_id ?? ''))
-        const selecionados = {}
+        const selecionados = []
         if (Array.isArray(res.data.Produtos)) {
           res.data.Produtos.forEach((produto) => {
-            selecionados[produto.id] = {
-              checked: true,
-              quant: produto.ServicoProduto?.quant ?? 1
-            }
+            const through = produto.ServicosProduto || produto.ServicoProduto || produto.servicosproduto || {}
+            selecionados.push({
+              produto_id: produto.id,
+              quantidade_gasta: through.quantidade_gasta ?? through.quant ?? 1
+            })
           })
         }
         setProdutosSelecionados(selecionados)
@@ -47,6 +48,7 @@ export const ServicoEdit = () => {
         }
         setProfissionaisSelecionados(profissionaisSelecionados)
         setValue('profissionais_ativos', Object.keys(profissionaisSelecionados).join(','), { shouldValidate: true })
+        setValue('produtos', selecionados, { shouldValidate: true })
       })
       .catch((error) => {
         console.error('Erro ao buscar dados do serviço:', error)
@@ -103,23 +105,33 @@ export const ServicoEdit = () => {
   }, [])
 
   const handleProdutoToggle = (produtoId, checked) => {
-    setProdutosSelecionados((prev) => ({
-      ...prev,
-      [produtoId]: {
-        checked,
-        quant: prev[produtoId]?.quant ?? 1
+    setProdutosSelecionados((prev) => {
+      const existe = prev.some((item) => Number(item.produto_id) === Number(produtoId))
+      let next = prev
+
+      if (checked && !existe) {
+        next = [...prev, { produto_id: Number(produtoId), quantidade_gasta: 1 }]
       }
-    }))
+
+      if (!checked && existe) {
+        next = prev.filter((item) => Number(item.produto_id) !== Number(produtoId))
+      }
+
+      setValue('produtos', next, { shouldValidate: true })
+      return next
+    })
   }
 
-  const handleProdutoQuant = (produtoId, quant) => {
-    setProdutosSelecionados((prev) => ({
-      ...prev,
-      [produtoId]: {
-        checked: prev[produtoId]?.checked ?? false,
-        quant
-      }
-    }))
+  const handleProdutoQuant = (produtoId, quantidade_gasta) => {
+    setProdutosSelecionados((prev) => {
+      const next = prev.map((item) => (
+        Number(item.produto_id) === Number(produtoId)
+          ? { ...item, quantidade_gasta }
+          : item
+      ))
+      setValue('produtos', next, { shouldValidate: true })
+      return next
+    })
   }
 
   const buildProfissionaisIds = (selecionados) => Object.entries(selecionados)
@@ -181,12 +193,10 @@ export const ServicoEdit = () => {
     })
   }
 
-  const buildProdutosPayload = () => Object.entries(produtosSelecionados)
-    .filter(([, item]) => item.checked)
-    .map(([produtoId, item]) => ({
-      produto_id: Number(produtoId),
-      quant: Number(item.quant) || 1
-    }))
+  const buildProdutosPayload = () => produtosSelecionados.map((item) => ({
+    produto_id: Number(item.produto_id),
+    quantidade_gasta: Number(item.quantidade_gasta) || 1
+  }))
 
   const onSubmit = (data) => {
     const payload = {
@@ -194,7 +204,7 @@ export const ServicoEdit = () => {
       categoria_servico_id: Number(data.categoria_servico_id),
       preco: Number(data.preco),
       duracao: Number(data.duracao),
-      produtos_utilizados: buildProdutosPayload(),
+      produtos: buildProdutosPayload(),
       profissionais_ids: buildProfissionaisIds(profissionaisSelecionados)
     }
 
@@ -319,10 +329,17 @@ export const ServicoEdit = () => {
 
         <div className='flex flex-col gap-4'>
           <label className='font-semibold'>Produtos utilizados</label>
+          <input
+            type='hidden'
+            {...register('produtos', {
+              validate: (value) => (Array.isArray(value) && value.length > 0) || 'Selecione pelo menos um produto'
+            })}
+          />
+          {errors.produtos && <p className='text-red-500 text-sm'>{errors.produtos.message}</p>}
           <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
             {produtos.map((produto) => {
-              const selecionado = produtosSelecionados[produto.id]?.checked ?? false
-              const quant = produtosSelecionados[produto.id]?.quant ?? 1
+              const selecionado = produtosSelecionados.some((item) => Number(item.produto_id) === Number(produto.id))
+              const quant = produtosSelecionados.find((item) => Number(item.produto_id) === Number(produto.id))?.quantidade_gasta ?? 1
               return (
                 <div key={produto.id} className='flex items-center justify-between gap-3 border rounded-md p-3'>
                   <label className='flex items-center gap-2'>
@@ -333,14 +350,18 @@ export const ServicoEdit = () => {
                     />
                     <span>{produto.nome}</span>
                   </label>
-                  <input
-                    type='number'
-                    min='1'
-                    className='w-20'
-                    value={quant}
-                    disabled={!selecionado}
-                    onChange={(e) => handleProdutoQuant(produto.id, e.target.value)}
-                  />
+                  <div className='flex items-center gap-1'>
+                    <input
+                      type='number'
+                      min='1'
+                      step='1'
+                      className='w-20'
+                      value={quant}
+                      disabled={!selecionado}
+                      onChange={(e) => handleProdutoQuant(produto.id, e.target.value)}
+                    />
+                    <span className='text-sm text-gray-500'>ml</span>
+                  </div>
                 </div>
               )
             })}

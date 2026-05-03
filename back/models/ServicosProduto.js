@@ -13,6 +13,11 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             defaultValue: 1
         },
+        quantidade_gasta: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            defaultValue: 0
+        },
         data_hora: {
             type: DataTypes.DATE,
             allowNull: false,

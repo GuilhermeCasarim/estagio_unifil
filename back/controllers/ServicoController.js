@@ -86,7 +86,7 @@ class ServicoController {
                     {
                         model: Produtos,
                         through: {
-                            attributes: ['quant', 'data_hora']
+                            attributes: ['quant', 'quantidade_gasta', 'data_hora']
                         }
                     },
                     {
@@ -107,11 +107,12 @@ class ServicoController {
     }
 
     async create(req, res) {
-        const { produtos_utilizados, profissionais_ids, ...servico } = req.body;
+        const { produtos, produtos_utilizados, profissionais_ids, ...servico } = req.body;
+        const produtosRelacionados = Array.isArray(produtos) ? produtos : produtos_utilizados;
         if (servico.nome_servico_id !== undefined) {
             servico.nome_servico_id = Number(servico.nome_servico_id) || null;
         }
-        if (!Array.isArray(produtos_utilizados) || produtos_utilizados.length === 0) {
+        if (!Array.isArray(produtosRelacionados) || produtosRelacionados.length === 0) {
             return res.status(400).json({
                 error: 'Selecione ao menos um produto utilizado.'
             });
@@ -131,15 +132,16 @@ class ServicoController {
             try {
                 const novoServico = await Servicos.create(servico, { transaction });
 
-                if (Array.isArray(produtos_utilizados) && produtos_utilizados.length > 0) {
-                    const itens = produtos_utilizados.map((item) => ({
-                        servico_id: novoServico.id,
-                        produto_id: item.produto_id,
-                        quant: item.quant ?? 1,
-                        data_hora: item.data_hora ?? new Date()
-                    }));
-
-                    await ServicosProduto.bulkCreate(itens, { transaction });
+                if (Array.isArray(produtosRelacionados) && produtosRelacionados.length > 0) {
+                    for (const item of produtosRelacionados) {
+                        await novoServico.addProduto(item.produto_id, {
+                            through: {
+                                quantidade_gasta: Number(item.quantidade_gasta) || 1,
+                                data_hora: item.data_hora ?? new Date()
+                            },
+                            transaction
+                        });
+                    }
                 }
 
                 if (profissionaisIds.length > 0) {
@@ -167,7 +169,7 @@ class ServicoController {
                         {
                             model: Produtos,
                             through: {
-                                attributes: ['quant', 'data_hora']
+                                attributes: ['quant', 'quantidade_gasta', 'data_hora']
                             }
                         },
                         {
@@ -195,7 +197,8 @@ class ServicoController {
 
     async update(req, res) {
         const idServico = req.params.id;
-        const { nome_servico_id, preco, duracao, categoria_servico_id, produtos_utilizados, profissionais_ids } = req.body;
+        const { nome_servico_id, preco, duracao, categoria_servico_id, produtos, produtos_utilizados, profissionais_ids } = req.body;
+        const produtosRelacionados = Array.isArray(produtos) ? produtos : produtos_utilizados;
         const profissionaisIds = Array.isArray(profissionais_ids)
             ? profissionais_ids.map((id) => Number(id)).filter((id) => Number.isInteger(id))
             : null;
@@ -234,18 +237,20 @@ class ServicoController {
                     return res.status(404).json({ error: 'Servico nao encontrado' });
                 }
 
-                if (Array.isArray(produtos_utilizados)) {
+                if (Array.isArray(produtosRelacionados)) {
+                    const servicoAtual = await Servicos.findByPk(idServico, { transaction });
                     await ServicosProduto.destroy({ where: { servico_id: idServico }, transaction });
 
-                    if (produtos_utilizados.length > 0) {
-                        const itens = produtos_utilizados.map((item) => ({
-                            servico_id: idServico,
-                            produto_id: item.produto_id,
-                            quant: item.quant ?? 1,
-                            data_hora: item.data_hora ?? new Date()
-                        }));
-
-                        await ServicosProduto.bulkCreate(itens, { transaction });
+                    if (produtosRelacionados.length > 0 && servicoAtual) {
+                        for (const item of produtosRelacionados) {
+                            await servicoAtual.addProduto(item.produto_id, {
+                                through: {
+                                    quantidade_gasta: Number(item.quantidade_gasta) || 1,
+                                    data_hora: item.data_hora ?? new Date()
+                                },
+                                transaction
+                            });
+                        }
                     }
                 }
 

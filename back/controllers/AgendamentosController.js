@@ -1,4 +1,4 @@
-const { Agendamentos, Clientes, Servicos, Profissionais, Financeiro } = require('../models');
+const { Agendamentos, Clientes, Servicos, Produtos, Profissionais, Financeiro } = require('../models');
 const { Op } = require('sequelize');
 
 
@@ -250,6 +250,45 @@ class AgendamentosController {
             const transaction = await Agendamentos.sequelize.transaction();
 
             try {
+                const servicoComProdutos = await Servicos.findByPk(agendamento.servico_id, {
+                    include: [
+                        {
+                            model: Produtos,
+                            through: {
+                                attributes: ['quantidade_gasta']
+                            }
+                        }
+                    ],
+                    transaction
+                });
+
+                if (!servicoComProdutos) {
+                    await transaction.rollback();
+                    return res.status(404).json({ error: 'Serviço do agendamento não encontrado.' });
+                }
+
+                for (const produto of servicoComProdutos.Produtos || []) {
+                    const quantidadeGasta = Number(produto.ServicosProduto?.quantidade_gasta) || 0;
+                    if (quantidadeGasta <= 0) continue;
+
+                    const produtoAtual = await Produtos.findByPk(produto.id, { transaction });
+                    if (!produtoAtual) {
+                        throw new Error(`Produto ${produto.id} não encontrado.`);
+                    }
+
+                    const estoqueAtual = Number(produtoAtual.estoque_atual) || 0;
+                    const novoEstoque = estoqueAtual - quantidadeGasta;
+
+                    if (novoEstoque < 0) {
+                        throw new Error(`Estoque insuficiente para o produto ${produto.nome}.`);
+                    }
+
+                    await Produtos.update(
+                        { estoque_atual: novoEstoque },
+                        { where: { id: produto.id }, transaction }
+                    );
+                }
+
                 const financeiroCriado = await Financeiro.create(
                     {
                         ...dadosFinanceiro,

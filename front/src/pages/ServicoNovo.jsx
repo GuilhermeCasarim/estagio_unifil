@@ -17,7 +17,7 @@ export const ServicoNovo = () => {
 
   const navigate = useNavigate()
   const [produtos, setProdutos] = useState([])
-  const [produtosSelecionados, setProdutosSelecionados] = useState({})
+  const [produtosSelecionados, setProdutosSelecionados] = useState([])
   const [categorias, setCategorias] = useState([])
   const [nomesServico, setNomesServico] = useState([])
   const [profissionais, setProfissionais] = useState([])
@@ -74,30 +74,35 @@ export const ServicoNovo = () => {
 
   const handleProdutoToggle = (produtoId, checked) => {
     setProdutosSelecionados((prev) => {
-      const next = {
-        ...prev,
-        [produtoId]: {
-          checked,
-          quant: prev[produtoId]?.quant ?? 1
-        }
+      const existe = prev.some((item) => Number(item.produto_id) === Number(produtoId))
+      let next = prev
+
+      if (checked && !existe) {
+        next = [...prev, { produto_id: Number(produtoId), quantidade_gasta: 1 }]
       }
-      const totalSelecionados = Object.values(next).filter((item) => item?.checked).length
-      setValue('produtos_utilizados', totalSelecionados, { shouldValidate: true })
-      if (totalSelecionados > 0) {
-        clearErrors('produtos_utilizados')
+
+      if (!checked && existe) {
+        next = prev.filter((item) => Number(item.produto_id) !== Number(produtoId))
+      }
+
+      setValue('produtos', next, { shouldValidate: true })
+      if (next.length > 0) {
+        clearErrors('produtos')
       }
       return next
     })
   }
 
-  const handleProdutoQuant = (produtoId, quant) => {
-    setProdutosSelecionados((prev) => ({
-      ...prev,
-      [produtoId]: {
-        checked: prev[produtoId]?.checked ?? false,
-        quant
-      }
-    }))
+  const handleProdutoQuant = (produtoId, quantidade_gasta) => {
+    setProdutosSelecionados((prev) => {
+      const next = prev.map((item) => (
+        Number(item.produto_id) === Number(produtoId)
+          ? { ...item, quantidade_gasta }
+          : item
+      ))
+      setValue('produtos', next, { shouldValidate: true })
+      return next
+    })
   }
 
   const buildProfissionaisIds = (selecionados) => Object.entries(selecionados)
@@ -162,11 +167,10 @@ export const ServicoNovo = () => {
     })
   }
 
-  const buildProdutosPayload = () => Object.entries(produtosSelecionados)
-    .filter(([, item]) => item.checked)
-    .map(([produtoId, item]) => ({
-      produto_id: Number(produtoId),
-      quant: Number(item.quant) || 1
+  const buildProdutosPayload = () => produtosSelecionados
+    .map((item) => ({
+      produto_id: Number(item.produto_id),
+      quantidade_gasta: Number(item.quantidade_gasta) || 1
     }))
 
   const onSubmit = (data) => {
@@ -175,12 +179,12 @@ export const ServicoNovo = () => {
       categoria_servico_id: Number(data.categoria_servico_id),
       preco: Number(data.preco),
       duracao: Number(data.duracao),
-      produtos_utilizados: buildProdutosPayload(),
+      produtos: buildProdutosPayload(),
       profissionais_ids: buildProfissionaisIds(profissionaisSelecionados)
     }
 
-    if (payload.produtos_utilizados.length === 0) {
-      setError('produtos_utilizados', {
+    if (payload.produtos.length === 0) {
+      setError('produtos', {
         type: 'validate',
         message: 'Selecione pelo menos um produto'
       })
@@ -305,15 +309,15 @@ export const ServicoNovo = () => {
           <label className='font-semibold'>Produtos utilizados</label>
           <input
             type='hidden'
-            {...register('produtos_utilizados', {
-              validate: (value) => Number(value) > 0 || 'Selecione pelo menos um produto'
+            {...register('produtos', {
+              validate: (value) => (Array.isArray(value) && value.length > 0) || 'Selecione pelo menos um produto'
             })}
           />
-          {errors?.produtos_utilizados && <p className='text-red-500 text-sm'>{errors.produtos_utilizados.message}</p>}
+          {errors?.produtos && <p className='text-red-500 text-sm'>{errors.produtos.message}</p>}
           <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
             {produtos.map((produto) => {
-              const selecionado = produtosSelecionados[produto.id]?.checked ?? false
-              const quant = produtosSelecionados[produto.id]?.quant ?? 1
+              const selecionado = produtosSelecionados.some((item) => Number(item.produto_id) === Number(produto.id))
+              const quant = produtosSelecionados.find((item) => Number(item.produto_id) === Number(produto.id))?.quantidade_gasta ?? 1
               return (
                 <div key={produto.id} className='flex items-center justify-between gap-3 border rounded-md p-3'>
                   <label className='flex items-center gap-2'>
@@ -324,14 +328,18 @@ export const ServicoNovo = () => {
                     />
                     <span>{produto.nome}</span>
                   </label>
-                  <input
-                    type='number'
-                    min='1'
-                    className='w-20'
-                    value={quant}
-                    disabled={!selecionado}
-                    onChange={(e) => handleProdutoQuant(produto.id, e.target.value)}
-                  />
+                  <div className='flex items-center gap-1'>
+                    <input
+                      type='number'
+                      min='1'
+                      step='1'
+                      className='w-20'
+                      value={quant}
+                      disabled={!selecionado}
+                      onChange={(e) => handleProdutoQuant(produto.id, e.target.value)}
+                    />
+                    <span className='text-sm text-gray-500'>ml</span>
+                  </div>
                 </div>
               )
             })}
