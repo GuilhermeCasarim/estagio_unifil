@@ -40,6 +40,14 @@ export const Produto = () => {
             <strong>Marca:</strong> {produtoInfo.marca}
           </p>
 
+          <p className='flex items-center gap-2'>
+            <strong>Volume por unidade:</strong> {produtoInfo.volume_unidade ?? 0}
+          </p>
+
+          <p className='flex items-center gap-2'>
+            <strong>Unidade de medida:</strong> {produtoInfo.unidade_medida ?? 'ml'}
+          </p>
+
         </div>
 
         <div className='border-t pt-4 space-y-2'>

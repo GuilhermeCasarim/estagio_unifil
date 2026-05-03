@@ -19,6 +19,33 @@ module.exports = (sequelize, DataTypes) => {
         estoque_atual: {
             type: DataTypes.INTEGER,
             allowNull: false
+        },
+        volume_unidade: {
+            type: DataTypes.INTEGER,
+            allowNull: false
+        },
+        unidade_medida: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            defaultValue: 'ml'
+        },
+        quantidade_formatada: {
+            type: DataTypes.VIRTUAL,
+            get() {
+                //caso campo nao exista no objeto
+                if (this.estoque_atual === undefined || !this.volume_unidade) {
+                    return "0";
+                }
+
+                // evitar divisão por zero
+                if (this.volume_unidade === 0) return "0";
+
+                const qtd = this.estoque_atual / this.volume_unidade;
+                const medida = this.unidade_medida || 'ml';
+
+                //ex: "2.0 un (1000ml)"
+                return `${qtd.toFixed(1)} un (${this.estoque_atual}${medida})`;
+            }
         }
     })
 
