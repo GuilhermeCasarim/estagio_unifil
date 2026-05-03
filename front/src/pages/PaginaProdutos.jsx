@@ -61,6 +61,18 @@ export const PaginaProdutos = () => {
     navigate(`/produto/edit/${id}`)
   }
 
+  const formatQuantidadeEmUnidades = (estoqueTotal, volumeUnidade) => {
+    const volume = Number(volumeUnidade) || 0
+    const total = Number(estoqueTotal) || 0
+
+    if (!volume) {
+      return `${total}ml`
+    }
+
+    const unidades = total / volume
+    return `${unidades.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} un (${total}ml)`
+  }
+
   const getEstoqueAtualClass = (estoqueAtual, estoqueMinimo) => {
     if (estoqueAtual === 0) return 'text-red-600'
     if (estoqueAtual < estoqueMinimo) return 'text-yellow-600'
@@ -155,11 +167,7 @@ export const PaginaProdutos = () => {
               </p>
               <p className='flex gap-2 items-center'>
                 <Layers size={16} className='text-gray-400' />
-                Estoque minimo: {
-                  (produto.volume_unidade && produto.volume_unidade !== 0)
-                    ? `${(Number(produto.estoque_minimo) / Number(produto.volume_unidade)).toFixed(1)} un (${produto.estoque_minimo}${produto.unidade_medida || 'ml'})`
-                    : `${produto.estoque_minimo}${produto.unidade_medida || 'ml'}`
-                }
+                Estoque minimo: {formatQuantidadeEmUnidades(produto.estoque_minimo, produto.volume_unidade)}
               </p>
               {produto.observacoes && (
                 <p className='flex gap-2 items-center'>

@@ -116,14 +116,6 @@ export const PaginaAgendamentos = () => {
                                 style={{ cursor: 'pointer' }}
                             >
                                 <div className='absolute top-2 right-2 flex gap-2'>
-                                    {ag.status !== 'concluido' && (
-                                        <button
-                                            className='px-2 py-1 rounded text-teal-500 cursor-pointer hover:text-teal-700'
-                                            onClick={(e) => { e.stopPropagation(); handleFinalizar(ag) }}
-                                        >
-                                            Finalizar
-                                        </button>
-                                    )}
                                     <button
                                         className='px-2 py-1 rounded text-gray-400 cursor-pointer hover:text-teal-600'
                                         onClick={(e) => { e.stopPropagation(); handleEdit(ag.id) }}
@@ -154,10 +146,21 @@ export const PaginaAgendamentos = () => {
                                         <Clock size={16} className='text-blue-600' />
                                         {ag.data_hora ? new Date(ag.data_hora).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' }) : '-'}
                                     </span>
-                                    <span className={`flex items-center gap-2 font-semibold ${getStatusColor(ag.status)}`}>
-                                        {ag.status === 'concluido' ? <CheckCircle size={16} /> : ag.status === 'em andamento' ? <Clock size={16} /> : <XCircle size={16} />}
-                                        {ag.status?.charAt(0).toUpperCase() + ag.status?.slice(1) || '-'}
-                                    </span>
+                                    <div className='flex items-center justify-between gap-3 pt-1'>
+                                        <span className={`flex items-center gap-2 font-semibold ${getStatusColor(ag.status)}`}>
+                                            {ag.status === 'concluido' ? <CheckCircle size={16} /> : ag.status === 'em andamento' ? <Clock size={16} /> : <XCircle size={16} />}
+                                            {ag.status?.charAt(0).toUpperCase() + ag.status?.slice(1) || '-'}
+                                        </span>
+
+                                        {ag.status !== 'concluido' && (
+                                            <button
+                                                className='rounded-md bg-teal-500 px-3 py-1 text-sm font-semibold text-white hover:bg-teal-600 transition duration-300 cursor-pointer'
+                                                onClick={(e) => { e.stopPropagation(); handleFinalizar(ag) }}
+                                            >
+                                                Finalizar
+                                            </button>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         )
