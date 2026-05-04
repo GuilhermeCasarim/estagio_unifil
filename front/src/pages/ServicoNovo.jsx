@@ -220,7 +220,7 @@ export const ServicoNovo = () => {
 
       <form onSubmit={handleSubmit(onSubmit, onInvalid)} className='flex flex-col space-y-6 max-w-4xl bg-white p-8 rounded-lg shadow-sm mx-auto w-full'>
         <div className='flex flex-col gap-2'>
-          <label className='font-semibold'>Nome do servico</label>
+          <label className='font-semibold'>Nome do serviço</label>
           <select
             {...register('nome_servico_id', {
               required: true,
@@ -240,7 +240,7 @@ export const ServicoNovo = () => {
 
         <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
           <div className='flex flex-col gap-2'>
-            <label className='font-semibold'>Preco</label>
+            <label className='font-semibold'>Preço</label>
             <input
               type='number'
               step='0.01'
@@ -267,7 +267,7 @@ export const ServicoNovo = () => {
 
         <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
           <div className='flex flex-col gap-2'>
-            <label className='font-semibold'>Duracao (min)</label>
+            <label className='font-semibold'>Duração (min)</label>
             <input
               type='number'
               min='1'

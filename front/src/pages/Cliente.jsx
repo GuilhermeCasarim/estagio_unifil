@@ -55,7 +55,7 @@ export const Cliente = () => {
           <div className="border-t pt-4">
             <p className="flex items-center gap-2">
               <FileText size={18} className="text-teal-600" />
-              <strong>Observacoes:</strong> {clienteInfo.observacoes}
+              <strong>Observações:</strong> {clienteInfo.observacoes}
             </p>
           </div>
         )}

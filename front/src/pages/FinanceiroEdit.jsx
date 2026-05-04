@@ -59,7 +59,7 @@ export const FinanceiroEdit = () => {
           <h1 className='flex gap-2 text-2xl font-bold items-center text-gray-800'>
             <SquarePen className='text-teal-600' /> Editar Transação
           </h1>
-          <p className='text-gray-500'>Atualize as informacoes financeiras</p>
+          <p className='text-gray-500'>Atualize as informações financeiras</p>
         </div>
         <button
           className='cursor-pointer hover:bg-gray-200 rounded-full p-2 transition duration-300'
@@ -71,11 +71,11 @@ export const FinanceiroEdit = () => {
 
       <form onSubmit={handleSubmit(onSubmit, onInvalid)} className='flex flex-col space-y-6'>
         <div className='flex flex-col gap-2'>
-          <label className='font-semibold'>Descricao</label>
+          <label className='font-semibold'>Descrição</label>
           <input
             type='text'
             className={`border p-3 rounded-md outline-none ${errors.descricao ? 'border-red-500' : 'border-gray-300 focus:border-teal-500'}`}
-            {...register('descricao', { required: 'Descricao obrigatoria' })}
+            {...register('descricao', { required: 'Descrição obrigatória' })}
           />
           {errors.descricao && <p className='text-red-500 text-sm'>{errors.descricao.message}</p>}
         </div>
@@ -144,7 +144,7 @@ export const FinanceiroEdit = () => {
 
         <div className='pt-4'>
           <button type='submit' className='w-full py-4 bg-teal-600 text-white font-bold rounded-md hover:bg-teal-700 transition shadow-md uppercase tracking-wider cursor-pointer duration-300'>
-            Salvar Alteracoes
+            Salvar Alterações
           </button>
         </div>
       </form>

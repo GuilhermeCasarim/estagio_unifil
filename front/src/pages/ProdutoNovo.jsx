@@ -123,7 +123,7 @@ export const ProdutoNovo = () => {
         </div>
 
         <div className='flex flex-col gap-2'>
-          <label className='font-semibold'>Observacoes</label>
+          <label className='font-semibold'>Observações</label>
           <input
             type='text'
             placeholder='Ex: Uso profissional (opcional)'

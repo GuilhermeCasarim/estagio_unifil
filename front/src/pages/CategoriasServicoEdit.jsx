@@ -50,7 +50,7 @@ export const CategoriasServicoEdit = () => {
           <h1 className='flex gap-2 text-2xl font-bold items-center text-gray-800'>
             <SquarePen className='text-teal-600' /> Editar Categoria
           </h1>
-          <p className='text-gray-500'>Atualize as informacoes da categoria</p>
+          <p className='text-gray-500'>Atualize as informações da categoria</p>
         </div>
         <button
           className='cursor-pointer hover:bg-gray-200 rounded-full p-2 transition duration-300'

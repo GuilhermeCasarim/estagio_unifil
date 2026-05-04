@@ -18,7 +18,7 @@ export const PaginaNomesServico = () => {
         setNomes(payload)
       })
       .catch((error) => {
-        console.error('Erro ao buscar nomes de servico:', error)
+        console.error('Erro ao buscar nomes de serviço:', error)
       })
   }
 
@@ -45,7 +45,7 @@ export const PaginaNomesServico = () => {
         })
       }
     })
-      .catch((e) => toast.error(e, 'Erro ao deletar nome de servico!'))
+      .catch((e) => toast.error(e, 'Erro ao deletar nome de serviço!'))
   }
 
   const handleEdit = (id) => {
@@ -55,13 +55,13 @@ export const PaginaNomesServico = () => {
   return (
     <div className='space-y-8'>
       <div className='header border-b-2 border-gray-400 pb-2'>
-        <h1 className='flex gap-4'> <List /> Nomes de Servico </h1>
+        <h1 className='flex gap-4'> <List /> Nomes de Serviço </h1>
       </div>
 
       <div className='intro flex items-center justify-between'>
         <div className='texto'>
-          <p>Gestao de nomes de servico</p>
-          <p>Visualize e gerencie os nomes dos servicos</p>
+          <p>Gestão de nomes de serviço</p>
+          <p>Visualize e gerencie os nomes dos serviços</p>
         </div>
         <button
           className='bg-teal-400 text-white px-4 py-1 rounded-full hover:bg-teal-500 transition duration-300 cursor-pointer'

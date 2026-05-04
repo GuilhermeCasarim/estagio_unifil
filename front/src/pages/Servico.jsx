@@ -27,7 +27,7 @@ export const Servico = () => {
     <div className='servico bg-gray-50 shadow-md mt-12 space-y-4 flex flex-col max-w-4xl mx-auto rounded-lg'>
       <div className='header flex justify-between items-center border-b border-gray-200 p-4'>
         <h2 className='text-xl font-semibold flex items-center gap-2'>
-          <Scissors className='text-teal-600' /> Detalhes do Servico
+          <Scissors className='text-teal-600' /> Detalhes do Serviço
         </h2>
         <button
           className='cursor-pointer rounded-full px-2 py-1 hover:bg-gray-300 transition duration-300'
@@ -55,7 +55,7 @@ export const Servico = () => {
         <div className='border-t pt-4 space-y-2'>
           <p className='flex items-center gap-2'>
             <Clock size={18} className='text-teal-600' />
-            <strong>Duracao:</strong> {servicoInfo.duracao} min
+            <strong>Duração:</strong> {servicoInfo.duracao} min
           </p>
           <p className='flex items-center gap-2'>
             <Users size={18} className='text-teal-600' />

@@ -35,7 +35,7 @@ export const NomesServicoNovo = () => {
     <div className='flex flex-col gap-8 p-4 bg-gray-50 min-h-screen'>
       <div className='flex justify-between items-center bg-white p-4 rounded-lg shadow-sm'>
         <h1 className='flex gap-2 text-2xl font-bold items-center'>
-          <List className='text-teal-600' /> Novo Nome de Servico
+          <List className='text-teal-600' /> Novo Nome de Serviço
         </h1>
         <button onClick={() => navigate('/nomes-servico')} className='p-2 hover:bg-gray-100 rounded-full'>
           <X size={24} />
@@ -47,7 +47,7 @@ export const NomesServicoNovo = () => {
           <label className='font-semibold'>Nome</label>
           <input
             type='text'
-            placeholder='Nome do servico'
+            placeholder='Nome do serviço'
             {...register('nome', { required: true })}
           />
           {errors?.nome?.type == 'required' && <p className='text-red-500 text-sm'>Nome obrigatorio!</p>}

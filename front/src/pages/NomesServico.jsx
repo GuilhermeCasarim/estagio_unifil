@@ -12,7 +12,7 @@ export const NomesServico = () => {
     axios.get(`http://localhost:3001/nomes-servico/byId/${id}`).then((res) => {
       setNomeInfo(res.data)
     }).catch((err) => {
-      console.error('Erro ao buscar nome de servico', err)
+      console.error('Erro ao buscar nome de serviço', err)
     })
   }, [id])
 
@@ -20,7 +20,7 @@ export const NomesServico = () => {
     <div className='nome-servico bg-gray-50 shadow-md mt-12 space-y-4 flex flex-col max-w-4xl mx-auto rounded-lg'>
       <div className='header flex justify-between items-center border-b border-gray-200 p-4'>
         <h2 className='text-xl font-semibold flex items-center gap-2'>
-          <List className='text-teal-600' /> Detalhes do Nome de Servico
+          <List className='text-teal-600' /> Detalhes do Nome de Serviço
         </h2>
         <button
           className='cursor-pointer rounded-full px-2 py-1 hover:bg-gray-300 transition duration-300'

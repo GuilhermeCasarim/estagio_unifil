@@ -156,7 +156,7 @@ export const ClienteNovo = () => {
                 </div>
 
                 <div className="flex flex-col gap-2">
-                    <label className='font-semibold flex items-center gap-2'><FileText size={18} /> Observacoes</label>
+                    <label className='font-semibold flex items-center gap-2'><FileText size={18} /> Observações</label>
                     <input
                         type="text"
                         name='observacoes'

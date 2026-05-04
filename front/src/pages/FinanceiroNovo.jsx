@@ -27,6 +27,8 @@ export const FinanceiroNovo = ({
   successMessage = 'Transação cadastrada com sucesso!',
   isModal = false
 }) => {
+  const bloquearCampos = isModal
+
   const {
     register,
     handleSubmit,
@@ -70,7 +72,7 @@ export const FinanceiroNovo = ({
         return
       }
 
-      navigate('/financeiro')
+      navigate(-1)
     } catch (err) {
       console.error(err)
       toast.error('Erro ao cadastrar transação.')
@@ -89,7 +91,7 @@ export const FinanceiroNovo = ({
           <DollarSign className='text-teal-600' /> {title}
         </h1>
         <button
-          onClick={onCancel || (() => navigate('/financeiro'))}
+          onClick={onCancel || (() => navigate(-1))}
           className='p-2 hover:bg-gray-100 rounded-full cursor-pointer'
           type='button'
         >
@@ -106,8 +108,8 @@ export const FinanceiroNovo = ({
           <input
             type='text'
             placeholder='Descricao da transação'
-            readOnly
-            className='border p-3 rounded-md bg-gray-100 cursor-not-allowed'
+            readOnly={bloquearCampos}
+            className={bloquearCampos ? 'border p-3 rounded-md bg-gray-100 cursor-not-allowed' : 'border p-3 rounded-md'}
             {...register('descricao', { required: true })}
           />
           {errors?.descricao?.type == 'required' && <p className='text-red-500 text-sm'>Descricao obrigatoria!</p>}
@@ -116,7 +118,7 @@ export const FinanceiroNovo = ({
         <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
           <div className='flex flex-col gap-2'>
             <label className='font-semibold'>Tipo</label>
-            <select className='border p-3 rounded-md bg-gray-100 cursor-not-allowed' disabled {...register('tipo', { required: true })}>
+            <select className={bloquearCampos ? 'border p-3 rounded-md bg-gray-100 cursor-not-allowed' : 'border p-3 rounded-md'} disabled={bloquearCampos} {...register('tipo', { required: true })}>
               <option value=''>Selecione</option>
               <option value='Receita'>Receita</option>
               <option value='Despesa'>Despesa</option>
@@ -130,8 +132,8 @@ export const FinanceiroNovo = ({
               step='0.01'
               min='0'
               placeholder='0.00'
-              readOnly
-              className='border p-3 rounded-md bg-gray-100 cursor-not-allowed'
+              readOnly={bloquearCampos}
+              className={bloquearCampos ? 'border p-3 rounded-md bg-gray-100 cursor-not-allowed' : 'border p-3 rounded-md'}
               {...register('valor', { required: true, min: 0 })}
             />
             {errors?.valor?.type == 'required' && <p className='text-red-500 text-sm'>Valor obrigatorio!</p>}
@@ -144,8 +146,8 @@ export const FinanceiroNovo = ({
             <input
               type='text'
               placeholder='Categoria'
-              readOnly
-              className='border p-3 rounded-md bg-gray-100 cursor-not-allowed'
+              readOnly={bloquearCampos}
+              className={bloquearCampos ? 'border p-3 rounded-md bg-gray-100 cursor-not-allowed' : 'border p-3 rounded-md'}
               {...register('categoria', { required: true })}
             />
             {errors?.categoria?.type == 'required' && <p className='text-red-500 text-sm'>Categoria obrigatoria!</p>}

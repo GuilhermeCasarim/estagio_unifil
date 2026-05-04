@@ -81,7 +81,7 @@ export const PaginaServicos = () => {
               className='bg-indigo-400 text-white px-4 py-1 rounded-full hover:bg-indigo-500 transition duration-300 cursor-pointer'
               onClick={() => navigate('/nomes-servico')}
             >
-              Nome do servico
+              Nome do serviço
             </button>
           <button
             className='bg-teal-400 text-white px-4 py-1 rounded-full hover:bg-teal-500 transition duration-300 cursor-pointer'

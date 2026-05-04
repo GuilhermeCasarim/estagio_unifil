@@ -48,9 +48,9 @@ export const NomesServicoEdit = () => {
       <div className='header flex justify-between items-center border-b pb-4'>
         <div className='text'>
           <h1 className='flex gap-2 text-2xl font-bold items-center text-gray-800'>
-            <SquarePen className='text-teal-600' /> Editar Nome de Servico
+            <SquarePen className='text-teal-600' /> Editar Nome de Serviço
           </h1>
-          <p className='text-gray-500'>Atualize as informacoes do nome</p>
+          <p className='text-gray-500'>Atualize as informações do nome do serviço</p>
         </div>
         <button
           className='cursor-pointer hover:bg-gray-200 rounded-full p-2 transition duration-300'
@@ -73,7 +73,7 @@ export const NomesServicoEdit = () => {
 
         <div className='pt-4'>
           <button type='submit' className='w-full py-4 bg-teal-600 text-white font-bold rounded-md hover:bg-teal-700 transition shadow-md uppercase tracking-wider cursor-pointer duration-300'>
-            Salvar Alteracoes
+            Salvar Alterações
           </button>
         </div>
       </form>

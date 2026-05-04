@@ -78,7 +78,7 @@ export const Produto = () => {
           {produtoInfo.observacoes && (
             <p className='flex items-center gap-2'>
               <Package size={18} className='text-gray-400' />
-              <strong>Observacoes:</strong> {produtoInfo.observacoes}
+              <strong>Observações:</strong> {produtoInfo.observacoes}
             </p>
           )}
         </div>

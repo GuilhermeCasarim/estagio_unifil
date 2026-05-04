@@ -230,7 +230,7 @@ export const ServicoEdit = () => {
           <h1 className='flex gap-2 text-2xl font-bold items-center text-gray-800'>
             <SquarePen className='text-teal-600' /> Editar Serviço
           </h1>
-          <p className='text-gray-500'>Atualize as informacoes do serviço</p>
+          <p className='text-gray-500'>Atualize as informações do serviço</p>
         </div>
         <button
           className='cursor-pointer hover:bg-gray-200 rounded-full p-2 transition duration-300'
@@ -242,7 +242,7 @@ export const ServicoEdit = () => {
 
       <form onSubmit={handleSubmit(onSubmit, onInvalid)} className='flex flex-col space-y-6'>
         <div className='flex flex-col gap-2'>
-          <label className='font-semibold'>Nome do servico</label>
+          <label className='font-semibold'>Nome do serviço</label>
           <select
             className={`border p-3 rounded-md outline-none ${errors.nome_servico_id ? 'border-red-500' : 'border-gray-300 focus:border-teal-500'}`}
             {...register('nome_servico_id', {
@@ -289,12 +289,12 @@ export const ServicoEdit = () => {
 
         <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
           <div className='flex flex-col gap-2'>
-            <label className='font-semibold'>Duracao (min)</label>
+            <label className='font-semibold'>Duração (min)</label>
             <input
               type='number'
               min='1'
               className={`border p-3 rounded-md outline-none ${errors.duracao ? 'border-red-500' : 'border-gray-300'}`}
-              {...register('duracao', { required: 'Duracao obrigatoria', min: 1 })}
+              {...register('duracao', { required: 'Duração obrigatoria', min: 1 })}
             />
             {errors.duracao && <p className='text-red-500 text-sm'>{errors.duracao.message}</p>}
           </div>
@@ -308,7 +308,7 @@ export const ServicoEdit = () => {
               <p className='text-gray-500 text-sm'>
                 {nomeServicoSelecionado
                   ? 'Nenhum profissional com essa especialidade.'
-                  : 'Selecione um nome de servico para ver profissionais disponiveis.'}
+                  : 'Selecione um nome de serviço para ver profissionais disponiveis.'}
               </p>
             )}
             {profissionaisFiltrados.map((profissional) => {
@@ -370,7 +370,7 @@ export const ServicoEdit = () => {
 
         <div className='pt-4'>
           <button type='submit' className='w-full py-4 bg-teal-600 text-white font-bold rounded-md hover:bg-teal-700 transition shadow-md uppercase tracking-wider cursor-pointer duration-300'>
-            Salvar Alteracoes
+            Salvar Alterações
           </button>
         </div>
       </form>

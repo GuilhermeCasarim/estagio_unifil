@@ -22,7 +22,7 @@ export const Financeiro = () => {
     <div className='financeiro bg-gray-50 shadow-md mt-12 space-y-4 flex flex-col max-w-4xl mx-auto rounded-lg'>
       <div className='header flex justify-between items-center border-b border-gray-200 p-4'>
         <h2 className='text-xl font-semibold flex items-center gap-2'>
-          <DollarSign className='text-teal-600' /> Detalhes da Transacao
+          <DollarSign className='text-teal-600' /> Detalhes da Transação
         </h2>
         <button
           className='cursor-pointer rounded-full px-2 py-1 hover:bg-gray-300 transition duration-300'
@@ -35,7 +35,7 @@ export const Financeiro = () => {
       <div className='info p-6 space-y-6 text-gray-700'>
         <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
           <p className='flex items-center gap-2'><strong>ID:</strong> {transacaoInfo.id}</p>
-          <p className='flex items-center gap-2'><strong>Descricao:</strong> {transacaoInfo.descricao}</p>
+          <p className='flex items-center gap-2'><strong>Descrição:</strong> {transacaoInfo.descricao}</p>
 
           <p className='flex items-center gap-2'>
             {tipoIcon}
