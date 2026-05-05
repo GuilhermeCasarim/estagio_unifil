@@ -35,6 +35,7 @@ import { NomesServico } from '../pages/NomesServico'
 import { NomesServicoEdit } from '../pages/NomesServicoEdit'
 import { FinanceiroEdit } from '../pages/FinanceiroEdit'
 import { PaginaFinanceiro } from '../pages/PaginaFinanceiro'
+import { PaginaRelatorios } from '../pages/PaginaRelatorios'
 import { FinanceiroNovo } from '../pages/FinanceiroNovo'
 import { Financeiro } from '../pages/Financeiro'
 import { HistoricoAgendamentos } from '../pages/HistoricoAgendamentos'
@@ -85,6 +86,7 @@ export const MainLayout = () => {
           <Route path='/financeiro/novo' element={<FinanceiroNovo />} />
           <Route path='/financeiro/:id' element={<Financeiro />} />
           <Route path='/financeiro/edit/:id' element={<FinanceiroEdit />} />
+          <Route path='/relatorios' element={<PaginaRelatorios />} />
 
           <Route path='*' element={<Error />} />
         </Routes>

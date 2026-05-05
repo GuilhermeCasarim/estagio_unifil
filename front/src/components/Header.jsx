@@ -23,7 +23,7 @@ export const Header = () => {
           <Link className='flex gap-2' to='/servicos'> <Scissors /> Serviços</Link>
           <Link className='flex gap-2' to='/produtos'> <Package /> Estoque</Link>
           <Link className='flex gap-2' to='/financeiro'> <DollarSign /> Financeiro</Link>
-          <Link className='flex gap-2' to='#'> <ChartColumnIncreasing /> Relatórios</Link>
+          <Link className='flex gap-2' to='/relatorios'> <ChartColumnIncreasing /> Relatórios</Link>
           <div>
             {authState.status && <h1>{`Usuário atual: ${authState.login}`}</h1>}
           </div>
