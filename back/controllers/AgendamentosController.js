@@ -42,6 +42,24 @@ class AgendamentosController {
         return false;
     }
 
+    // Método auxiliar para validar se o horário está dentro do funcionamento (08:00 - 18:00)
+    validarHorarioFuncionamento(dataInicio, dataFim) {
+        const horaInicio = dataInicio.getHours() + dataInicio.getMinutes() / 60;
+        const horaFim = dataFim.getHours() + dataFim.getMinutes() / 60;
+
+        const HORA_ABERTURA = 8;    // 08:00
+        const HORA_FECHAMENTO = 18; // 18:00
+
+        console.log(`Validando horário: ${horaInicio.toFixed(2)} - ${horaFim.toFixed(2)}`);
+
+        // Verifica se o início é antes das 08:00 ou o fim é depois das 18:00
+        if (horaInicio < HORA_ABERTURA || horaFim > HORA_FECHAMENTO) {
+            return false;
+        }
+
+        return true;
+    }
+
     async getAll(req, res) {
         try {
             const agendamentos = await Agendamentos.findAll({
@@ -185,6 +203,16 @@ class AgendamentosController {
             const dataFim = new Date(dataInicio.getTime() + servico.duracao * 60000); // minutos para ms
             console.log('Data início:', dataInicio.toISOString(), 'Data fim:', dataFim.toISOString(), 'Duração:', servico.duracao);
 
+            // Validar se está dentro do horário de funcionamento (08:00 - 18:00)
+            if (!this.validarHorarioFuncionamento(dataInicio, dataFim)) {
+                const horaInicio = dataInicio.getHours();
+                const minInicio = dataInicio.getMinutes();
+                console.log(`Horário fora do funcionamento: ${horaInicio}:${String(minInicio).padStart(2, '0')}`);
+                return res.status(400).json({ 
+                    error: 'Agendamento fora do horário de funcionamento. O salão funciona de 08:00 às 18:00.' 
+                });
+            }
+
             // Verificar sobreposição de horário
             const ocupado = await this.verificarHorario(profissional_id, dataInicio, dataFim);
             if (ocupado) {
@@ -237,6 +265,16 @@ class AgendamentosController {
             // Calcular data_fim usando a duração do serviço
             const dataInicio = new Date(data_hora);
             const dataFim = new Date(dataInicio.getTime() + servico.duracao * 60000);
+
+            // Validar se está dentro do horário de funcionamento (08:00 - 18:00)
+            if (!this.validarHorarioFuncionamento(dataInicio, dataFim)) {
+                const horaInicio = dataInicio.getHours();
+                const minInicio = dataInicio.getMinutes();
+                console.log(`Horário fora do funcionamento: ${horaInicio}:${String(minInicio).padStart(2, '0')}`);
+                return res.status(400).json({ 
+                    error: 'Agendamento fora do horário de funcionamento. O salão funciona de 08:00 às 18:00.' 
+                });
+            }
 
             // Verificar sobreposição de horário ignorando o próprio agendamento
             const inicioDia = new Date(dataInicio);
