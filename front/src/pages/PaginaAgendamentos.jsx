@@ -91,12 +91,20 @@ export const PaginaAgendamentos = () => {
                     <p>Gestão de agendamentos</p>
                     <p>Visualize e gerencie os agendamentos do salão</p>
                 </div>
-                <button
-                    className='bg-teal-400 text-white px-4 py-1 rounded-full hover:bg-teal-500 transition duration-300 cursor-pointer flex items-center gap-2'
-                    onClick={() => navigate('/agendamento/novo')}
-                >
-                    <CalendarCheck size={18} /> Novo Agendamento
-                </button>
+                <div className='flex items-center gap-2'>
+                    <button
+                        className='cursor-pointer rounded-full border border-gray-300 px-4 py-1 text-gray-700 hover:bg-gray-100 transition duration-300'
+                        onClick={() => navigate('/agendamentos/historico')}
+                    >
+                        Histórico
+                    </button>
+                    <button
+                        className='bg-teal-400 text-white px-4 py-1 rounded-full hover:bg-teal-500 transition duration-300 cursor-pointer flex items-center gap-2'
+                        onClick={() => navigate('/agendamento/novo')}
+                    >
+                        <CalendarCheck size={18} /> Novo Agendamento
+                    </button>
+                </div>
             </div>
 
             <div className='agendamentosData grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 bg-blue-200 p-4 rounded-xl min-h-30'>

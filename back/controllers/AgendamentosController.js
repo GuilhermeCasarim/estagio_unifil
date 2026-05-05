@@ -73,6 +73,66 @@ class AgendamentosController {
         }
     }
 
+    async getHistorico(req, res) {
+        const { inicio, fim, cliente_id, profissional_id, status } = req.query;
+
+        try {
+            const where = {};
+
+            if (cliente_id) {
+                where.cliente_id = cliente_id;
+            }
+
+            if (profissional_id) {
+                where.profissional_id = profissional_id;
+            }
+
+            if (status) {
+                where.status = status;
+            }
+
+            if (inicio || fim) {
+                where.data_hora = {};
+
+                if (inicio) {
+                    where.data_hora[Op.gte] = new Date(inicio);
+                }
+
+                if (fim) {
+                    where.data_hora[Op.lte] = new Date(fim);
+                }
+            } else {
+                where[Op.or] = [
+                    { status: 'concluido' },
+                    { data_hora: { [Op.lte]: new Date() } }
+                ];
+            }
+
+            const historico = await Agendamentos.findAll({
+                where,
+                order: [['data_hora', 'DESC']],
+                include: [
+                    { model: Clientes },
+                    {
+                        model: Servicos,
+                        include: [
+                            { association: 'nome_servico' }
+                        ]
+                    },
+                    { model: Profissionais, as: 'Profissional' }
+                ]
+            });
+
+            return res.status(200).json(historico);
+        } catch (error) {
+            console.error('Erro ao buscar histórico de agendamentos:', error);
+            return res.status(500).json({
+                error: 'Erro interno no servidor ao tentar buscar o histórico de agendamentos.',
+                details: error.message
+            });
+        }
+    }
+
     async getById(req, res) {
         const id = req.params.id;
         try {

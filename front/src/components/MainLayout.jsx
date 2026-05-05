@@ -36,6 +36,7 @@ import { FinanceiroEdit } from '../pages/FinanceiroEdit'
 import { PaginaFinanceiro } from '../pages/PaginaFinanceiro'
 import { FinanceiroNovo } from '../pages/FinanceiroNovo'
 import { Financeiro } from '../pages/Financeiro'
+import { HistoricoAgendamentos } from '../pages/HistoricoAgendamentos'
 
 export const MainLayout = () => {
   return (
@@ -54,6 +55,7 @@ export const MainLayout = () => {
           <Route path='/cliente/edit/:id' element={<ClienteEdit />} />
           <Route path='/clientes' element={<PaginaClientes />} />
           <Route path='/agendamentos' element={<PaginaAgendamentos />} />
+          <Route path='/agendamentos/historico' element={<HistoricoAgendamentos />} />
           <Route path='/agendamento/novo' element={<AgendamentoNovo />} />
           <Route path='/agendamento/:id' element={<Agendamento />} />
           <Route path='/agendamento/edit/:id' element={<AgendamentoEdit />} />
