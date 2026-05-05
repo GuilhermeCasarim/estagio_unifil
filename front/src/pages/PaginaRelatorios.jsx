@@ -1,4 +1,5 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 import { BarChart3, CalendarRange, DollarSign, Users, Package2, ArrowRight } from 'lucide-react'
 
 const relatorios = [
@@ -6,29 +7,34 @@ const relatorios = [
     titulo: 'Agendamentos por período e profissional',
     descricao: 'Resumo dos agendamentos filtrados por intervalo de datas e profissional responsável.',
     icone: CalendarRange,
-    destaque: 'Agenda'
+    destaque: 'Agenda',
+    rota: '/relatorios/agendamentos'
   },
   {
     titulo: 'Faturamento por serviço, profissional e cliente',
     descricao: 'Visão consolidada do faturamento por serviço prestado, profissional atendente e cliente.',
     icone: DollarSign,
-    destaque: 'Financeiro'
+    destaque: 'Financeiro',
+    rota: '/relatorios/faturamento'
   },
   {
     titulo: 'Materiais mais usados',
     descricao: 'Ranking dos materiais com maior consumo para apoiar reposição e controle de estoque.',
     icone: Package2,
-    destaque: 'Estoque'
+    destaque: 'Estoque',
+    rota: '/relatorios/materiais'
   },
   {
     titulo: 'Clientes mais ativos',
     descricao: 'Lista dos clientes com maior volume de atendimentos e recorrência.',
     icone: Users,
-    destaque: 'Clientes'
+    destaque: 'Clientes',
+    rota: '/relatorios/clientes'
   }
 ]
 
 export const PaginaRelatorios = () => {
+  const navigate = useNavigate()
   return (
     <div className='space-y-8'>
       <div className='header border-b-2 border-gray-400 pb-2'>
@@ -55,7 +61,8 @@ export const PaginaRelatorios = () => {
           return (
             <div
               key={relatorio.titulo}
-              className='rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-md'
+              onClick={() => navigate(relatorio.rota)}
+              className='rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-md cursor-pointer'
             >
               <div className='flex items-start justify-between gap-4'>
                 <div className='space-y-3'>
