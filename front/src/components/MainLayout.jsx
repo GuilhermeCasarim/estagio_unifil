@@ -10,6 +10,7 @@ import { PaginaAgendamentos } from '../pages/PaginaAgendamentos'
 import { AgendamentoNovo } from '../pages/AgendamentoNovo'
 import { Agendamento } from '../pages/Agendamento'
 import { AgendamentoEdit } from '../pages/AgendamentoEdit'
+import { PeriodoAgendamentos } from '../pages/PeriodoAgendamentos'
 import { Error } from '../pages/Error'
 import { Route, Routes } from 'react-router-dom'
 import { PaginaProfissionais } from '../pages/PaginaProfissionais'
@@ -55,6 +56,7 @@ export const MainLayout = () => {
           <Route path='/cliente/edit/:id' element={<ClienteEdit />} />
           <Route path='/clientes' element={<PaginaClientes />} />
           <Route path='/agendamentos' element={<PaginaAgendamentos />} />
+          <Route path='/agendamentos/periodo' element={<PeriodoAgendamentos />} />
           <Route path='/agendamentos/historico' element={<HistoricoAgendamentos />} />
           <Route path='/agendamento/novo' element={<AgendamentoNovo />} />
           <Route path='/agendamento/:id' element={<Agendamento />} />

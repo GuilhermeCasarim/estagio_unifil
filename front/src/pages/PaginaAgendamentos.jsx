@@ -94,6 +94,12 @@ export const PaginaAgendamentos = () => {
                 <div className='flex items-center gap-2'>
                     <button
                         className='cursor-pointer rounded-full border border-gray-300 px-4 py-1 text-gray-700 hover:bg-gray-100 transition duration-300'
+                        onClick={() => navigate('/agendamentos/periodo')}
+                    >
+                        Período
+                    </button>
+                    <button
+                        className='cursor-pointer rounded-full border border-gray-300 px-4 py-1 text-gray-700 hover:bg-gray-100 transition duration-300'
                         onClick={() => navigate('/agendamentos/historico')}
                     >
                         Histórico

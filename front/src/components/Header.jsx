@@ -19,7 +19,6 @@ export const Header = () => {
           <Link className='flex gap-2' to='/'> <Home /> Início</Link>
           <Link className='flex gap-2' to='/clientes'> <Users /> Clientes</Link>
           <Link className='flex gap-2' to='/agendamentos'> <NotebookText />Agendamentos</Link>
-          <Link className='flex gap-2 pl-7 text-sm text-gray-700' to='/agendamentos/historico'>Histórico de agendamentos</Link>
           <Link className='flex gap-2' to='/profissionais'> <UserStar /> Profissionais</Link>
           <Link className='flex gap-2' to='/servicos'> <Scissors /> Serviços</Link>
           <Link className='flex gap-2' to='/produtos'> <Package /> Estoque</Link>
