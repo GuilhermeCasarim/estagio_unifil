@@ -109,10 +109,6 @@ export const PaginaClientes = () => {
             </div>
 
             <div className="totalClientes bg-blue-200 p-2 rounded space-y-4 flex justify-between">
-                <div className="clientesPagina">
-                    <span className='flex gap-4'><Users /> {listaClientesMutavel.length}</span>
-                    <p>Total de clientes na página</p>
-                </div>
                 <div className="clientesTotal">
                     <span className='flex gap-4'><Users /> {totalClientes}</span>
                     <p>Total de clientes no salão</p>
@@ -147,53 +143,63 @@ export const PaginaClientes = () => {
                 </div>
             </div>
 
-            <div className="clientesData grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 bg-blue-200 p-4">
-                {listaClientesMutavel.map((cliente, key) => (
-                    <div className="cliente-card  bg-white  cursor-pointer
+            <div className="clientesData bg-blue-200 p-4 rounded">
+                {listaClientesMutavel.length === 0 ? (
+                    <div className="flex min-h-40 items-center justify-center rounded border border-dashed border-blue-300 bg-white/70 p-6 text-center text-gray-600">
+                        <p className="text-sm font-medium">
+                            {search ? 'Nenhum cliente encontrado com este filtro.' : 'Nenhum cliente cadastrado.'}
+                        </p>
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                        {listaClientesMutavel.map((cliente, key) => (
+                            <div className="cliente-card  bg-white  cursor-pointer
                      hover:bg-gray-200 transiton duration-300 p-2 flex flex-col gap-8" key={key}
-                        onClick={() => navigate(`/cliente/${cliente.id}`)}>
+                                onClick={() => navigate(`/cliente/${cliente.id}`)}>
 
-                        <div className="card-header flex justify-between items-center">
-                            <div className="info1 flex flex-col gap-2">
-                                <span className=''>{cliente.nome}</span>
-                                <div className="others-info flex gap-1">
-                                    <button className='bg-teal-400 text-white px-4 py-1 rounded-full hover:bg-teal-500 transition duration-300'>Ativo</button>
-                                    <p className='flex gap-2 items-center'><Star className='text-yellow-500' size={12} /> 4.9</p>
+                                <div className="card-header flex justify-between items-center">
+                                    <div className="info1 flex flex-col gap-2">
+                                        <span className=''>{cliente.nome}</span>
+                                        <div className="others-info flex gap-1">
+                                            <button className='bg-teal-400 text-white px-4 py-1 rounded-full hover:bg-teal-500 transition duration-300'>Ativo</button>
+                                            <p className='flex gap-2 items-center'><Star className='text-yellow-500' size={12} /> 4.9</p>
+                                        </div>
+                                    </div>
+                                    <div className="buttons space-x-2 flex">
+                                        <button className='px-2 py-1 rounded text-gray-500 cursor-pointer'
+                                            onClick={(e) => {
+                                                e.stopPropagation()
+                                                handleEdit(cliente.id)
+                                            }}
+                                        >
+                                            <SquarePen />
+                                        </button>
+                                        <button className='px-2 py-1 rounded text-red-500 cursor-pointer' onClick={(e) => {
+                                            e.stopPropagation()
+                                            handleDelete(cliente.id)
+                                            setCurrentPage(1) //volta pra pagina 1 apos deletar
+                                        }
+                                        }>
+                                            <Trash2 />
+                                        </button>
+
+                                    </div>
+                                </div>
+                                {/* <Phone /> */}
+                                <div className="card-bottom info2 space-y-4 text-sm overflow-hidden">
+                                    <p className='flex gap-2 items-center flex-wrap'><Mail size={16} />{cliente.email}</p>
+                                    <p className='flex gap-2 items-center'><Phone size={16} />{cliente.telefone}</p>
+                                    <p className='flex gap-2 items-center'>{cliente.observacoes && (
+                                        <>
+                                            <Star size={16} />
+                                            {cliente.observacoes}
+                                        </>
+                                    )}</p>
                                 </div>
                             </div>
-                            <div className="buttons space-x-2 flex">
-                                <button className='px-2 py-1 rounded text-gray-500 cursor-pointer'
-                                    onClick={(e) => {
-                                        e.stopPropagation()
-                                        handleEdit(cliente.id)
-                                    }}
-                                >
-                                    <SquarePen />
-                                </button>
-                                <button className='px-2 py-1 rounded text-red-500 cursor-pointer' onClick={(e) => {
-                                    e.stopPropagation()
-                                    handleDelete(cliente.id)
-                                    setCurrentPage(1) //volta pra pagina 1 apos deletar
-                                }
-                                }>
-                                    <Trash2 />
-                                </button>
-
-                            </div>
-                        </div>
-                        {/* <Phone /> */}
-                        <div className="card-bottom info2 space-y-4 text-sm overflow-hidden">
-                            <p className='flex gap-2 items-center flex-wrap'><Mail size={16} />{cliente.email}</p>
-                            <p className='flex gap-2 items-center'><Phone size={16} />{cliente.telefone}</p>
-                            <p className='flex gap-2 items-center'>{cliente.observacoes && (
-                                <>
-                                    <Star size={16} />
-                                    {cliente.observacoes}
-                                </>
-                            )}</p>
-                        </div>
+                        ))}
                     </div>
-                ))}
+                )}
             </div>
         </div>
     )

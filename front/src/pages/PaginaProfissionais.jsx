@@ -90,10 +90,6 @@ export const PaginaProfissionais = () => {
             </div>
 
             <div className="totalProf bg-blue-200 p-2 rounded space-y-4 flex justify-between">
-                <div className="clientesPagina">
-                    <span className='flex gap-4'><Users /> {profissionais.length}</span>
-                    <p>Total de profissionais na página</p>
-                </div>
                 <div className="clientesTotal">
                     <span className='flex gap-4'><Users /> {totalProfissionais}</span>
                     <p>Total de profissionais no salão</p>
@@ -137,64 +133,74 @@ export const PaginaProfissionais = () => {
                 </div>
             </div>
 
-            <div className="profissionaisData grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 bg-blue-200 p-4">
-                {profissionais.map((profissional, key) => (
-                    <div className="profissional-card bg-white cursor-pointer hover:bg-gray-200 transition duration-300 p-2 flex flex-col gap-8"
-                        key={key}
-                        onClick={() => navigate(`/profissional/${profissional.id}`)}>
+            <div className="profissionaisData bg-blue-200 p-4 rounded">
+                {profissionais.length === 0 ? (
+                    <div className="flex min-h-40 items-center justify-center rounded border border-dashed border-blue-300 bg-white/70 p-6 text-center text-gray-600">
+                        <p className="text-sm font-medium">
+                            {search ? 'Nenhum profissional encontrado com este filtro.' : 'Nenhum profissional cadastrado.'}
+                        </p>
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                        {profissionais.map((profissional, key) => (
+                            <div className="profissional-card bg-white cursor-pointer hover:bg-gray-200 transition duration-300 p-2 flex flex-col gap-8"
+                                key={key}
+                                onClick={() => navigate(`/profissional/${profissional.id}`)}>
 
-                        <div className="card-header flex justify-between items-center">
-                            <div className="info1 flex flex-col gap-2">
-                                <span className='font-bold'>{profissional.nome}</span>
-                                <div className="others-info flex gap-1 items-center">
-                                    <button className='bg-teal-400 text-white px-3 py-0.5 rounded-full hover:bg-teal-500 transition duration-300 text-xs'>
-                                        {getEspecialidadesLabel(profissional).split(',')[0]}
-                                    </button>
-                                    <p className='flex gap-1 items-center text-gray-500 text-xs'>
-                                        <Clock size={12} /> {profissional.horario_inicio} - {profissional.horario_fim}
+                                <div className="card-header flex justify-between items-center">
+                                    <div className="info1 flex flex-col gap-2">
+                                        <span className='font-bold'>{profissional.nome}</span>
+                                        <div className="others-info flex gap-1 items-center">
+                                            <button className='bg-teal-400 text-white px-3 py-0.5 rounded-full hover:bg-teal-500 transition duration-300 text-xs'>
+                                                {getEspecialidadesLabel(profissional).split(',')[0]}
+                                            </button>
+                                            <p className='flex gap-1 items-center text-gray-500 text-xs'>
+                                                <Clock size={12} /> {profissional.horario_inicio} - {profissional.horario_fim}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className="buttons space-x-2 flex">
+                                        <button className='px-2 py-1 rounded text-gray-400 cursor-pointer hover:text-teal-600'
+                                            onClick={(e) => {
+                                                e.stopPropagation()
+                                                handleEdit(profissional.id)
+                                            }}
+                                        >
+                                            <SquarePen size={20} />
+                                        </button>
+                                        <button className='px-2 py-1 rounded text-red-400 cursor-pointer hover:text-red-600'
+                                            onClick={(e) => {
+                                                e.stopPropagation()
+                                                handleDelete(profissional.id)
+                                            }}
+                                        >
+                                            <Trash2 size={20} />
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div className="card-bottom info2 space-y-3 text-sm overflow-hidden">
+                                    <p className='flex gap-2 items-center flex-wrap'>
+                                        <Mail size={16} className="text-gray-400" />
+                                        {profissional.email}
                                     </p>
+                                    <p className='flex gap-2 items-center'>
+                                        <Phone size={16} className="text-gray-400" />
+                                        {profissional.telefone}
+                                    </p>
+                                    <div className="bg-gray-50 p-2 rounded border-l-2 border-teal-400">
+                                        <p className='flex gap-2 items-center text-xs font-semibold text-teal-700 mb-1'>
+                                            <Calendar size={14} /> {profissional.dias_ativos}
+                                        </p>
+                                        <p className='flex gap-2 items-center text-xs text-gray-600 italic'>
+                                            <Briefcase size={14} /> {getEspecialidadesLabel(profissional)}
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
-                            <div className="buttons space-x-2 flex">
-                                <button className='px-2 py-1 rounded text-gray-400 cursor-pointer hover:text-teal-600'
-                                    onClick={(e) => {
-                                        e.stopPropagation()
-                                        handleEdit(profissional.id)
-                                    }}
-                                >
-                                    <SquarePen size={20} />
-                                </button>
-                                <button className='px-2 py-1 rounded text-red-400 cursor-pointer hover:text-red-600'
-                                    onClick={(e) => {
-                                        e.stopPropagation()
-                                        handleDelete(profissional.id)
-                                    }}
-                                >
-                                    <Trash2 size={20} />
-                                </button>
-                            </div>
-                        </div>
-
-                        <div className="card-bottom info2 space-y-3 text-sm overflow-hidden">
-                            <p className='flex gap-2 items-center flex-wrap'>
-                                <Mail size={16} className="text-gray-400" />
-                                {profissional.email}
-                            </p>
-                            <p className='flex gap-2 items-center'>
-                                <Phone size={16} className="text-gray-400" />
-                                {profissional.telefone}
-                            </p>
-                            <div className="bg-gray-50 p-2 rounded border-l-2 border-teal-400">
-                                <p className='flex gap-2 items-center text-xs font-semibold text-teal-700 mb-1'>
-                                    <Calendar size={14} /> {profissional.dias_ativos}
-                                </p>
-                                <p className='flex gap-2 items-center text-xs text-gray-600 italic'>
-                                    <Briefcase size={14} /> {getEspecialidadesLabel(profissional)}
-                                </p>
-                            </div>
-                        </div>
+                        ))}
                     </div>
-                ))}
+                )}
             </div>
         </div>
     )

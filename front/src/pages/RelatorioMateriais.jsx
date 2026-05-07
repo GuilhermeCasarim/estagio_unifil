@@ -25,6 +25,11 @@ export const RelatorioMateriais = () => {
 
       // Para cada agendamento, buscar o serviço completo (com produtos) e agregar consumo
       const mapa = new Map()
+      // Criar mapa de volume_unidade dos produtos para referência rápida
+      const mapaProdutos = new Map()
+      listaProdutos.forEach((p) => {
+        mapaProdutos.set(p.id, { volume_unidade: p.volume_unidade, unidade_medida: p.unidade_medida })
+      })
 
       await Promise.all(agendamentos.map(async (ag) => {
         const servicoId = ag.servico_id || ag.Servico?.id
@@ -37,12 +42,13 @@ export const RelatorioMateriais = () => {
               const quantidade = Number(produto.ServicosProduto?.quantidade_gasta) || 0
               const id = produto.id
               const nome = produto.nome || 'Produto sem nome'
+              const volumeInfo = mapaProdutos.get(id) || {}
 
               if (mapa.has(id)) {
                 const existente = mapa.get(id)
                 mapa.set(id, { ...existente, quantidade_total: existente.quantidade_total + quantidade })
               } else {
-                mapa.set(id, { id, nome, quantidade_total: quantidade })
+                mapa.set(id, { id, nome, quantidade_total: quantidade, volume_unidade: volumeInfo.volume_unidade, unidade_medida: volumeInfo.unidade_medida })
               }
             })
           }
@@ -55,7 +61,7 @@ export const RelatorioMateriais = () => {
       // garantir que produtos cadastrados mas não usados apareçam com quantidade 0
       listaProdutos.forEach((p) => {
         if (!mapa.has(p.id)) {
-          mapa.set(p.id, { id: p.id, nome: p.nome || 'Produto sem nome', quantidade_total: 0 })
+          mapa.set(p.id, { id: p.id, nome: p.nome || 'Produto sem nome', quantidade_total: 0, volume_unidade: p.volume_unidade, unidade_medida: p.unidade_medida })
         }
       })
 
@@ -76,6 +82,18 @@ export const RelatorioMateriais = () => {
       setCarregando(false)
     }
   }, [])
+
+  const formatQuantidadeConsumida = (quantidadeTotal, volumeUnidade) => {
+    const volume = Number(volumeUnidade) || 0
+    const total = Number(quantidadeTotal) || 0
+
+    if (!volume) {
+      return `${total}ml`
+    }
+
+    const unidades = total / volume
+    return `${unidades.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} un (${total}ml)`
+  }
 
   useEffect(() => {
     buscarDados()
@@ -142,8 +160,8 @@ export const RelatorioMateriais = () => {
                 </div>
                 <div className='flex items-center gap-8'>
                   <div className='text-right'>
-                    <p className='text-2xl font-bold text-teal-600'>{item.quantidade_total}</p>
-                    <p className='text-xs text-gray-500'>unidades consumidas</p>
+                    <p className='text-2xl font-bold text-teal-600'>{formatQuantidadeConsumida(item.quantidade_total, item.volume_unidade)}</p>
+                    <p className='text-xs text-gray-500'>consumido</p>
                   </div>
                   <div className='h-2 w-24 rounded-full bg-gray-200'>
                     <div
