@@ -43,7 +43,9 @@ class FinanceiroController {
             forma_pagamento,
             categoria,
             status,
-            data_pagamento
+            data_pagamento,
+            agendamento_id,
+            cliente_id
         } = req.body;
 
         try {
@@ -54,7 +56,9 @@ class FinanceiroController {
                 forma_pagamento,
                 categoria,
                 status,
-                data_pagamento
+                data_pagamento,
+                agendamento_id,
+                cliente_id
             });
             return res.status(201).json(novaTransacao);
         } catch (e) {

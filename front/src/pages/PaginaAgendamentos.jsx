@@ -52,6 +52,10 @@ export const PaginaAgendamentos = () => {
     }
 
     const handleFinalizar = (agendamento) => {
+        const dataAgendamento = agendamento.data_hora
+            ? String(agendamento.data_hora).slice(0, 10)
+            : new Date().toISOString().slice(0, 10)
+
         setAgendamentoSelecionado({
             agendamento_id: agendamento.id,
             cliente_id: agendamento.cliente_id,
@@ -61,7 +65,7 @@ export const PaginaAgendamentos = () => {
             categoria: 'Serviços',
             forma_pagamento: '',
             status: 'Pago',
-            data_pagamento: new Date().toISOString().slice(0, 10)
+            data_pagamento: dataAgendamento
         })
         setIsFinanceiroOpen(true)
     }

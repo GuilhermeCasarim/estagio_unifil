@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
@@ -28,6 +28,7 @@ export const FinanceiroNovo = ({
   isModal = false
 }) => {
   const bloquearCampos = isModal
+  const ultimoResetRef = useRef('')
 
   const {
     register,
@@ -39,6 +40,10 @@ export const FinanceiroNovo = ({
   const navigate = useNavigate()
 
   useEffect(() => {
+    if (!initialValues || Object.keys(initialValues).length === 0) {
+      return
+    }
+
     const payload = {
       ...defaultValues,
       ...initialValues,
@@ -47,7 +52,14 @@ export const FinanceiroNovo = ({
         : defaultValues.data_pagamento
     }
 
+    const chaveReset = JSON.stringify(payload)
+
+    if (ultimoResetRef.current === chaveReset) {
+      return
+    }
+
     reset(payload)
+    ultimoResetRef.current = chaveReset
   }, [initialValues, reset])
 
   const onSubmit = async (data) => {

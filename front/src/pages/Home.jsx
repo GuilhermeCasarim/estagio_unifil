@@ -16,20 +16,26 @@ export const Home = () => {
     const dia = dataAtual.getDate()
     const mes = dataAtual.toLocaleDateString('pt-BR', { month: 'long' })
 
+    const normalizarChaveData = (valor) => {
+        if (!valor) return ''
+        if (typeof valor === 'string') return valor.slice(0, 10)
+
+        const data = new Date(valor)
+        if (Number.isNaN(data.getTime())) return ''
+
+        return data.toISOString().slice(0, 10)
+    }
+
+    const hojeChave = `${String(dataAtual.getFullYear())}-${String(dataAtual.getMonth() + 1).padStart(2, '0')}-${String(dataAtual.getDate()).padStart(2, '0')}`
+
     // Função para verificar se um agendamento é do dia atual
     const ehAgendamentoHoje = (dataHora) => {
-        const agendamento = new Date(dataHora)
-        return agendamento.getDate() === dataAtual.getDate() &&
-            agendamento.getMonth() === dataAtual.getMonth() &&
-            agendamento.getFullYear() === dataAtual.getFullYear()
+        return normalizarChaveData(dataHora) === hojeChave
     }
 
     // Função para verificar se uma transação é do dia atual
     const ehTransacaoHoje = (dataPagamento) => {
-        const transacao = new Date(dataPagamento)
-        return transacao.getDate() === dataAtual.getDate() &&
-            transacao.getMonth() === dataAtual.getMonth() &&
-            transacao.getFullYear() === dataAtual.getFullYear()
+        return normalizarChaveData(dataPagamento) === hojeChave
     }
 
     // Calcula métricas financeiras do dia

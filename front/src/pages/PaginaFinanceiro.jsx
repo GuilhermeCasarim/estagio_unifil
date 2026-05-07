@@ -94,61 +94,72 @@ export const PaginaFinanceiro = () => {
         </div>
       </div>
 
-      <div className='financeiroData grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 bg-blue-200 p-4'>
-        {transacoes.map((transacao, key) => (
-          <div
-            className='financeiro-card bg-white cursor-pointer hover:bg-gray-200 transition duration-300 p-2 flex flex-col gap-6'
-            key={key}
-            onClick={() => navigate(`/financeiro/${transacao.id}`)}
-          >
-            <div className='card-header flex justify-between items-center'>
-              <div className='info1 flex flex-col gap-2'>
-                <span className='font-bold'>{transacao.descricao}</span>
-                <div className='others-info flex gap-2 items-center text-xs text-gray-500'>
-                  <span className={`font-semibold ${transacao.tipo === 'Receita' ? 'text-green-600' : 'text-red-600'}`}>
-                    {transacao.tipo}
-                  </span>
-                  <span>R$ {transacao.valor}</span>
-                </div>
-              </div>
-              <div className='buttons space-x-2 flex'>
-                <button
-                  className='px-2 py-1 rounded text-gray-400 cursor-pointer hover:text-teal-600'
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    handleEdit(transacao.id)
-                  }}
-                >
-                  <SquarePen size={20} />
-                </button>
-                <button
-                  className='px-2 py-1 rounded text-red-400 cursor-pointer hover:text-red-600'
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    handleDelete(transacao.id)
-                  }}
-                >
-                  <Trash2 size={20} />
-                </button>
-              </div>
-            </div>
-
-            <div className='card-bottom info2 space-y-2 text-sm overflow-hidden'>
-              <p className='flex gap-2 items-center'>
-                <Tag size={16} className='text-gray-400' />
-                {transacao.categoria}
-              </p>
-              <p className='flex gap-2 items-center'>
-                <CreditCard size={16} className='text-gray-400' />
-                {transacao.forma_pagamento}
-              </p>
-              <p className='flex gap-2 items-center'>
-                <Calendar size={16} className='text-gray-400' />
-                {transacao.data_pagamento ? String(transacao.data_pagamento).slice(0, 10) : 'Sem data'}
-              </p>
+      <div className='financeiroData rounded-xl bg-blue-200 p-4'>
+        {transacoes.length === 0 ? (
+          <div className='flex min-h-55 items-center justify-center rounded-xl border border-dashed border-blue-300 bg-white/70 p-6 text-center text-gray-600'>
+            <div className='space-y-2'>
+              <p className='text-lg font-semibold text-gray-800'>Nenhuma transação encontrada</p>
+              <p className='text-sm text-gray-500'>Quando houver entradas ou saídas registradas, elas vão aparecer aqui.</p>
             </div>
           </div>
-        ))}
+        ) : (
+          <div className='grid grid-cols-2 gap-8 lg:grid-cols-3 xl:grid-cols-4'>
+            {transacoes.map((transacao, key) => (
+              <div
+                className='financeiro-card bg-white cursor-pointer hover:bg-gray-200 transition duration-300 p-2 flex flex-col gap-6'
+                key={key}
+                onClick={() => navigate(`/financeiro/${transacao.id}`)}
+              >
+                <div className='card-header flex justify-between items-center'>
+                  <div className='info1 flex flex-col gap-2'>
+                    <span className='font-bold'>{transacao.descricao}</span>
+                    <div className='others-info flex gap-2 items-center text-xs text-gray-500'>
+                      <span className={`font-semibold ${transacao.tipo === 'Receita' ? 'text-green-600' : 'text-red-600'}`}>
+                        {transacao.tipo}
+                      </span>
+                      <span>R$ {transacao.valor}</span>
+                    </div>
+                  </div>
+                  <div className='buttons space-x-2 flex'>
+                    <button
+                      className='px-2 py-1 rounded text-gray-400 cursor-pointer hover:text-teal-600'
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        handleEdit(transacao.id)
+                      }}
+                    >
+                      <SquarePen size={20} />
+                    </button>
+                    <button
+                      className='px-2 py-1 rounded text-red-400 cursor-pointer hover:text-red-600'
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        handleDelete(transacao.id)
+                      }}
+                    >
+                      <Trash2 size={20} />
+                    </button>
+                  </div>
+                </div>
+
+                <div className='card-bottom info2 space-y-2 text-sm overflow-hidden'>
+                  <p className='flex gap-2 items-center'>
+                    <Tag size={16} className='text-gray-400' />
+                    {transacao.categoria}
+                  </p>
+                  <p className='flex gap-2 items-center'>
+                    <CreditCard size={16} className='text-gray-400' />
+                    {transacao.forma_pagamento}
+                  </p>
+                  <p className='flex gap-2 items-center'>
+                    <Calendar size={16} className='text-gray-400' />
+                    {transacao.data_pagamento ? String(transacao.data_pagamento).slice(0, 10) : 'Sem data'}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   )

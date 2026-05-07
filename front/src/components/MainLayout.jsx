@@ -41,6 +41,8 @@ import { Financeiro } from '../pages/Financeiro'
 import { HistoricoAgendamentos } from '../pages/HistoricoAgendamentos'
 import { RelatorioAgendamentos } from '../pages/RelatorioAgendamentos'
 import { RelatorioFaturamentos } from '../pages/RelatorioFaturamentos'
+import { RelatorioMateriais } from '../pages/RelatorioMateriais'
+import { RelatorioClientes } from '../pages/RelatorioClientes'
 
 export const MainLayout = () => {
   return (
@@ -91,6 +93,8 @@ export const MainLayout = () => {
           <Route path='/relatorios' element={<PaginaRelatorios />} />
           <Route path='/relatorios/agendamentos' element={<RelatorioAgendamentos />} />
           <Route path='/relatorios/faturamento' element={<RelatorioFaturamentos />} />
+          <Route path='/relatorios/materiais' element={<RelatorioMateriais />} />
+          <Route path='/relatorios/clientes' element={<RelatorioClientes />} />
 
           <Route path='*' element={<Error />} />
         </Routes>
