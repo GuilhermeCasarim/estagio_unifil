@@ -1,6 +1,6 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import { BarChart3, CalendarRange, DollarSign, Users, Package2, ArrowRight } from 'lucide-react'
+import { BarChart3, CalendarRange, DollarSign, Users, Package2, Package, ArrowRight } from 'lucide-react'
 
 const relatorios = [
   {
@@ -30,6 +30,13 @@ const relatorios = [
     icone: Users,
     destaque: 'Clientes',
     rota: '/relatorios/clientes'
+  },
+  {
+    titulo: 'Consumo de produtos por serviço e profissional',
+    descricao: 'Análise do consumo de materiais agregado por serviço e profissional para identificar os maiores consumidores.',
+    icone: Package,
+    destaque: 'Produtos',
+    rota: '/relatorios/produtos'
   }
 ]
 
@@ -50,7 +57,7 @@ export const PaginaRelatorios = () => {
         </div>
         <div className='inline-flex items-center gap-2 rounded-full bg-gray-200 px-4 py-2 text-sm text-gray-700'>
           <ArrowRight size={16} />
-          Base pronta para os 4 relatórios
+          Base pronta para os 5 relatórios
         </div>
       </div>
 
