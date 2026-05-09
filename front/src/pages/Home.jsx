@@ -203,9 +203,11 @@ export const Home = () => {
                                             <span className={`text-xs font-semibold px-2 py-1 rounded-full ${
                                                 ag.status === 'concluido' 
                                                     ? 'bg-green-100 text-green-700'
-                                                    : ag.status === 'em andamento'
-                                                    ? 'bg-yellow-100 text-yellow-700'
-                                                    : 'bg-blue-100 text-blue-700'
+                                                    : ag.status === 'cancelado'
+                                                    ? 'bg-red-100 text-red-700'
+                                                    : ag.status === 'confirmado'
+                                                    ? 'bg-blue-100 text-blue-700'
+                                                    : 'bg-gray-100 text-gray-700'
                                             }`}>
                                                 {ag.status.charAt(0).toUpperCase() + ag.status.slice(1)}
                                             </span>

@@ -17,8 +17,9 @@ export const PeriodoAgendamentos = () => {
 
   const STATUS_COLORS = {
     concluido: '#16a34a',
-    agendado: '#0ea5e9',
-    'em andamento': '#f59e0b'
+    cancelado: '#dc2626',
+    confirmado: '#0ea5e9',
+    agendado: '#6b7280'
   }
 
   // FETCH: responsabilidade única de buscar agendamentos

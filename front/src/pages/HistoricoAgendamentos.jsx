@@ -19,8 +19,9 @@ export const HistoricoAgendamentos = () => {
 
   const getStatusColor = (status) => {
     if (status === 'concluido') return 'text-green-600'
-    if (status === 'em andamento') return 'text-yellow-600'
-    return 'text-blue-600'
+    if (status === 'cancelado') return 'text-red-600'
+    if (status === 'confirmado') return 'text-blue-600'
+    return 'text-gray-600'
   }
 
   const buildParams = () => {
@@ -130,7 +131,8 @@ export const HistoricoAgendamentos = () => {
             <select name='status' value={filtros.status} onChange={onChangeFiltro} className='rounded-md border border-gray-300 p-2'>
               <option value=''>Todos</option>
               <option value='agendado'>Agendado</option>
-              <option value='em andamento'>Em andamento</option>
+              <option value='confirmado'>Confirmado</option>
+              <option value='cancelado'>Cancelado</option>
               <option value='concluido'>Concluído</option>
             </select>
           </div>
@@ -186,7 +188,7 @@ export const HistoricoAgendamentos = () => {
                   </p>
 
                   <p className={`flex items-center gap-2 font-semibold ${getStatusColor(ag.status)}`}>
-                    {ag.status === 'concluido' ? <CheckCircle size={16} /> : ag.status === 'em andamento' ? <Clock size={16} /> : <XCircle size={16} />}
+                    {ag.status === 'concluido' ? <CheckCircle size={16} /> : ag.status === 'cancelado' ? <XCircle size={16} /> : ag.status === 'confirmado' ? <Clock size={16} /> : <Clock size={16} />}
                     {ag.status?.charAt(0).toUpperCase() + ag.status?.slice(1) || '-'}
                   </p>
                 </div>

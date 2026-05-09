@@ -17,8 +17,9 @@ export const Agendamento = () => {
 
   const getStatusColor = (status) => {
     if (status === 'concluido') return 'text-green-600'
-    if (status === 'em andamento') return 'text-yellow-600'
-    return 'text-blue-600'
+    if (status === 'cancelado') return 'text-red-600'
+    if (status === 'confirmado') return 'text-blue-600'
+    return 'text-gray-600'
   }
 
   if (!agendamento) return <div className='p-8 text-center'>Carregando...</div>
@@ -50,7 +51,7 @@ export const Agendamento = () => {
           <p className='flex items-center gap-2'><strong>Data/Hora:</strong> {agendamento.data_hora ? new Date(agendamento.data_hora).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' }) : '-'}</p>
           <p className={`flex items-center gap-2 font-semibold ${getStatusColor(agendamento.status)}`}>
             <span>Status:</span>
-            {agendamento.status === 'concluido' ? <CheckCircle size={16} /> : agendamento.status === 'em andamento' ? <Clock size={16} /> : <XCircle size={16} />}
+            {agendamento.status === 'concluido' ? <CheckCircle size={16} /> : agendamento.status === 'cancelado' ? <XCircle size={16} /> : agendamento.status === 'confirmado' ? <Clock size={16} /> : <Clock size={16} />}
             {agendamento.status?.charAt(0).toUpperCase() + agendamento.status?.slice(1) || '-'}
           </p>
         </div>

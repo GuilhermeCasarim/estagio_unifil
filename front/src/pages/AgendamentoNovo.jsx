@@ -106,7 +106,8 @@ export const AgendamentoNovo = () => {
           <label className='font-semibold'>Status</label>
           <select {...register('status', { required: true })} defaultValue='agendado'>
             <option value='agendado'>Agendado</option>
-            <option value='em andamento'>Em andamento</option>
+            <option value='confirmado'>Confirmado</option>
+            <option value='cancelado'>Cancelado</option>
             <option value='concluido'>Concluído</option>
           </select>
         </div>

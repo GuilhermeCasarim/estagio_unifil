@@ -81,8 +81,9 @@ export const PaginaAgendamentos = () => {
 
     const getStatusColor = (status) => {
         if (status === 'concluido') return 'text-green-600'
-        if (status === 'em andamento') return 'text-yellow-600'
-        return 'text-blue-600'
+        if (status === 'cancelado') return 'text-red-600'
+        if (status === 'confirmado') return 'text-blue-600'
+        return 'text-gray-600'
     }
 
     return (
@@ -189,7 +190,7 @@ export const PaginaAgendamentos = () => {
                                     </span>
                                     <div className='flex items-center justify-between gap-3 pt-1'>
                                         <span className={`flex items-center gap-2 font-semibold ${getStatusColor(ag.status)}`}>
-                                            {ag.status === 'concluido' ? <CheckCircle size={16} /> : ag.status === 'em andamento' ? <Clock size={16} /> : <XCircle size={16} />}
+                                            {ag.status === 'concluido' ? <CheckCircle size={16} /> : ag.status === 'cancelado' ? <XCircle size={16} /> : ag.status === 'confirmado' ? <Clock size={16} /> : <Clock size={16} />}
                                             {ag.status?.charAt(0).toUpperCase() + ag.status?.slice(1) || '-'}
                                         </span>
 

@@ -45,12 +45,12 @@ export const RelatorioAgendamentos = () => {
     () => ({
       agendado: {
         label: 'Agendado',
-        classe: 'text-blue-600 bg-blue-50',
+        classe: 'text-gray-600 bg-gray-50',
         icone: Clock
       },
-      em_andamento: {
-        label: 'Em andamento',
-        classe: 'text-yellow-600 bg-yellow-50',
+      confirmado: {
+        label: 'Confirmado',
+        classe: 'text-blue-600 bg-blue-50',
         icone: Clock
       },
       concluido: {
@@ -71,7 +71,8 @@ export const RelatorioAgendamentos = () => {
     const statusCount = {
       total: agendamentos.length,
       agendado: agendamentos.filter((a) => a.status === 'agendado').length,
-      em_andamento: agendamentos.filter((a) => a.status === 'em_andamento').length,
+      confirmado: agendamentos.filter((a) => a.status === 'confirmado').length,
+      cancelado: agendamentos.filter((a) => a.status === 'cancelado').length,
       concluido: agendamentos.filter((a) => a.status === 'concluido').length
     }
     return statusCount
@@ -173,8 +174,12 @@ export const RelatorioAgendamentos = () => {
           <p className='mt-2 text-3xl font-bold text-blue-600'>{relatorioAgendamentos.agendado}</p>
         </div>
         <div className='rounded-lg border border-gray-200 bg-white p-6'>
-          <p className='text-sm text-yellow-600'>Em andamento</p>
-          <p className='mt-2 text-3xl font-bold text-yellow-600'>{relatorioAgendamentos.em_andamento}</p>
+          <p className='text-sm text-blue-600'>Confirmado</p>
+          <p className='mt-2 text-3xl font-bold text-blue-600'>{relatorioAgendamentos.confirmado}</p>
+        </div>
+        <div className='rounded-lg border border-gray-200 bg-white p-6'>
+          <p className='text-sm text-red-600'>Cancelado</p>
+          <p className='mt-2 text-3xl font-bold text-red-600'>{relatorioAgendamentos.cancelado}</p>
         </div>
         <div className='rounded-lg border border-gray-200 bg-white p-6'>
           <p className='text-sm text-green-600'>Concluído</p>
