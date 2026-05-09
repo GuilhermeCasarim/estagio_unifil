@@ -1,13 +1,15 @@
-import React, { useEffect, useState } from 'react'
-import { CalendarCheck, User, Scissors, UserCheck, Clock, CheckCircle, XCircle, SquarePen, Trash2 } from 'lucide-react'
+import React, { useContext, useEffect, useState } from 'react'
+import { CalendarCheck, User, Scissors, UserCheck, Clock, CheckCircle, XCircle, SquarePen, Trash2, DollarSign } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import Swal from 'sweetalert2'
 import { FinanceiroNovo } from './FinanceiroNovo'
+import { AuthContext } from '../helpers/AuthContext'
 
 export const PaginaAgendamentos = () => {
     const navigate = useNavigate()
+    const { authState } = useContext(AuthContext)
     const [agendamentos, setAgendamentos] = useState([])
     const [isFinanceiroOpen, setIsFinanceiroOpen] = useState(false)
     const [agendamentoSelecionado, setAgendamentoSelecionado] = useState(null)
@@ -59,6 +61,7 @@ export const PaginaAgendamentos = () => {
         setAgendamentoSelecionado({
             agendamento_id: agendamento.id,
             cliente_id: agendamento.cliente_id,
+            usuario_id: authState?.id || '',
             descricao: `${agendamento.Servico?.nome_servico?.nome || agendamento.Servico?.nome || '-'} - ${agendamento.Cliente?.nome || '-'}`,
             valor: Number(agendamento.Servico?.preco) || 0,
             tipo: 'Receita',
@@ -114,6 +117,26 @@ export const PaginaAgendamentos = () => {
                     >
                         <CalendarCheck size={18} /> Novo Agendamento
                     </button>
+                </div>
+            </div>
+
+            <div
+                className='cursor-pointer rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-md'
+                onClick={() => navigate('/relatorios/financeiro')}
+            >
+                <div className='flex items-center justify-between gap-4'>
+                    <div className='space-y-2'>
+                        <span className='inline-flex rounded-full bg-teal-100 px-3 py-1 text-xs font-semibold text-teal-700'>Financeiro</span>
+                        <div className='flex items-center gap-3'>
+                            <div className='rounded-2xl bg-teal-500 p-3 text-white'>
+                                <DollarSign size={22} />
+                            </div>
+                            <h2 className='text-lg font-semibold text-gray-800'>Relatório financeiro</h2>
+                        </div>
+                    </div>
+                    <p className='max-w-md text-sm leading-6 text-gray-600'>
+                        Acompanhe saldo diário, semanal e mensal, além do histórico com data, valor, categoria e responsável.
+                    </p>
                 </div>
             </div>
 

@@ -6,6 +6,8 @@ module.exports = router;
 // rota base: /financeiro
 router.get('/', FinanceiroController.getAll);
 
+router.get('/historico', FinanceiroController.getHistorico);
+
 router.get('/byId/:id', FinanceiroController.getById);
 
 router.post('/', FinanceiroController.create);

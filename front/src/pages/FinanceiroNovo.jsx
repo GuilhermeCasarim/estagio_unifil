@@ -1,9 +1,10 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useContext, useEffect, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { DollarSign, X } from 'lucide-react'
 import { toast } from 'react-toastify'
+import { AuthContext } from '../helpers/AuthContext'
 
 const defaultValues = {
   descricao: '',
@@ -14,7 +15,8 @@ const defaultValues = {
   status: 'Pago',
   data_pagamento: new Date().toISOString().slice(0, 10),
   agendamento_id: '',
-  cliente_id: ''
+  cliente_id: '',
+  usuario_id: ''
 }
 
 export const FinanceiroNovo = ({
@@ -29,6 +31,7 @@ export const FinanceiroNovo = ({
 }) => {
   const bloquearCampos = isModal
   const ultimoResetRef = useRef('')
+  const { authState } = useContext(AuthContext)
 
   const {
     register,
@@ -49,7 +52,8 @@ export const FinanceiroNovo = ({
       ...initialValues,
       data_pagamento: initialValues.data_pagamento
         ? String(initialValues.data_pagamento).slice(0, 10)
-        : defaultValues.data_pagamento
+        : defaultValues.data_pagamento,
+      usuario_id: initialValues.usuario_id || authState?.id || defaultValues.usuario_id
     }
 
     const chaveReset = JSON.stringify(payload)
@@ -60,14 +64,15 @@ export const FinanceiroNovo = ({
 
     reset(payload)
     ultimoResetRef.current = chaveReset
-  }, [initialValues, reset])
+  }, [initialValues, reset, authState?.id])
 
   const onSubmit = async (data) => {
     const payload = {
       ...data,
       valor: Number(data.valor),
       cliente_id: data.cliente_id ? Number(data.cliente_id) : undefined,
-      agendamento_id: data.agendamento_id ? Number(data.agendamento_id) : undefined
+      agendamento_id: data.agendamento_id ? Number(data.agendamento_id) : undefined,
+      usuario_id: data.usuario_id ? Number(data.usuario_id) : authState?.id ? Number(authState.id) : undefined
     }
 
     try {

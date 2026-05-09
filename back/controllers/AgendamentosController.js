@@ -390,7 +390,8 @@ class AgendamentosController {
                 const financeiroCriado = await Financeiro.create(
                     {
                         ...dadosFinanceiro,
-                        agendamento_id: id
+                        agendamento_id: id,
+                        usuario_id: dadosFinanceiro.usuario_id || null
                     },
                     { transaction }
                 );

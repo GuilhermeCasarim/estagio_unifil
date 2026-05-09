@@ -18,6 +18,13 @@ const relatorios = [
     rota: '/relatorios/faturamento'
   },
   {
+    titulo: 'Movimentações financeiras e saldo',
+    descricao: 'Histórico de entradas e saídas com saldo diário, semanal e mensal para acompanhar o caixa.',
+    icone: DollarSign,
+    destaque: 'Caixa',
+    rota: '/relatorios/financeiro'
+  },
+  {
     titulo: 'Materiais mais usados',
     descricao: 'Ranking dos materiais com maior consumo para apoiar reposição e controle de estoque.',
     icone: Package2,
@@ -57,7 +64,7 @@ export const PaginaRelatorios = () => {
         </div>
         <div className='inline-flex items-center gap-2 rounded-full bg-gray-200 px-4 py-2 text-sm text-gray-700'>
           <ArrowRight size={16} />
-          Base pronta para os 5 relatórios
+          Base pronta para os 6 relatórios
         </div>
       </div>
 

@@ -44,6 +44,7 @@ import { RelatorioFaturamentos } from '../pages/RelatorioFaturamentos'
 import { RelatorioMateriais } from '../pages/RelatorioMateriais'
 import { RelatorioClientes } from '../pages/RelatorioClientes'
 import { RelatorioProdutos } from '../pages/RelatorioProdutos'
+import { RelatorioFinanceiro } from '../pages/RelatorioFinanceiro'
 
 export const MainLayout = () => {
   return (
@@ -94,6 +95,7 @@ export const MainLayout = () => {
           <Route path='/relatorios' element={<PaginaRelatorios />} />
           <Route path='/relatorios/agendamentos' element={<RelatorioAgendamentos />} />
           <Route path='/relatorios/faturamento' element={<RelatorioFaturamentos />} />
+          <Route path='/relatorios/financeiro' element={<RelatorioFinanceiro />} />
           <Route path='/relatorios/materiais' element={<RelatorioMateriais />} />
           <Route path='/relatorios/clientes' element={<RelatorioClientes />} />
           <Route path='/relatorios/produtos' element={<RelatorioProdutos />} />

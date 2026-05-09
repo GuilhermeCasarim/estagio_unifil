@@ -49,5 +49,12 @@ module.exports = (sequelize, DataTypes) => {
         tableName: 'Financeiro'
     });
 
+    Financeiro.associate = (models) => {
+        Financeiro.belongsTo(models.Usuarios, {
+            foreignKey: 'usuario_id',
+            as: 'Responsavel'
+        });
+    };
+
     return Financeiro;
 };

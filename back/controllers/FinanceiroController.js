@@ -1,10 +1,18 @@
-const { Financeiro } = require('../models');
+const { Op } = require('sequelize');
+const { Financeiro, Usuarios } = require('../models');
 
 class FinanceiroController {
     async getAll(req, res) {
         try {
             const transacoes = await Financeiro.findAll({
-                order: [['data_pagamento', 'DESC']]
+                order: [['data_pagamento', 'DESC']],
+                include: [
+                    {
+                        model: Usuarios,
+                        as: 'Responsavel',
+                        attributes: ['id', 'login', 'tipo_login']
+                    }
+                ]
             });
             if (transacoes.length === 0) {
                 return res.status(200).json({
@@ -45,7 +53,8 @@ class FinanceiroController {
             status,
             data_pagamento,
             agendamento_id,
-            cliente_id
+            cliente_id,
+            usuario_id
         } = req.body;
 
         try {
@@ -58,7 +67,8 @@ class FinanceiroController {
                 status,
                 data_pagamento,
                 agendamento_id,
-                cliente_id
+                cliente_id,
+                usuario_id
             });
             return res.status(201).json(novaTransacao);
         } catch (e) {
@@ -122,6 +132,46 @@ class FinanceiroController {
             return res.json('Transacao nao encontrada ou ja deletada');
         } catch (e) {
             return res.status(500).json({ error: 'Erro ao deletar transacao' });
+        }
+    }
+
+    async getHistorico(req, res) {
+        const { inicio, fim } = req.query;
+
+        try {
+            const where = {};
+
+            if (inicio || fim) {
+                where.data_pagamento = {};
+
+                if (inicio) {
+                    where.data_pagamento[Op.gte] = new Date(inicio);
+                }
+
+                if (fim) {
+                    where.data_pagamento[Op.lte] = new Date(fim);
+                }
+            }
+
+            const historico = await Financeiro.findAll({
+                where,
+                order: [['data_pagamento', 'DESC']],
+                include: [
+                    {
+                        model: Usuarios,
+                        as: 'Responsavel',
+                        attributes: ['id', 'login', 'tipo_login']
+                    }
+                ]
+            });
+
+            return res.status(200).json(historico);
+        } catch (error) {
+            console.error('Erro ao buscar histórico financeiro:', error);
+            return res.status(500).json({
+                error: 'Erro interno no servidor ao tentar buscar o histórico financeiro.',
+                details: error.message
+            });
         }
     }
 }
