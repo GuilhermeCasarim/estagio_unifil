@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         tipo_login: {
-            type: DataTypes.STRING,
+            type: DataTypes.ENUM('administrador', 'profissional', 'secretaria'),
             allowNull: false
         },
     })
