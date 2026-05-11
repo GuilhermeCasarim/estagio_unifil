@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { CalendarCheck, User, Scissors, UserCheck, Clock, CheckCircle, XCircle, SquarePen, Trash2, DollarSign, BellRing } from 'lucide-react'
+import { CalendarCheck, User, Scissors, UserCheck, Clock, CheckCircle, XCircle, SquarePen, Trash2, BellRing } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { toast } from 'react-toastify'
@@ -86,6 +86,37 @@ export const PaginaAgendamentos = () => {
         return 'text-gray-600'
     }
 
+    const enviarNotificacaoZap = (agendamento) => {
+        const telefone = agendamento.Cliente.telefone
+        const nomeCliente = agendamento.Cliente.nome
+
+        const servico = agendamento.Servico.nome_servico.nome
+        const profissional = agendamento.Profissional.nome
+
+        let data = '-'
+        let horario = '-'
+        if (agendamento.data_hora) {
+            const dataObj = new Date(agendamento.data_hora)
+            data = dataObj.toLocaleDateString('pt-BR')
+            horario = dataObj.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+        }
+
+        const telefoneLimpo = telefone.replace(/\D/g, '')
+
+        //texto personalizado
+        const saudacao = "Olá *" + nomeCliente + "*! 👋"
+        const corpo = "\nPassando para confirmar seu horário de *" + servico + "* com o profissional *" + profissional + "*.\n"
+        const detalhes = "\n📅 *Data:* " + data + "\n⏰ *Hora:* " + horario
+
+        const mensagemFinal = saudacao + corpo + detalhes
+
+        // 3. Cria a URL da Public API do WhatsApp
+        const url = "https://api.whatsapp.com/send?phone=55" + telefoneLimpo + "&text=" + encodeURIComponent(mensagemFinal)
+
+        // 4. Abre o WhatsApp Web ou App em uma nova aba
+        window.open(url, '_blank')
+    }
+
     return (
         <div className='space-y-8'>
             <div className='header border-b-2 border-gray-400 pb-2'>
@@ -138,7 +169,14 @@ export const PaginaAgendamentos = () => {
                                 style={{ cursor: 'pointer' }}
                             >
                                 <div className='absolute top-2 right-2 flex gap-2'>
-                                    
+                                    {ag.status !== 'concluido' && ag.status !== 'cancelado' && (
+                                        <button 
+                                            className='px-2 py-1 text-green-500 cursor-pointer hover:text-green-600 transition duration-300'
+                                            onClick={(e) => { e.stopPropagation(); enviarNotificacaoZap(ag) }}
+                                        >
+                                            <BellRing size={20} />
+                                        </button>
+                                    )}
                                     <button
                                         className='px-2 py-1 rounded text-gray-400 cursor-pointer hover:text-teal-600'
                                         onClick={(e) => { e.stopPropagation(); handleEdit(ag.id) }}
