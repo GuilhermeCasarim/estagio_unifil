@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { CalendarCheck, User, Scissors, UserCheck, Clock, CheckCircle, XCircle, SquarePen, Trash2, DollarSign } from 'lucide-react'
+import { CalendarCheck, User, Scissors, UserCheck, Clock, CheckCircle, XCircle, SquarePen, Trash2, DollarSign, BellRing } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { toast } from 'react-toastify'
@@ -121,26 +121,6 @@ export const PaginaAgendamentos = () => {
                 </div>
             </div>
 
-            <div
-                className='cursor-pointer rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-md'
-                onClick={() => navigate('/relatorios/financeiro')}
-            >
-                <div className='flex items-center justify-between gap-4'>
-                    <div className='space-y-2'>
-                        <span className='inline-flex rounded-full bg-teal-100 px-3 py-1 text-xs font-semibold text-teal-700'>Financeiro</span>
-                        <div className='flex items-center gap-3'>
-                            <div className='rounded-2xl bg-teal-500 p-3 text-white'>
-                                <DollarSign size={22} />
-                            </div>
-                            <h2 className='text-lg font-semibold text-gray-800'>Relatório financeiro</h2>
-                        </div>
-                    </div>
-                    <p className='max-w-md text-sm leading-6 text-gray-600'>
-                        Acompanhe saldo diário, semanal e mensal, além do histórico com data, valor, categoria e responsável.
-                    </p>
-                </div>
-            </div>
-
             <div className='agendamentosData grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 bg-blue-200 p-4 rounded-xl min-h-30'>
                 {agendamentos.length === 0 ? (
                     <div className='text-gray-500 col-span-full text-center'>Nenhum agendamento cadastrado.</div>
@@ -158,6 +138,7 @@ export const PaginaAgendamentos = () => {
                                 style={{ cursor: 'pointer' }}
                             >
                                 <div className='absolute top-2 right-2 flex gap-2'>
+                                    
                                     <button
                                         className='px-2 py-1 rounded text-gray-400 cursor-pointer hover:text-teal-600'
                                         onClick={(e) => { e.stopPropagation(); handleEdit(ag.id) }}
