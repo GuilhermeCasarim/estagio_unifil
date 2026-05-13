@@ -20,11 +20,12 @@ class UsuarioController {
         if (!usuario) return res.json({ error: 'usuario nao existe' }) //retorna usuario
 
         bcrypt.compare(senha, usuario.senha).then((match) => {
-            if (!match) return res.json({ error: 'senha errada' }) //se fizer login(info certas), faz o token
-            const accessToken = sign({ login: usuario.login, id: usuario.id }, process.env.JWT_SECRET)
+            if (!match) return res.json({ error: 'senha errada' }) 
+                //erro se login errado
+            const accessToken = sign({ login: usuario.login, id: usuario.id, tipo_login: usuario.tipo_login }, process.env.JWT_SECRET)
             console.log(accessToken)
             //token -> credencial de login; a funcao sign cria o token
-            return res.json({ token: accessToken, login: usuario.login, id: usuario.id })
+            return res.json({ token: accessToken, login: usuario.login, id: usuario.id, tipo_login: usuario.tipo_login })
         })
     }
 
