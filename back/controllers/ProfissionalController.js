@@ -76,13 +76,17 @@ class ProfissionalController {
     }
 
     async create(req, res) {
-        const { nomes_servico_ids, ...profissional } = req.body
+        const { nomes_servico_ids, login, senha, ...profissional } = req.body
         const nomesIds = Array.isArray(nomes_servico_ids)
             ? nomes_servico_ids.map((id) => Number(id)).filter((id) => Number.isInteger(id))
             : []
         try {
             if (nomesIds.length === 0) {
                 return res.status(400).json({ error: 'Selecione ao menos um nome de servico.' })
+            }
+
+            if (!login || !senha) {
+                return res.status(400).json({ error: 'Login e senha são obrigatórios para cadastrar um profissional.' })
             }
 
             const nomesUnicos = [...new Set(nomesIds)]
@@ -97,9 +101,15 @@ class ProfissionalController {
 
             const transaction = await Profissionais.sequelize.transaction()
             try {
+                const novoUsuario = await Usuarios.create({
+                    login,
+                    senha,
+                    tipo_login: 'profissional'
+                }, { transaction })
+
                 const especialidades = nomes.map((nome) => nome.nome).join(', ')
                 const novoProfissional = await Profissionais.create(
-                    { ...profissional, especialidades },
+                    { ...profissional, especialidades, usuario_id: novoUsuario.id },
                     { transaction }
                 )
 
@@ -127,6 +137,9 @@ class ProfissionalController {
                 throw error
             }
         } catch (e) {
+            if (e.name === 'SequelizeUniqueConstraintError') {
+                return res.status(400).json({ error: 'Este login já está em uso. Escolha outro.' });
+            }
             return res.status(400).json({ error: 'Erro ao criar profissional.' })
         }
     }
