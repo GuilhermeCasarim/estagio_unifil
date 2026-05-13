@@ -27,9 +27,18 @@ module.exports = (sequelize, DataTypes) => {
         especialidades: {
             type: DataTypes.STRING,
             allowNull: true
+        },
+        usuario_id: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            unique: true
         }
     })
     Profissionais.associate = (models) => {
+        Profissionais.belongsTo(models.Usuarios, {
+            foreignKey: 'usuario_id',
+            as: 'Usuario'
+        });
         Profissionais.belongsToMany(models.Servicos, {
             through: models.ProfissionaisServico,
             foreignKey: 'profissional_id',

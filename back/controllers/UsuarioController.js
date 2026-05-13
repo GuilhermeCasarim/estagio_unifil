@@ -4,15 +4,14 @@ const { sign } = require('jsonwebtoken');
 
 class UsuarioController {
     async create(req, res) {
-        const { login, senha, tipo_login = 'secretaria' } = req.body
-        bcrypt.hash(senha, 10).then((hash) => {
-            Usuarios.create({
-                login,
-                senha: hash,
-                tipo_login
-            })
-            res.json('sucesso ao criar usuario')
-        })
+        const { login, senha, tipo_login } = req.body;
+        await Usuarios.create({
+            login,
+            senha,
+            tipo_login
+        });
+
+        res.json('Sucesso ao criar usuário!');
     }
 
     async login(req, res) {
