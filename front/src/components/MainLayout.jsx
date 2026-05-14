@@ -36,6 +36,7 @@ import { NomesServicoEdit } from '../pages/NomesServicoEdit'
 import { FinanceiroEdit } from '../pages/FinanceiroEdit'
 import { PaginaFinanceiro } from '../pages/PaginaFinanceiro'
 import { PaginaRelatorios } from '../pages/PaginaRelatorios'
+import { PaginaEquipe } from '../pages/PaginaEquipe'
 import { FinanceiroNovo } from '../pages/FinanceiroNovo'
 import { Financeiro } from '../pages/Financeiro'
 import { HistoricoAgendamentos } from '../pages/HistoricoAgendamentos'
@@ -99,6 +100,7 @@ export const MainLayout = () => {
           <Route path='/relatorios/materiais' element={<RelatorioMateriais />} />
           <Route path='/relatorios/clientes' element={<RelatorioClientes />} />
           <Route path='/relatorios/produtos' element={<RelatorioProdutos />} />
+          <Route path='/equipe' element={<PaginaEquipe />} />
 
           <Route path='*' element={<Error />} />
         </Routes>

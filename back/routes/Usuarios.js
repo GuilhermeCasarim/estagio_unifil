@@ -11,3 +11,5 @@ router.post('/login', UsuarioController.login)
 
 router.get('/auth', validateToken, UsuarioController.loginValidate)
 
+router.get('/list', UsuarioController.list)
+

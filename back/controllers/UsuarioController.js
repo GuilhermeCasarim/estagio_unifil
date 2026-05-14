@@ -1,4 +1,4 @@
-const { Usuarios } = require('../models');
+const { Usuarios, Profissionais } = require('../models');
 const bcrypt = require('bcrypt');
 const { sign } = require('jsonwebtoken');
 
@@ -10,7 +10,6 @@ class UsuarioController {
             senha,
             tipo_login
         });
-
         res.json('Sucesso ao criar usuário!');
     }
 
@@ -29,6 +28,16 @@ class UsuarioController {
         })
     }
 
+    async list(req, res) {
+        try {
+            const usuarios = await Usuarios.findAll({
+                attributes: ['id', 'login', 'tipo_login']
+            })
+            return res.json({ usuarios })
+        } catch (e) {
+            return res.status(500).json({ error: 'Erro ao listar usuários' })
+        }
+    }
     loginValidate(req, res) {
         res.json(req.usuario) //autentica o token para login
     }
