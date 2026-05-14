@@ -16,6 +16,8 @@ const validateToken = (req, res, next) => {
 }
 
 const isAdmin = (req, res, next) => {
+    console.log("DADOS QUE ESTÃO NO SEU TOKEN ATUAL:", req.usuario);
+    console.log("DADOS QUE ESTÃO NO SEU TOKEN ATUAL:", req.usuario.tipo_login);
     if (req.usuario && req.usuario.tipo_login === 'administrador') {
         return next();
     }

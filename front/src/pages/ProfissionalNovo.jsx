@@ -53,6 +53,7 @@ export const ProfissionalNovo = () => {
     }
 
     const onSubmit = (data) => {
+        const token = localStorage.getItem('accessToken');
         const cleanData = {
             ...data,
             nomes_servico_ids: buildNomesIds(nomesSelecionados),
@@ -60,22 +61,29 @@ export const ProfissionalNovo = () => {
             tipo_login: 'profissional'
         };
 
-        axios.post('http://localhost:3001/profissionais', cleanData)
+        axios.post('http://localhost:3001/profissionais', cleanData, {
+            headers: {
+                accessToken: token
+            }
+        })
             .then(() => {
                 toast.success('Profissional cadastrado com sucesso!');
                 navigate('/profissionais');
             })
             .catch((err) => {
                 console.error(err);
-                toast.error('Erro ao cadastrar profissional.');
+                if (err.response?.status === 403) {
+                    toast.error('Acesso negado: Somente administradores podem cadastrar profissionais.');
+                } else if (err.response?.status === 401) {
+                    toast.error('Sessão expirada ou inválida. Faça login novamente.');
+                } else {
+                    toast.error('Erro ao cadastrar profissional.');
+                }
             });
     };
 
     const onInvalid = (errors) => {
-        // Log para depuração
         console.log("Erros de validação do formulário:", errors);
-
-        // Toast de erro para alertar o usuário sobre campos obrigatórios/inválidos
         toast.error('ERRO. Revise os dados e tente novamente.')
     }
 
@@ -168,7 +176,7 @@ export const ProfissionalNovo = () => {
                         />
                         {errors?.horario_fim?.type == 'required' &&
                             <p className='text-red-500 text-sm'>Horário necessário!</p>}
-                            {errors?.horario_fim?.type == 'validate' &&
+                        {errors?.horario_fim?.type == 'validate' &&
                             <p className='text-red-500 text-sm'>O horário inicial deve ser anterior ao final!</p>}
                     </div>
                 </div>

@@ -1,4 +1,4 @@
-const { Profissionais, NomesServico, ProfissionaisNomesServico } = require('../models')
+const { Profissionais, NomesServico, ProfissionaisNomesServico, Usuarios } = require('../models')
 const { Op } = require('sequelize');
 
 class ProfissionalController {
