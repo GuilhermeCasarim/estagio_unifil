@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { Users, UserPlus, User, Search } from 'lucide-react'
 import { toast } from 'react-toastify'
+import { AuthContext } from '../helpers/AuthContext'
 
 export const PaginaEquipe = () => {
     const navigate = useNavigate()
     const [usuarios, setUsuarios] = useState([])
     const [filter, setFilter] = useState('todos')
-    const [showAdminForm, setShowAdminForm] = useState(false)
+    const { setShowAdminForm, showAdminForm } = useContext(AuthContext);
     const [form, setForm] = useState({ login: '', senha: '', tipo_usuario: '' })
 
     const fetchUsuarios = () => {

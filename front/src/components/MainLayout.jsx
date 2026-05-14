@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Header } from './Header'
 import { Home } from '../pages/Home'
 import { ClienteNovo } from '../pages/ClienteNovo'
@@ -46,15 +46,20 @@ import { RelatorioMateriais } from '../pages/RelatorioMateriais'
 import { RelatorioClientes } from '../pages/RelatorioClientes'
 import { RelatorioProdutos } from '../pages/RelatorioProdutos'
 import { RelatorioFinanceiro } from '../pages/RelatorioFinanceiro'
+import { AuthContext } from '../helpers/AuthContext'
 
 export const MainLayout = () => {
+  const { showAdminForm } = useContext(AuthContext)
+
   return (
     <div className='flex min-h-screen h-full bg-neutral-100'>
 
-      <aside className='w-1/5 fixed h-screen top-0 left-0 bg-neutral-100 z-50'>
+      <aside
+        className={`w-1/5 fixed h-screen top-0 left-0 z-50 transition-colors duration-300 ${showAdminForm ? 'bg-black/40' : 'bg-neutral-100'
+          }`}
+      >
         <Header />
       </aside>
-
       <main className='my-8 px-8 w-4/5 ml-[20%] '>
         <Routes>
           <Route path='/login' element={<Login />} />

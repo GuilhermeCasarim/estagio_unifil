@@ -9,10 +9,14 @@ import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
+
+  const [showAdminForm, setShowAdminForm] = useState(false)
   const [authState, setAuthState] = useState({
     login: '',
     id: 0,
-    status: false
+    status: false,
+    showAdminForm,
+    setShowAdminForm
   }) //state para renderizar o login com o localStorage
   useEffect(() => { //caso tenha token no localStorage, faz o login automatico
     axios.get('http://localhost:3001/auth/auth', {
@@ -46,11 +50,11 @@ function App() {
 
   return (
     <div className='min-h-screen'>
-      <AuthContext.Provider value={{ authState, setAuthState, logout }}>
-          <ToastContainer position='top-center' autoClose={3000} />
-          <BrowserRouter>
-            <MainLayout />
-          </BrowserRouter>
+      <AuthContext.Provider value={{ authState, setAuthState, logout, showAdminForm, setShowAdminForm }}>
+        <ToastContainer position='top-center' autoClose={3000} />
+        <BrowserRouter>
+          <MainLayout />
+        </BrowserRouter>
       </AuthContext.Provider>
     </div>
   )
