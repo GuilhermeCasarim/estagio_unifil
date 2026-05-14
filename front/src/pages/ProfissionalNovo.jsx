@@ -56,7 +56,8 @@ export const ProfissionalNovo = () => {
         const cleanData = {
             ...data,
             nomes_servico_ids: buildNomesIds(nomesSelecionados),
-            telefone: data.telefone.replace(/\D/g, '')
+            telefone: data.telefone.replace(/\D/g, ''),
+            tipo_login: 'profissional'
         };
 
         axios.post('http://localhost:3001/profissionais', cleanData)
@@ -147,18 +148,18 @@ export const ProfissionalNovo = () => {
                     </div>
                 </div>
 
-                <div className="bg-teal-50 p-6 rounded-lg border border-teal-100 grid grid-cols-2 gap-6">
-                    <div className="flex flex-col gap-2">
+                <div className="bg-teal-50 p-3 rounded-lg border border-teal-100 grid grid-cols-2 gap-3">
+                    <div className="flex flex-col gap-1.5">
                         <label className='font-medium flex items-center gap-1'><Clock size={16} /> Início</label>
-                        <input className='border p-3 rounded' type="time" {...register('horario_inicio', { required: true })} />
+                        <input className='border p-2 rounded' type="time" {...register('horario_inicio', { required: true })} />
                         {errors?.horario_inicio?.type == 'required' &&
                             <p className='text-red-500 text-sm'>Horário necessário!</p>}
 
                     </div>
-                    <div className="flex flex-col gap-2">
+                    <div className="flex flex-col gap-1.5">
                         <label className='font-medium flex items-center gap-1'><Clock size={16} /> Fim</label>
                         <input
-                            className={`border p-3 rounded ${errors.horario_fim ? 'border-red-500' : 'border-gray-300'}`}
+                            className={`border p-2 rounded ${errors.horario_fim ? 'border-red-500' : 'border-gray-300'}`}
                             type="time"
                             {...register('horario_fim', {
                                 required: true,
@@ -204,6 +205,36 @@ export const ProfissionalNovo = () => {
                                     </label>
                                 )
                             })}
+                        </div>
+                    </div>
+                </div>
+                <div className="border-t border-gray-200 pt-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="flex flex-col gap-1.5">
+                            <label className='font-semibold'>Login</label>
+                            <input
+                                type="text"
+                                name="login"
+                                id="login"
+                                placeholder="Login do profissional"
+                                className='border p-2 rounded'
+                                {...register('login', { required: true })}
+                            />
+                            {errors?.login?.type == 'required' &&
+                                <p className='text-red-500 text-sm'>Login necessário!</p>}
+                        </div>
+                        <div className="flex flex-col gap-1.5">
+                            <label className='font-semibold'>Senha</label>
+                            <input
+                                type="password"
+                                name="senha"
+                                id="senha"
+                                placeholder="Senha do profissional"
+                                className='border p-2 rounded'
+                                {...register('senha', { required: true })}
+                            />
+                            {errors?.senha?.type == 'required' &&
+                                <p className='text-red-500 text-sm'>Senha necessária!</p>}
                         </div>
                     </div>
                 </div>
