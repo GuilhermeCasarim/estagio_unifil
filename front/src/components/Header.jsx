@@ -1,10 +1,11 @@
 import React, { useContext } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { AuthContext } from '../helpers/AuthContext'
 import { ChartColumnIncreasing, DollarSign, Home, KeyRound, LogIn, LogOut, NotebookText, Package, Scissors, Star, Users, UserStar } from 'lucide-react'
 
 export const Header = () => {
   const { authState, logout } = useContext(AuthContext)
+  const navigate = useNavigate()
 
   return (
     <div className='flex flex-col text-black 
@@ -15,7 +16,16 @@ export const Header = () => {
         <Link className='text-blue-700 flex gap-2' to='/login'> <LogIn /> Login</Link>
       ) : (
         <nav className='navigation flex flex-col space-y-4'>
-          <Link onClick={logout} className='text-blue-700 flex gap-2'> <LogOut /> Sair</Link>
+          <button
+            type='button'
+            onClick={() => {
+              logout()
+              navigate('/login')
+            }}
+            className='text-blue-700 flex gap-2'
+          >
+            <LogOut /> Sair
+          </button>
           <Link className='flex gap-2' to='/'> <Home /> Início</Link>
           <Link className='flex gap-2' to='/clientes'> <Users /> Clientes</Link>
           <Link className='flex gap-2' to='/agendamentos'> <NotebookText />Agendamentos</Link>

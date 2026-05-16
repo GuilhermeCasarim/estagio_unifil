@@ -1,15 +1,14 @@
 import './index.css'
 import axios from 'axios'
-import { BrowserRouter } from 'react-router-dom'
 import { AuthContext } from './helpers/AuthContext'
 import { useEffect, useState } from 'react'
-import { Container } from './components/Container'
+import { useNavigate } from 'react-router-dom'
 import { MainLayout } from './components/MainLayout'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
-
+  const navigate = useNavigate();
   const [showAdminForm, setShowAdminForm] = useState(false)
   const [authState, setAuthState] = useState({
     login: '',
@@ -26,8 +25,8 @@ function App() {
     })
       .then((res) => { //verifica se o token existe
         if (res.data.error) {
-          alert('sem login detectado/erro')
-          setAuthState({ ...authState, status: false })
+          setAuthState((prev) => ({ ...prev, status: false }))
+          navigate('/login')
         } else { //caso exista um login digitado seja validado com o token
           setAuthState({
             login: res.data.login,
@@ -35,9 +34,8 @@ function App() {
             status: true
           })
         }
-        console.log(authState)
       })
-  }, [])
+  }, [navigate])
 
   useEffect(() => {
     console.log("O authState foi atualizado:", authState);
@@ -45,16 +43,18 @@ function App() {
 
   const logout = () => {
     localStorage.removeItem('accessToken')
-    setAuthState({ ...authState, status: false })
+    setAuthState({
+      login: '',
+      id: 0,
+      status: false
+    })
   }
 
   return (
     <div className='min-h-screen'>
       <AuthContext.Provider value={{ authState, setAuthState, logout, showAdminForm, setShowAdminForm }}>
         <ToastContainer position='top-center' autoClose={3000} />
-        <BrowserRouter>
-          <MainLayout />
-        </BrowserRouter>
+        <MainLayout />
       </AuthContext.Provider>
     </div>
   )
