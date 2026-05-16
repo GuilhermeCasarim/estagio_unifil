@@ -9,7 +9,7 @@ export const Login = () => {
     const [login, setLogin] = useState('')
     const [senha, setSenha] = useState('')
     const navigate = useNavigate()
-    const { setAuthState } = useContext(AuthContext) //var global p mudar estado
+    const { setAuthState } = useContext(AuthContext)
 
     const makeLogin = (e) => {
         e.preventDefault()
@@ -18,7 +18,7 @@ export const Login = () => {
             if (res.data.error) {
                 alert(res.data.error)
                 console.log('erro', res.data)
-            } else { // << Garante que só navega e salva se não houver erro
+            } else {
                 console.log(res.data)
                 localStorage.setItem('accessToken', res.data.token)
                 setAuthState({
@@ -26,10 +26,10 @@ export const Login = () => {
                     id: res.data.id,
                     status: true,
                 });
-                navigate('/') // <<< Chamado após salvar e atualizar estado
+                navigate('/')
             }
         })
-        // Remova o navigate('/') daqui
+
     }
     return (
         <div className='flex flex-col items-center mx-auto h-full bg-[#EAF3F2] py-4'>

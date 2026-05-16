@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Package, Tag, Layers, SquarePen, Trash2, Boxes, AlertTriangle, AlertOctagon } from 'lucide-react'
+import { Package, Tag, Layers, SquarePen, Trash2, Boxes, AlertTriangle, AlertOctagon, Plus } from 'lucide-react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import Swal from 'sweetalert2'
@@ -8,6 +8,9 @@ import Swal from 'sweetalert2'
 export const PaginaProdutos = () => {
   const navigate = useNavigate()
   const [produtos, setProdutos] = useState([])
+  const [showEntradaModal, setShowEntradaModal] = useState(false)
+  const [produtoSelecionado, setProdutoSelecionado] = useState(null)
+  const [quantidadeAdicionar, setQuantidadeAdicionar] = useState('')
 
   const totalProdutos = produtos.length
   const baixoEstoque = produtos.filter((produto) => {
@@ -59,6 +62,52 @@ export const PaginaProdutos = () => {
 
   const handleEdit = (id) => {
     navigate(`/produto/edit/${id}`)
+  }
+
+  const handleOpenEntrada = (produto) => {
+    setProdutoSelecionado(produto)
+    setQuantidadeAdicionar('')
+    setShowEntradaModal(true)
+  }
+
+  const handleCloseEntrada = () => {
+    setShowEntradaModal(false)
+    setProdutoSelecionado(null)
+    setQuantidadeAdicionar('')
+  }
+
+  const volumeUnidadeSelecionado = Number(produtoSelecionado?.volume_unidade) || 0
+  const quantidadeAtualEmUnidades = volumeUnidadeSelecionado
+    ? (Number(produtoSelecionado?.estoque_atual) || 0) / volumeUnidadeSelecionado
+    : Number(produtoSelecionado?.estoque_atual) || 0
+  const quantidadeEntradaEmUnidades = Number(quantidadeAdicionar) || 0
+  const novoTotalEmUnidades = quantidadeAtualEmUnidades + quantidadeEntradaEmUnidades
+  const quantidadeEntradaEmEstoque = volumeUnidadeSelecionado
+    ? quantidadeEntradaEmUnidades * volumeUnidadeSelecionado
+    : quantidadeEntradaEmUnidades
+
+  const handleConfirmEntrada = (e) => {
+    e.preventDefault()
+
+    if (!produtoSelecionado) return
+
+    if (quantidadeEntradaEmUnidades <= 0) {
+      toast.error('Informe uma quantidade válida para adicionar')
+      return
+    }
+
+    axios.patch(`http://localhost:3001/produtos/update-estoque/${produtoSelecionado.id}`, {
+      quantidade: quantidadeEntradaEmEstoque
+    })
+      .then(() => {
+        toast.success('Entrada de estoque realizada com sucesso!')
+        fetchProdutos()
+        handleCloseEntrada()
+      })
+      .catch((error) => {
+        console.error(error)
+        toast.error(error.response?.data?.error || 'Erro ao atualizar estoque')
+      })
   }
 
   const formatQuantidadeEmUnidades = (estoqueTotal, volumeUnidade) => {
@@ -140,6 +189,17 @@ export const PaginaProdutos = () => {
               </div>
               <div className='buttons space-x-2 flex'>
                 <button
+                  className='px-2 py-1 rounded text-emerald-500 cursor-pointer hover:text-emerald-700'
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    handleOpenEntrada(produto)
+                  }}
+                  title='Adicionar estoque'
+                  type='button'
+                >
+                  <Plus size={20} />
+                </button>
+                <button
                   className='px-2 py-1 rounded text-gray-400 cursor-pointer hover:text-teal-600'
                   onClick={(e) => {
                     e.stopPropagation()
@@ -179,6 +239,89 @@ export const PaginaProdutos = () => {
           </div>
         ))}
       </div>
+
+      {showEntradaModal && produtoSelecionado && (
+        <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4'>
+          <div className='w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl'>
+            <div className='mb-6 flex items-center justify-between border-b pb-4'>
+              <div>
+                <h2 className='text-xl font-bold text-gray-800'>Entrada de Estoque - {produtoSelecionado.nome}</h2>
+                <p className='text-sm text-gray-500'>Atualize a quantidade do produto selecionado</p>
+              </div>
+              <button
+                type='button'
+                onClick={handleCloseEntrada}
+                className='rounded-full p-2 text-gray-500 hover:bg-gray-100'
+              >
+                <Trash2 size={18} className='rotate-45' />
+              </button>
+            </div>
+
+            <form onSubmit={handleConfirmEntrada} className='space-y-4'>
+              <div className='space-y-2'>
+                <label className='text-sm font-semibold text-gray-700'>Nome do Produto</label>
+                <input
+                  type='text'
+                  value={produtoSelecionado.nome || ''}
+                  disabled
+                  className='w-full rounded-lg border border-gray-300 bg-gray-100 px-3 py-2 text-gray-700'
+                />
+              </div>
+
+              <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
+                <div className='space-y-2'>
+                  <label className='text-sm font-semibold text-gray-700'>Quantidade Atual</label>
+                  <input
+                    type='text'
+                    value={`${quantidadeAtualEmUnidades.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} un`}
+                    disabled
+                    className='w-full rounded-lg border border-gray-300 bg-gray-100 px-3 py-2 text-gray-700'
+                  />
+                </div>
+
+                <div className='space-y-2'>
+                  <label className='text-sm font-semibold text-gray-700'>Quantidade a Adicionar</label>
+                  <input
+                    type='number'
+                    min='0'
+                    step='1'
+                    value={quantidadeAdicionar}
+                    onChange={(e) => setQuantidadeAdicionar(e.target.value)}
+                    className='w-full rounded-lg border border-gray-300 px-3 py-2 outline-none focus:border-teal-500'
+                    placeholder='Ex: 5 un'
+                  />
+                </div>
+              </div>
+
+              <div className='space-y-2'>
+                <label className='text-sm font-semibold text-gray-700'>Novo Total</label>
+                <input
+                  type='text'
+                  value={`${novoTotalEmUnidades.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} un`}
+                  disabled
+                  className='w-full rounded-lg border border-teal-200 bg-teal-50 px-3 py-2 font-semibold text-teal-700'
+                />
+              </div>
+
+              <div className='flex justify-end gap-3 pt-2'>
+                <button
+                  type='button'
+                  onClick={handleCloseEntrada}
+                  className='rounded-lg bg-gray-200 px-4 py-2 font-medium text-gray-700 hover:bg-gray-300'
+                >
+                  Cancelar
+                </button>
+                <button
+                  type='submit'
+                  className='rounded-lg bg-teal-600 px-4 py-2 font-medium text-white hover:bg-teal-700'
+                >
+                  Confirmar Entrada
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
