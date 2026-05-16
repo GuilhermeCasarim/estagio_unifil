@@ -98,7 +98,7 @@ export const ProfissionalNovo = () => {
                 </button>
             </div>
 
-            <form onSubmit={handleSubmit(onSubmit, onInvalid)} className='flex flex-col space-y-6 max-w-4xl bg-white p-8 rounded-lg shadow-sm mx-auto w-full'>
+            <form onSubmit={handleSubmit(onSubmit, onInvalid)} autoComplete="off" className='flex flex-col space-y-6 max-w-4xl bg-white p-8 rounded-lg shadow-sm mx-auto w-full'>
                 <div className="flex flex-col gap-2">
                     <label className='font-semibold'>Nome Completo</label>
                     <input
@@ -239,6 +239,7 @@ export const ProfissionalNovo = () => {
                                 id="senha"
                                 placeholder="Senha do profissional"
                                 className='border p-2 rounded'
+                                autoComplete="new-password"
                                 {...register('senha', { required: true })}
                             />
                             {errors?.senha?.type == 'required' &&

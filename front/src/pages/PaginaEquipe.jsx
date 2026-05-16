@@ -108,7 +108,7 @@ export const PaginaEquipe = () => {
                             </div>
                             <div className='flex flex-col'>
                                 <label>Senha</label>
-                                <input type='password' value={form.senha} onChange={e => setForm({...form, senha: e.target.value})} className='border px-2 py-1 rounded' required />
+                                <input type='password' value={form.senha}  onChange={e => setForm({...form, senha: e.target.value})} className='border px-2 py-1 rounded' required />
                             </div>
                             <div className='flex flex-col'>
                                 <label>Tipo de usuário</label>
