@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import { Users, UserPlus, Trash2 } from 'lucide-react'
+import { Users, UserPlus, SquarePen, Trash2 } from 'lucide-react'
 import { toast } from 'react-toastify'
 import Swal from 'sweetalert2'
 import { AuthContext } from '../helpers/AuthContext'
@@ -62,6 +62,10 @@ export const PaginaEquipe = () => {
         })
     }
 
+    const handleEdit = (id) => {
+        navigate(`/equipe/edit/${id}`)
+    }
+
     const filtered = usuarios.filter(u => {
         if (filter === 'todos') return true
         if (filter === 'administrador') return u.tipo_login === 'administrador'
@@ -69,6 +73,13 @@ export const PaginaEquipe = () => {
         if (filter === 'profissional') return u.tipo_login === 'profissional'
         return true
     })
+
+    const getTipoLabel = (tipo) => {
+        if (tipo === 'secretaria') return 'Secretária'
+        if (tipo === 'administrador') return 'Administrador'
+        if (tipo === 'profissional') return 'Profissional'
+        return tipo
+    }
 
     return (
         <div className='space-y-8'>
@@ -113,12 +124,24 @@ export const PaginaEquipe = () => {
                         {filtered.map((u) => (
                             <tr key={u.id} className='border-t hover:bg-gray-50' >
                                 <td className='py-4 px-4'>{u.login}</td>
-                                <td className='py-4 px-4 capitalize'>{u.tipo_login}</td>
+                                <td className='py-4 px-4'>{getTipoLabel(u.tipo_login)}</td>
                                 <td className='py-4 px-4'>
                                     <button
-                                        className='px-2 py-1 rounded text-red-400 cursor-pointer hover:text-red-600'
+                                        className='px-2 py-1 rounded text-gray-400 cursor-pointer hover:text-teal-600'
+                                        title='Editar usuário'
+                                        type='button'
+                                        onClick={(e) => {
+                                            e.stopPropagation()
+                                            handleEdit(u.id)
+                                        }}
+                                    >
+                                        <SquarePen size={20} />
+                                    </button>
+                                    <button
+                                        className='px-2 py-1 rounded text-red-400 cursor-pointer hover:text-red-600 ml-2'
                                         onClick={() => handleDelete(u.id)}
                                         title='Excluir usuário'
+                                        type='button'
                                     >
                                         <Trash2 size={20} />
                                     </button>

@@ -46,6 +46,48 @@ class UsuarioController {
         }
     }
 
+    async getById(req, res) {
+        try {
+            const { id } = req.params
+            const usuario = await Usuarios.findByPk(id, {
+                attributes: ['id', 'login', 'tipo_login']
+            })
+
+            if (!usuario) {
+                return res.status(404).json({ error: 'Usuário não encontrado' })
+            }
+
+            return res.json(usuario)
+        } catch (e) {
+            return res.status(500).json({ error: 'Erro ao buscar usuário' })
+        }
+    }
+
+    async update(req, res) {
+        try {
+            const { id } = req.params
+            const { login, senha, tipo_login } = req.body
+            const usuario = await Usuarios.findByPk(id)
+
+            if (!usuario) {
+                return res.status(404).json({ error: 'Usuário não encontrado' })
+            }
+
+            usuario.login = login
+            usuario.tipo_login = tipo_login
+
+            if (senha && senha.trim()) {
+                usuario.senha = senha
+            }
+
+            await usuario.save()
+
+            return res.json({ message: 'Usuário atualizado com sucesso' })
+        } catch (e) {
+            return res.status(400).json({ error: 'Erro ao atualizar usuário', details: e?.message || 'Dados inválidos' })
+        }
+    }
+
     async delete(req, res) {
         try {
             const { id } = req.params

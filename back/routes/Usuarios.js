@@ -13,5 +13,9 @@ router.get('/auth', validateToken, UsuarioController.loginValidate)
 
 router.get('/list', UsuarioController.list)
 
+router.get('/byId/:id', UsuarioController.getById)
+
+router.patch('/update/:id', UsuarioController.update)
+
 router.delete('/delete/:id', UsuarioController.delete)
 
