@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import { Users, UserPlus, User, Search } from 'lucide-react'
+import { Users, UserPlus, Trash2 } from 'lucide-react'
 import { toast } from 'react-toastify'
+import Swal from 'sweetalert2'
 import { AuthContext } from '../helpers/AuthContext'
 
 export const PaginaEquipe = () => {
@@ -37,6 +38,28 @@ export const PaginaEquipe = () => {
                 fetchUsuarios()
             })
             .catch(() => toast.error('Erro ao criar usuário'))
+    }
+
+    const handleDelete = (id) => {
+        Swal.fire({
+            title: 'Tem certeza?',
+            text: 'Você não poderá reverter esta ação!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sim, deletar!',
+            cancelButtonText: 'Cancelar'
+        }).then((res) => {
+            if (res.isConfirmed) {
+                axios.delete(`http://localhost:3001/auth/delete/${id}`)
+                    .then(() => {
+                        toast.success('Usuário deletado com sucesso!')
+                        fetchUsuarios()
+                    })
+                    .catch(() => toast.error('Erro ao deletar usuário!'))
+            }
+        })
     }
 
     const filtered = usuarios.filter(u => {
@@ -83,6 +106,7 @@ export const PaginaEquipe = () => {
                         <tr className='text-left border-b-2 border-gray-300'>
                             <th className='pb-4 px-4'>Login</th>
                             <th className='pb-4 px-4'>Tipo</th>
+                            <th className='pb-4 px-4'>Ações</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -90,6 +114,15 @@ export const PaginaEquipe = () => {
                             <tr key={u.id} className='border-t hover:bg-gray-50' >
                                 <td className='py-4 px-4'>{u.login}</td>
                                 <td className='py-4 px-4 capitalize'>{u.tipo_login}</td>
+                                <td className='py-4 px-4'>
+                                    <button
+                                        className='px-2 py-1 rounded text-red-400 cursor-pointer hover:text-red-600'
+                                        onClick={() => handleDelete(u.id)}
+                                        title='Excluir usuário'
+                                    >
+                                        <Trash2 size={20} />
+                                    </button>
+                                </td>
                             </tr>
                         ))}
                     </tbody>

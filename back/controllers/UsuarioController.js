@@ -38,6 +38,23 @@ class UsuarioController {
             return res.status(500).json({ error: 'Erro ao listar usuários' })
         }
     }
+
+    async delete(req, res) {
+        try {
+            const { id } = req.params
+            const usuario = await Usuarios.findByPk(id)
+
+            if (!usuario) {
+                return res.status(404).json({ error: 'Usuário não encontrado' })
+            }
+
+            await Usuarios.destroy({ where: { id } })
+            return res.json({ message: 'Usuário deletado com sucesso' })
+        } catch (e) {
+            return res.status(500).json({ error: 'Erro ao deletar usuário' })
+        }
+    }
+
     loginValidate(req, res) {
         res.json(req.usuario) //autentica o token para login
     }

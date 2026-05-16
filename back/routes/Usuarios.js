@@ -13,3 +13,5 @@ router.get('/auth', validateToken, UsuarioController.loginValidate)
 
 router.get('/list', UsuarioController.list)
 
+router.delete('/delete/:id', UsuarioController.delete)
+
