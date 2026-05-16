@@ -4,13 +4,20 @@ const { sign } = require('jsonwebtoken');
 
 class UsuarioController {
     async create(req, res) {
-        const { login, senha, tipo_login } = req.body;
-        await Usuarios.create({
-            login,
-            senha,
-            tipo_login
-        });
-        res.json('Sucesso ao criar usuário!');
+        try {
+            const { login, senha, tipo_login } = req.body;
+            await Usuarios.create({
+                login,
+                senha,
+                tipo_login
+            });
+            return res.json('Sucesso ao criar usuário!');
+        } catch (error) {
+            return res.status(400).json({
+                error: 'Erro ao criar usuário',
+                details: error?.message || 'Dados inválidos'
+            });
+        }
     }
 
     async login(req, res) {

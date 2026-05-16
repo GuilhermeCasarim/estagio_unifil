@@ -11,7 +11,7 @@ export const PaginaEquipe = () => {
     const [usuarios, setUsuarios] = useState([])
     const [filter, setFilter] = useState('todos')
     const { setShowAdminForm, showAdminForm } = useContext(AuthContext);
-    const [form, setForm] = useState({ login: '', senha: '', tipo_usuario: '' })
+    const [form, setForm] = useState({ login: '', senha: '', tipo_usuario: 'administrador' })
 
     const fetchUsuarios = () => {
         axios.get('http://localhost:3001/auth/list')
@@ -34,7 +34,7 @@ export const PaginaEquipe = () => {
                 .then(() => {
                 toast.success('Usuário administrativo criado')
                 setShowAdminForm(false)
-                setForm({ login: '', senha: '', tipo_usuario: '' })
+                setForm({ login: '', senha: '', tipo_usuario: 'administrador' })
                 fetchUsuarios()
             })
             .catch(() => toast.error('Erro ao criar usuário'))

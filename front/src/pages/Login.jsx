@@ -38,16 +38,16 @@ export const Login = () => {
                 <h2 className='text-emerald-400 '>Acesse sua conta</h2>
                 <p className='text-emerald-400 '>Utilize suas credenciais para acessar o sistema</p>
             </div>
-            <form className='inputs space-y-4 flex flex-col justify-center' onSubmit={makeLogin}>
+            <form className='inputs space-y-4 flex flex-col justify-center' onSubmit={makeLogin} autoComplete='off'>
                 <div className="login space-x-4">
                     <label htmlFor="login">Login:</label>
-                    <input type="text" name='login' id='login' placeholder='Seu email' onChange={(e) => setLogin(e.target.value)}
+                    <input type="text" name='login' id='login' placeholder='Seu email' autoComplete='off' onChange={(e) => setLogin(e.target.value)}
                         className='outline-0 border-b px-2 border-b-black'
                     />
                 </div>
                 <div className="senha space-x-4">
                     <label htmlFor="senha">Senha:</label>
-                    <input type="password" name='senha' id='senha' placeholder='Sua senha' onChange={(e) => setSenha(e.target.value)}
+                    <input type="password" name='senha' id='senha' placeholder='Sua senha' autoComplete='new-password' onChange={(e) => setSenha(e.target.value)}
                         className='outline-0 border-b px-2 border-b-black'
                     />
                 </div>
