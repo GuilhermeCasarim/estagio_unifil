@@ -77,23 +77,19 @@ export const PaginaEquipe = () => {
                 <button onClick={() => setFilter('profissional')} className={`px-3 py-1 rounded ${filter==='profissional' ? 'bg-teal-500 text-white' : 'bg-gray-200'}`}>Profissionais</button>
             </div>
 
-            <div className='table bg-white p-4 rounded'>
-                <table className='w-full'>
+            <div className='table bg-white p-6 rounded'>
+                <table className='w-full table-auto'>
                     <thead>
-                        <tr className='text-left'>
-                            <th>Nome</th>
-                            <th>Login</th>
-                            <th>Tipo</th>
+                        <tr className='text-left border-b-2 border-gray-300'>
+                            <th className='pb-4 px-4'>Login</th>
+                            <th className='pb-4 px-4'>Tipo</th>
                         </tr>
                     </thead>
                     <tbody>
                         {filtered.map((u) => (
-                            <tr key={u.id} className='border-t' >
-                                <td className='py-2'>
-                                    {u.Profissional?.nome || u.login}
-                                </td>
-                                <td>{u.login}</td>
-                                <td className='capitalize'>{u.tipo_login}</td>
+                            <tr key={u.id} className='border-t hover:bg-gray-50' >
+                                <td className='py-4 px-4'>{u.login}</td>
+                                <td className='py-4 px-4 capitalize'>{u.tipo_login}</td>
                             </tr>
                         ))}
                     </tbody>
