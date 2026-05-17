@@ -4,6 +4,7 @@ import { useState, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AuthContext } from '../helpers/AuthContext.js'
 import { Mail, LockKeyhole } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 export const Login = () => {
 
@@ -17,7 +18,7 @@ export const Login = () => {
         const data = { login, senha }
         axios.post('http://localhost:3001/auth/login', data).then((res) => {
             if (res.data.error) {
-                alert(res.data.error)
+                toast.error(res.data.error)
                 console.log('erro', res.data)
             } else {
                 console.log(res.data)
@@ -33,7 +34,7 @@ export const Login = () => {
 
     }
     return (
-        <div className='flex flex-col items-center min-h-screen bg-gradient-to-b from-blue-50 via-teal-50 to-green-50 pt-16'>
+        <div className='flex flex-col items-center  py-10 w-[70%] mx-auto'>
             <div className="infoLogin mb-8 flex flex-col items-center space-y-3">
                 <div className='flex items-center justify-center gap-2 bg-teal-500 text-white px-4 py-2 rounded-full shadow-md'>
                     <span className='text-xl'>✨</span>
@@ -84,7 +85,7 @@ export const Login = () => {
                         >
                             Entrar
                         </button>
-                        <a href="#" className='text-center text-gray-500 hover:text-teal-500 text-sm font-medium transition-colors'>
+                        <a onClick={() => toast.info('Envie um email para o admin.lobo@gmail.com')} href="#" className='text-center text-gray-500 hover:text-teal-500 text-sm font-medium transition-colors'>
                             Esqueceu sua senha?
                         </a>
                     </div>

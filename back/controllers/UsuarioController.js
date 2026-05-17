@@ -23,7 +23,7 @@ class UsuarioController {
     async login(req, res) {
         const { login, senha } = req.body
         const usuario = await Usuarios.findOne({ where: { login: login } }) //verif login banco e login recebido aqui/input
-        if (!usuario) return res.json({ error: 'usuario nao existe' }) //retorna usuario
+        if (!usuario) return res.json({ error: 'Usuário não existe' }) //retorna usuario
 
         bcrypt.compare(senha, usuario.senha).then((match) => {
             if (!match) return res.json({ error: 'senha errada' }) 
