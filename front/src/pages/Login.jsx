@@ -27,6 +27,7 @@ export const Login = () => {
                     login: res.data.login,
                     id: res.data.id,
                     status: true,
+                    tipo_login: res.data.tipo_login
                 });
                 navigate('/')
             }

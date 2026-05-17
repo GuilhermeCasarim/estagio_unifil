@@ -56,8 +56,9 @@ export const MainLayout = () => {
     <div className='flex min-h-screen h-full bg-neutral-100'>
 
       <aside
-        className={`w-1/5 fixed h-screen top-0 left-0 z-50 transition-colors duration-300 ${showAdminForm ? 'bg-black/40' : 'bg-neutral-100'
+        className={`w-1/5 fixed h-screen top-0 left-0 z-50 transition-colors duration-300 ${showAdminForm ? 'bg-black/40' : 'bg-slate-800/95'
           }`}
+          // bg-neutral-100 ou slate-800
       >
         <Header />
       </aside>

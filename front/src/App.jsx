@@ -14,8 +14,7 @@ function App() {
     login: '',
     id: 0,
     status: false,
-    showAdminForm,
-    setShowAdminForm
+    tipo_login: '',
   }) //state para renderizar o login com o localStorage
   useEffect(() => { //caso tenha token no localStorage, faz o login automatico
     axios.get('http://localhost:3001/auth/auth', {
@@ -31,7 +30,8 @@ function App() {
           setAuthState({
             login: res.data.login,
             id: res.data.id,
-            status: true
+            status: true,
+            tipo_login: res.data.tipo_login
           })
         }
       })
