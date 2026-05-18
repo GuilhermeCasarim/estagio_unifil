@@ -71,7 +71,7 @@ export const RelatorioFinanceiro = () => {
 
   const buscarResumo = useCallback(async () => {
     try {
-      const res = await axios.get('http://localhost:3001/financeiro')
+      const res = await axios.get('http://localhost:3001/financeiro?status=Pago')
       setFinanceiro(extrairLista(res.data))
     } catch (erro) {
       toast.error('Erro ao carregar resumo financeiro')
@@ -117,6 +117,7 @@ export const RelatorioFinanceiro = () => {
 
           if (inicio && chave < inicio) return false
           if (fim && chave > fim) return false
+          if (item.status !== 'Pago') return false
           return true
         })
         .reduce((acc, item) => {
@@ -133,15 +134,17 @@ export const RelatorioFinanceiro = () => {
   }, [financeiro])
 
   const totais = useMemo(() => {
-    return historico.reduce((acc, item) => {
-      const valor = Number(item.valor || 0)
-      if (item.tipo === 'Receita') {
-        acc.receitas += valor
-      } else {
-        acc.despesas += valor
-      }
-      return acc
-    }, { receitas: 0, despesas: 0 })
+    return historico
+      .filter((item) => item.status === 'Pago')
+      .reduce((acc, item) => {
+        const valor = Number(item.valor || 0)
+        if (item.tipo === 'Receita') {
+          acc.receitas += valor
+        } else {
+          acc.despesas += valor
+        }
+        return acc
+      }, { receitas: 0, despesas: 0 })
   }, [historico])
 
   const onChangeFiltro = (e) => {

@@ -33,7 +33,7 @@ export const RelatorioFaturamentos = () => {
 
       const [agendamentosRes, financeiroRes] = await Promise.all([
         axios.get('http://localhost:3001/agendamentos/historico'),
-        axios.get('http://localhost:3001/financeiro')
+        axios.get('http://localhost:3001/financeiro?status=Pago')
       ])
 
       setAgendamentos(extrairLista(agendamentosRes.data))

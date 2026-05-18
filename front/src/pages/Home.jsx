@@ -64,8 +64,8 @@ export const Home = () => {
                 
                 setAgendamentos(agendamentosHoje)
 
-                // Buscar financeiro
-                const resFinanceiro = await axios.get('http://localhost:3001/financeiro')
+                // Buscar financeiro (apenas transacoes com status Pago)
+                const resFinanceiro = await axios.get('http://localhost:3001/financeiro?status=Pago')
                 const dataFin = Array.isArray(resFinanceiro.data) ? resFinanceiro.data : (resFinanceiro.data.data || [])
                 setFinanceiro(dataFin)
             } catch (error) {

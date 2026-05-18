@@ -4,7 +4,13 @@ const { Financeiro, Usuarios } = require('../models');
 class FinanceiroController {
     async getAll(req, res) {
         try {
+            const { status } = req.query;
+            const where = {};
+            if (status) {
+                where.status = status;
+            }
             const transacoes = await Financeiro.findAll({
+                where,
                 order: [['data_pagamento', 'DESC']],
                 include: [
                     {

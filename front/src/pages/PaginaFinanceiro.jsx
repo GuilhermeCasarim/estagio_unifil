@@ -155,6 +155,11 @@ export const PaginaFinanceiro = () => {
                     <Calendar size={16} className='text-teal-500' />
                     {transacao.data_pagamento ? String(transacao.data_pagamento).slice(0, 10) : 'Sem data'}
                   </p>
+                  <div className='pt-2 flex items-center gap-2'>
+                    <span className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${transacao.status === 'Pago' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
+                      {transacao.status || 'Pendente'}
+                    </span>
+                  </div>
                 </div>
               </div>
             ))}
