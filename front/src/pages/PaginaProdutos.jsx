@@ -130,24 +130,24 @@ export const PaginaProdutos = () => {
 
   return (
     <div className='space-y-8'>
-      <div className='header border-b-2 border-gray-400 pb-2'>
-        <h1 className='flex gap-4'> <Package /> Produtos </h1>
+      <div className='header border-b-2 border-teal-200 pb-2'>
+        <h1 className='flex gap-4 text-gray-800'> <Package /> Produtos </h1>
       </div>
 
       <div className='intro flex items-center justify-between'>
         <div className='texto'>
-          <p>Gestão de produtos</p>
-          <p>Visualize e gerencie o estoque de produtos</p>
+          <p className='text-gray-700'>Gestão de produtos</p>
+          <p className='text-gray-500'>Visualize e gerencie o estoque de produtos</p>
         </div>
         <button
-          className='bg-teal-400 text-white px-4 py-1 rounded-full hover:bg-teal-500 transition duration-300 cursor-pointer'
+          className='bg-teal-500 text-white px-4 py-1 rounded-full hover:bg-teal-600 transition duration-300 cursor-pointer'
           onClick={() => navigate('/produto/novo')}
         >
           Novo Produto
         </button>
       </div>
 
-      <div className='bg-gray-200 rounded-xl p-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between'>
+      <div className='rounded-2xl border border-teal-100 bg-teal-50 p-4 shadow-sm flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between'>
         <div className='flex items-center gap-3 rounded-lg bg-sky-200/70 px-4 py-2 text-sm'>
           <span className='flex items-center gap-2 font-semibold text-sky-700'>
             <Boxes size={18} />
@@ -171,18 +171,18 @@ export const PaginaProdutos = () => {
         </div>
       </div>
 
-      <div className='produtosData grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 bg-blue-200 p-4'>
+      <div className='produtosData grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 bg-white border border-gray-200 rounded-2xl shadow-sm p-4'>
         {produtos.map((produto, key) => (
           <div
-            className='produto-card bg-white cursor-pointer hover:bg-gray-200 transition duration-300 p-2 flex flex-col gap-8'
+            className='produto-card bg-white cursor-pointer border border-gray-200 hover:border-teal-500 hover:shadow-md transition duration-300 p-4 rounded-2xl flex flex-col gap-8'
             key={key}
             onClick={() => navigate(`/produto/${produto.id}`)}
           >
             <div className='card-header flex justify-between items-center'>
               <div className='info1 flex flex-col gap-2'>
-                <span className='font-bold'>{produto.nome}</span>
+                <span className='font-semibold text-gray-800'>{produto.nome}</span>
                 <div className='others-info flex gap-1 items-center'>
-                  <p className='flex gap-1 items-center text-gray-500 text-xs'>
+                  <p className='flex gap-1 items-center text-gray-600 text-xs'>
                     <Tag size={12} /> {produto.marca}
                   </p>
                 </div>
@@ -200,7 +200,7 @@ export const PaginaProdutos = () => {
                   <Plus size={20} />
                 </button>
                 <button
-                  className='px-2 py-1 rounded text-gray-400 cursor-pointer hover:text-teal-600'
+                  className='px-2 py-1 rounded text-gray-500 cursor-pointer hover:bg-gray-100 hover:text-teal-600 transition'
                   onClick={(e) => {
                     e.stopPropagation()
                     handleEdit(produto.id)
@@ -209,7 +209,7 @@ export const PaginaProdutos = () => {
                   <SquarePen size={20} />
                 </button>
                 <button
-                  className='px-2 py-1 rounded text-red-400 cursor-pointer hover:text-red-600'
+                  className='px-2 py-1 rounded text-rose-400 cursor-pointer hover:bg-rose-50 hover:text-rose-600 transition'
                   onClick={(e) => {
                     e.stopPropagation()
                     handleDelete(produto.id)
@@ -220,18 +220,18 @@ export const PaginaProdutos = () => {
               </div>
             </div>
 
-            <div className='card-bottom info2 space-y-3 text-sm overflow-hidden'>
+            <div className='card-bottom info2 space-y-3 text-sm overflow-hidden text-gray-600'>
               <p className={`flex gap-2 items-center ${getEstoqueAtualClass(produto.estoque_atual, produto.estoque_minimo)}`}>
                 <Boxes size={16} className='text-gray-400' />
                 Estoque atual: {produto.quantidade_formatada || `${produto.estoque_atual}${produto.unidade_medida || 'ml'}`}
               </p>
               <p className='flex gap-2 items-center'>
-                <Layers size={16} className='text-gray-400' />
+                <Layers size={16} className='text-teal-500' />
                 Estoque minimo: {formatQuantidadeEmUnidades(produto.estoque_minimo, produto.volume_unidade)}
               </p>
               {produto.observacoes && (
                 <p className='flex gap-2 items-center'>
-                  <Package size={16} className='text-gray-400' />
+                  <Package size={16} className='text-teal-500' />
                   {produto.observacoes}
                 </p>
               )}

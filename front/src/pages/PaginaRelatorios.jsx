@@ -51,18 +51,18 @@ export const PaginaRelatorios = () => {
   const navigate = useNavigate()
   return (
     <div className='space-y-8'>
-      <div className='header border-b-2 border-gray-400 pb-2'>
-        <h1 className='flex gap-4 items-center text-2xl font-bold'>
+      <div className='header border-b-2 border-teal-200 pb-2'>
+        <h1 className='flex gap-4 items-center text-2xl font-bold text-gray-800'>
           <BarChart3 /> Relatórios
         </h1>
       </div>
 
       <div className='intro flex flex-col gap-3 md:flex-row md:items-end md:justify-between'>
         <div className='texto space-y-1'>
-          <p>Central de relatórios do sistema</p>
-          <p>Selecione o relatório que deseja acompanhar e, nas próximas etapas, vamos ligar cada consulta.</p>
+          <p className='text-gray-700'>Central de relatórios do sistema</p>
+          <p className='text-gray-500'>Selecione o relatório que deseja acompanhar e, nas próximas etapas, vamos ligar cada consulta.</p>
         </div>
-        <div className='inline-flex items-center gap-2 rounded-full bg-gray-200 px-4 py-2 text-sm text-gray-700'>
+        <div className='inline-flex items-center gap-2 rounded-full border border-teal-100 bg-teal-50 px-4 py-2 text-sm text-teal-700'>
           <ArrowRight size={16} />
           Base pronta para os 6 relatórios
         </div>

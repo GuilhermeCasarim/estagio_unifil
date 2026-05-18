@@ -60,24 +60,24 @@ export const PaginaFinanceiro = () => {
 
   return (
     <div className='space-y-8'>
-      <div className='header border-b-2 border-gray-400 pb-2'>
-        <h1 className='flex gap-4'> <DollarSign /> Financeiro </h1>
+      <div className='header border-b-2 border-teal-200 pb-2'>
+        <h1 className='flex gap-4 text-gray-800'> <DollarSign /> Financeiro </h1>
       </div>
 
       <div className='intro flex items-center justify-between'>
         <div className='texto'>
-          <p>Gestão financeira</p>
-          <p>Registre entradas e saidas do caixa</p>
+          <p className='text-gray-700'>Gestão financeira</p>
+          <p className='text-gray-500'>Registre entradas e saidas do caixa</p>
         </div>
         <button
-          className='bg-teal-400 text-white px-4 py-1 rounded-full hover:bg-teal-500 transition duration-300 cursor-pointer'
+          className='bg-teal-500 text-white px-4 py-1 rounded-full hover:bg-teal-600 transition duration-300 cursor-pointer'
           onClick={() => navigate('/financeiro/novo')}
         >
           Nova Transação
         </button>
       </div>
 
-      <div className='bg-gray-200 rounded-xl p-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between'>
+      <div className='rounded-2xl border border-teal-100 bg-teal-50 p-4 shadow-sm flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between'>
         <div className='flex items-center gap-3 rounded-lg bg-green-200/80 px-4 py-2 text-sm'>
           <span className='flex items-center gap-2 font-semibold text-green-800'>
             <ArrowUpCircle size={18} />
@@ -94,9 +94,9 @@ export const PaginaFinanceiro = () => {
         </div>
       </div>
 
-      <div className='financeiroData rounded-xl bg-blue-200 p-4'>
+      <div className='financeiroData rounded-2xl bg-white border border-gray-200 shadow-sm p-4'>
         {transacoes.length === 0 ? (
-          <div className='flex min-h-55 items-center justify-center rounded-xl border border-dashed border-blue-300 bg-white/70 p-6 text-center text-gray-600'>
+          <div className='flex min-h-55 items-center justify-center rounded-2xl border border-dashed border-gray-300 bg-gray-50 p-6 text-center text-gray-600'>
             <div className='space-y-2'>
               <p className='text-lg font-semibold text-gray-800'>Nenhuma transação encontrada</p>
               <p className='text-sm text-gray-500'>Quando houver entradas ou saídas registradas, elas vão aparecer aqui.</p>
@@ -106,14 +106,14 @@ export const PaginaFinanceiro = () => {
           <div className='grid grid-cols-2 gap-8 lg:grid-cols-3 xl:grid-cols-4'>
             {transacoes.map((transacao, key) => (
               <div
-                className='financeiro-card bg-white cursor-pointer hover:bg-gray-200 transition duration-300 p-2 flex flex-col gap-6'
+                className='financeiro-card bg-white cursor-pointer border border-gray-200 hover:border-teal-500 hover:shadow-md transition duration-300 p-4 rounded-2xl flex flex-col gap-6'
                 key={key}
                 onClick={() => navigate(`/financeiro/${transacao.id}`)}
               >
                 <div className='card-header flex justify-between items-center'>
                   <div className='info1 flex flex-col gap-2'>
-                    <span className='font-bold'>{transacao.descricao}</span>
-                    <div className='others-info flex gap-2 items-center text-xs text-gray-500'>
+                    <span className='font-semibold text-gray-800'>{transacao.descricao}</span>
+                    <div className='others-info flex gap-2 items-center text-xs text-gray-600'>
                       <span className={`font-semibold ${transacao.tipo === 'Receita' ? 'text-green-600' : 'text-red-600'}`}>
                         {transacao.tipo}
                       </span>
@@ -122,7 +122,7 @@ export const PaginaFinanceiro = () => {
                   </div>
                   <div className='buttons space-x-2 flex'>
                     <button
-                      className='px-2 py-1 rounded text-gray-400 cursor-pointer hover:text-teal-600'
+                      className='px-2 py-1 rounded text-gray-500 cursor-pointer hover:bg-gray-100 hover:text-teal-600 transition'
                       onClick={(e) => {
                         e.stopPropagation()
                         handleEdit(transacao.id)
@@ -131,7 +131,7 @@ export const PaginaFinanceiro = () => {
                       <SquarePen size={20} />
                     </button>
                     <button
-                      className='px-2 py-1 rounded text-red-400 cursor-pointer hover:text-red-600'
+                      className='px-2 py-1 rounded text-rose-400 cursor-pointer hover:bg-rose-50 hover:text-rose-600 transition'
                       onClick={(e) => {
                         e.stopPropagation()
                         handleDelete(transacao.id)
@@ -142,17 +142,17 @@ export const PaginaFinanceiro = () => {
                   </div>
                 </div>
 
-                <div className='card-bottom info2 space-y-2 text-sm overflow-hidden'>
+                <div className='card-bottom info2 space-y-2 text-sm overflow-hidden text-gray-600'>
                   <p className='flex gap-2 items-center'>
-                    <Tag size={16} className='text-gray-400' />
+                    <Tag size={16} className='text-teal-500' />
                     {transacao.categoria}
                   </p>
                   <p className='flex gap-2 items-center'>
-                    <CreditCard size={16} className='text-gray-400' />
+                    <CreditCard size={16} className='text-teal-500' />
                     {transacao.forma_pagamento}
                   </p>
                   <p className='flex gap-2 items-center'>
-                    <Calendar size={16} className='text-gray-400' />
+                    <Calendar size={16} className='text-teal-500' />
                     {transacao.data_pagamento ? String(transacao.data_pagamento).slice(0, 10) : 'Sem data'}
                   </p>
                 </div>

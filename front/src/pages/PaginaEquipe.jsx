@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import { Users, UserPlus, SquarePen, Trash2 } from 'lucide-react'
+import { Users, UserPlus, SquarePen, Trash2, Scissors, UserCog } from 'lucide-react'
 import { toast } from 'react-toastify'
 import Swal from 'sweetalert2'
 import { AuthContext } from '../helpers/AuthContext'
@@ -93,13 +93,15 @@ export const PaginaEquipe = () => {
                     <p>Liste, filtre e cadastre membros da equipe (Administradores, Secretárias e Profissionais)</p>
                 </div>
                 <div className='flex gap-2'>
-                    <button className='bg-teal-400 text-white px-4 py-1 rounded-full hover:bg-teal-500 transition'
+                    <button className='bg-teal-500 text-white px-4 py-1 rounded-full hover:bg-teal-600 transition duration-300 flex items-center gap-2'
                         onClick={() => navigate('/profissional/novo')}>
-                        Cadastro Profissional
+                        <Scissors size={16} />
+                        <span>Cadastro Profissional</span>
                     </button>
-                    <button className='bg-teal-400 text-white px-4 py-1 rounded-full hover:bg-teal-500 transition'
+                    <button className='bg-teal-500 text-white px-4 py-1 rounded-full hover:bg-teal-600 transition duration-300 flex items-center gap-2'
                         onClick={() => setShowAdminForm(true)}>
-                        Cadastro Administrativo
+                        <UserCog size={16} />
+                        <span>Cadastro Administrativo</span>
                     </button>
                 </div>
             </div>

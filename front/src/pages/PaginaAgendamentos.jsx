@@ -102,59 +102,53 @@ export const PaginaAgendamentos = () => {
         }
 
         const telefoneLimpo = telefone.replace(/\D/g, '')
-
-        //texto personalizado
         const saudacao = "Olá *" + nomeCliente + "*! 👋"
         const corpo = "\nPassando para confirmar seu horário de *" + servico + "* com o profissional *" + profissional + "*.\n"
         const detalhes = "\n📅 *Data:* " + data + "\n⏰ *Hora:* " + horario
-
         const mensagemFinal = saudacao + corpo + detalhes
-
-        // 3. Cria a URL da Public API do WhatsApp
         const url = "https://api.whatsapp.com/send?phone=55" + telefoneLimpo + "&text=" + encodeURIComponent(mensagemFinal)
 
-        // 4. Abre o WhatsApp Web ou App em uma nova aba
         window.open(url, '_blank')
     }
 
     return (
         <div className='space-y-8'>
-            <div className='header border-b-2 border-gray-400 pb-2'>
-                <h1 className='flex gap-4 items-center text-2xl font-bold'>
+            <div className='header border-b-2 border-teal-200 pb-2'>
+                <h1 className='flex gap-4 items-center text-2xl font-bold text-gray-800'>
                     <CalendarCheck /> Agendamentos
                 </h1>
             </div>
 
             <div className='intro flex items-center justify-between'>
                 <div className='texto'>
-                    <p>Gestão de agendamentos</p>
-                    <p>Visualize e gerencie os agendamentos do salão</p>
+                    <p className='text-gray-700'>Gestão de agendamentos</p>
+                    <p className='text-gray-500'>Visualize e gerencie os agendamentos do salão</p>
                 </div>
                 <div className='flex items-center gap-2'>
                     <button
-                        className='cursor-pointer rounded-full border border-gray-300 px-4 py-1 text-gray-700 hover:bg-gray-100 transition duration-300'
+                        className='cursor-pointer rounded-full border border-gray-300 bg-white px-4 py-1 text-gray-700 hover:bg-gray-100 transition duration-300'
                         onClick={() => navigate('/agendamentos/periodo')}
                     >
                         Período
                     </button>
                     <button
-                        className='cursor-pointer rounded-full border border-gray-300 px-4 py-1 text-gray-700 hover:bg-gray-100 transition duration-300'
+                        className='cursor-pointer rounded-full border border-gray-300 bg-white px-4 py-1 text-gray-700 hover:bg-gray-100 transition duration-300'
                         onClick={() => navigate('/agendamentos/historico')}
                     >
                         Histórico
                     </button>
                     <button
-                        className='bg-teal-400 text-white px-4 py-1 rounded-full hover:bg-teal-500 transition duration-300 cursor-pointer flex items-center gap-2'
+                        className='bg-teal-500 text-white px-4 py-1 rounded-full hover:bg-teal-600 transition duration-300 cursor-pointer flex items-center gap-2'
                         onClick={() => navigate('/agendamento/novo')}
                     >
-                        <CalendarCheck size={18} /> Novo Agendamento
+                        Novo Agendamento
                     </button>
                 </div>
             </div>
 
-            <div className='agendamentosData grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 bg-blue-200 p-4 rounded-xl min-h-30'>
+            <div className='agendamentosData grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 bg-white p-4 rounded-2xl border border-gray-200 shadow-sm min-h-30'>
                 {agendamentos.length === 0 ? (
-                    <div className='text-gray-500 col-span-full text-center'>Nenhum agendamento cadastrado.</div>
+                    <div className='text-gray-500 col-span-full text-center font-medium'>Nenhum agendamento cadastrado.</div>
                 ) : (
                     agendamentos.map((ag, key) => {
                         // Corrigir nomes dos campos para garantir que sempre pega o certo
@@ -163,10 +157,9 @@ export const PaginaAgendamentos = () => {
                         const profissional = ag.Profissional?.nome || ag.Profissionai?.nome || ag.profissional?.nome || ag.profissional_nome || '-';
                         return (
                             <div
-                                className='agendamento-card bg-white hover:bg-gray-200 transition duration-300 p-3 flex flex-col gap-4 rounded-lg shadow-sm relative'
+                                className='agendamento-card bg-white border border-gray-200 hover:border-teal-500 hover:shadow-md transition duration-300 p-4 flex flex-col gap-4 rounded-2xl shadow-sm relative cursor-pointer'
                                 key={key}
                                 onClick={() => navigate(`/agendamento/${ag.id}`)}
-                                style={{ cursor: 'pointer' }}
                             >
                                 <div className='absolute top-2 right-2 flex gap-2'>
                                     {ag.status !== 'concluido' && ag.status !== 'cancelado' && (
@@ -191,31 +184,31 @@ export const PaginaAgendamentos = () => {
                                     </button>
                                 </div>
                                 <div className='flex flex-col gap-2'>
-                                    <span className='font-bold flex items-center gap-2 text-lg'>
+                                    <span className='font-semibold flex items-center gap-2 text-lg text-gray-800'>
                                         <User className='text-teal-600' size={18} />
                                         {cliente}
                                     </span>
-                                    <span className='flex items-center gap-2 text-gray-700'>
-                                        <Scissors size={16} className='text-indigo-600' />
+                                    <span className='flex items-center gap-2 text-gray-600'>
+                                        <Scissors size={16} className='text-teal-500' />
                                         {servico}
                                     </span>
-                                    <span className='flex items-center gap-2 text-gray-700'>
-                                        <UserCheck size={16} className='text-amber-600' />
+                                    <span className='flex items-center gap-2 text-gray-600'>
+                                        <UserCheck size={16} className='text-teal-500' />
                                         {profissional}
                                     </span>
-                                    <span className='flex items-center gap-2 text-gray-700'>
-                                        <Clock size={16} className='text-blue-600' />
+                                    <span className='flex items-center gap-2 text-gray-600'>
+                                        <Clock size={16} className='text-teal-500' />
                                         {ag.data_hora ? new Date(ag.data_hora).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' }) : '-'}
                                     </span>
                                     <div className='flex items-center justify-between gap-3 pt-1'>
-                                        <span className={`flex items-center gap-2 font-semibold ${getStatusColor(ag.status)}`}>
+                                        <span className={`flex items-center gap-2 font-semibold text-sm ${getStatusColor(ag.status)}`}>
                                             {ag.status === 'concluido' ? <CheckCircle size={16} /> : ag.status === 'cancelado' ? <XCircle size={16} /> : ag.status === 'confirmado' ? <Clock size={16} /> : <Clock size={16} />}
                                             {ag.status?.charAt(0).toUpperCase() + ag.status?.slice(1) || '-'}
                                         </span>
 
                                         {ag.status !== 'concluido' && (
                                             <button
-                                                className='rounded-md bg-teal-500 px-3 py-1 text-sm font-semibold text-white hover:bg-teal-600 transition duration-300 cursor-pointer'
+                                                className='rounded-full bg-teal-500 px-3 py-1 text-sm font-semibold text-white hover:bg-teal-600 transition duration-300 cursor-pointer'
                                                 onClick={(e) => { e.stopPropagation(); handleFinalizar(ag) }}
                                             >
                                                 Finalizar
