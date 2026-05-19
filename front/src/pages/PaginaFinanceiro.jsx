@@ -60,8 +60,8 @@ export const PaginaFinanceiro = () => {
 
   return (
     <div className='space-y-8'>
-      <div className='header border-b-2 border-teal-200 pb-2'>
-        <h1 className='flex gap-4 text-gray-800'> <DollarSign /> Financeiro </h1>
+      <div className='header border-b-2 border-teal-200 pb-2 text-teal-600 text-2xl font-bold'>
+        <h1 className='flex gap-4 items-center'> <DollarSign /> Financeiro </h1>
       </div>
 
       <div className='intro flex items-center justify-between'>

@@ -130,8 +130,8 @@ export const PaginaProdutos = () => {
 
   return (
     <div className='space-y-8'>
-      <div className='header border-b-2 border-teal-200 pb-2'>
-        <h1 className='flex gap-4 text-gray-800'> <Package /> Produtos </h1>
+      <div className='header border-b-2 border-teal-200 pb-2 text-teal-600 text-2xl font-bold'>
+        <h1 className='flex gap-4 items-center'> <Package /> Produtos </h1>
       </div>
 
       <div className='intro flex items-center justify-between'>

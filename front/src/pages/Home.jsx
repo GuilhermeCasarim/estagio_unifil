@@ -80,11 +80,11 @@ export const Home = () => {
 
     return (
         <div className='space-y-8'>
-            <div className="inicio border-b-2 border-gray-400 flex items-center gap-4">
-                <House />
+            <div className="inicio border-b-2 border-teal-200 flex items-center gap-4 text-teal-600 text-2xl font-bold pb-2">
+                <House className='' />
                 <div>
-                    <h1>Início</h1>
-                    <p>Bem-vindo ao BelezaGest</p>
+                    <h1 className=''>Início</h1>
+                    <p className=''>Bem-vindo ao BelezaGest</p>
                 </div>
             </div>
 

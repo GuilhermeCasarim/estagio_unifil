@@ -6,19 +6,16 @@ import { AuthContext } from '../helpers/AuthContext'
 import { Mail, Phone, Search, SquarePen, Star, Trash2, Users } from 'lucide-react';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2'
-//listar clientes
-//comeca a desformatar em < 1500px
 
 export const PaginaClientes = () => {
     const { authState } = useContext(AuthContext)
     const navigate = useNavigate();
     const location = useLocation();
-    // const [listaClientes, setListaClientes] = useState([])
     const [listaClientesMutavel, setListaClientesMutavel] = useState([])
     const [search, setSearch] = useState('')
-    const [currentPage, setCurrentPage] = useState(1); // pagina atual inicio 1
-    const [limit] = useState(12); // items por pagina
-    const [totalPages, setTotalPages] = useState(0); //qnt paginas totais
+    const [currentPage, setCurrentPage] = useState(1);
+    const [limit] = useState(12);
+    const [totalPages, setTotalPages] = useState(0);
     const [totalClientes, setTotalClientes] = useState(0);
 
     const fetchClientes = () => {
@@ -33,16 +30,8 @@ export const PaginaClientes = () => {
             });
     }
 
-    useEffect(() => { //solucao temporaria para nao pegar o authState no estado inicial
-        const timer = setTimeout(() => {
-            if (authState.status === false) {
-                navigate('/login');
-            } else {
-                fetchClientes()
-            }
-        }, 300);
-
-        return () => clearTimeout(timer);
+    useEffect(() => {
+        fetchClientes()
     }, [authState.status, navigate, currentPage, search]);
     //funciona como filtro em tempo real
 
@@ -78,24 +67,11 @@ export const PaginaClientes = () => {
         navigate(`/cliente/edit/${id}`)
     }
 
-    // const onSearch = (termoBusca) => {
-    // Reseta para a primeira página ao realizar uma nova busca
-    // const input = search ? search.toLowerCase() : '';
-    // if (!search) fetchClientes(); // Se o campo de busca estiver vazio, recarrega a lista completa
-    // let arrayFiltrado = listaClientes.filter((cliente) => { //arr original
-    //     if (cliente.nome.toLowerCase().includes(input.toLowerCase()) ||
-    //         cliente.email.toLowerCase().includes(input.toLowerCase()) ||
-    //         cliente.telefone.toLowerCase().includes(input.toLowerCase())) {
-    //         return cliente
-    //     }
-    // })
-    // setListaClientesMutavel(arrayFiltrado)
-    // }
 
     return (
-        <div className='space-y-8'>
-            <div className="header border-b-2 border-teal-200 pb-2">
-                <h1 className='flex gap-4 text-gray-800'> <Users /> Clientes </h1>
+        <div className='space-y-8 '>
+            <div className="header border-b-2 border-teal-200 pb-2 text-teal-600 text-2xl font-bold">
+                <h1 className='flex gap-4 items-center'> <Users /> Clientes </h1>
             </div>
 
             <div className='intro flex items-center justify-between'>
@@ -121,11 +97,11 @@ export const PaginaClientes = () => {
                 <div className="input flex flex-col gap-2 lg:flex-row items-center ">
                     <input type="text" placeholder='Pesquisar cliente...' className='w-[80%] rounded-full border-2 border-gray-300 bg-gray-100 px-3 py-2 text-gray-600 outline-0 placeholder:text-gray-400 focus:border-gray-300 focus:ring-2 focus:ring-gray-100 transition-colors' value={search} onChange={e => setSearch(e.target.value)} />
                     <div className="pages w-[20%] flex flex-col items-center">
-                        <p className=''>Página {currentPage} de {totalPages} </p>
+                        <p className=''>Página {totalPages === 0 ? 0 : currentPage} de {totalPages} </p>
                         <div className="buttons flex justify-center space-x-4">
                             <button
                                 onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                                disabled={currentPage === 1} // desabilitar na pagina 1 pra nao ir para a pagina 0 ou crashar
+                                disabled={currentPage === 1 || totalPages === 0} // desabilitar na pagina 1 pra nao ir para a pagina 0 ou crashar, ou quando nao ha clientes
                                 className='rounded-full bg-gray-300 text-gray-500 px-3 py-1 transition duration-300 hover:bg-teal-600 disabled:bg-gray-200 disabled:text-gray-400'
                             >
                                 Anterior
@@ -133,7 +109,7 @@ export const PaginaClientes = () => {
 
                             <button
                                 onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                                disabled={currentPage === totalPages} // desabilita se estiver na última página
+                                disabled={currentPage === totalPages || totalPages === 0} // desabilita se estiver na última página ou quando nao ha clientes
                                 className='rounded-full bg-gray-300 text-gray-500 px-3 py-1 transition duration-300 hover:bg-teal-600 disabled:bg-gray-200 disabled:text-gray-400'
                             >
                                 Próxima

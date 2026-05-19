@@ -51,8 +51,8 @@ export const PaginaRelatorios = () => {
   const navigate = useNavigate()
   return (
     <div className='space-y-8'>
-      <div className='header border-b-2 border-teal-200 pb-2'>
-        <h1 className='flex gap-4 items-center text-2xl font-bold text-gray-800'>
+      <div className='header border-b-2 border-teal-200 pb-2 text-teal-600 text-2xl font-bold'>
+        <h1 className='flex gap-4 items-center'>
           <BarChart3 /> Relatórios
         </h1>
       </div>
