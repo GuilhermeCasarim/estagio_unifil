@@ -13,10 +13,10 @@ export const Header = () => {
       <p className='text-teal-600 flex gap-2'>  <Star /> BelezaGest</p>
       <p className='text-gray-400 flex gap-2'> <KeyRound /> {authState.tipo_login || 'Usuário não logado'}</p>
       {authState.status == false ? (
-        <Link className='text-blue-700 flex gap-2 hover:bg-blue-700 py-2  rounded-md cursor-pointer hover:text-slate-900/95 transition duration-300' to='/login'> <LogIn /> Login</Link>
+        <Link className='text-blue-700 flex gap-2 hover:bg-blue-700/50 py-2  rounded-md cursor-pointer hover:text-blue-500/90 transition duration-300' to='/login'> <LogIn /> Login</Link>
       ) : (
         <nav className='navigation flex flex-col space-y-4 [&>*]:transition-all [&>*]:duration-300 
-                [&>*:not(.ignore-hover)]:hover:bg-slate-100 [&>*:not(.ignore-hover)]:hover:text-slate-600 
+                [&>*:not(.ignore-hover)]:hover:bg-teal-500/10 [&>*:not(.ignore-hover)]:hover:text-slate-200
                  [&>*:not(.ignore-hover)]:cursor-pointer [&>*]:rounded-md [&>*]:py-2'>
           <button
             type='button'
@@ -24,7 +24,7 @@ export const Header = () => {
               logout()
               navigate('/login')
             }}
-            className='text-blue-700 flex gap-2 ignore-hover hover:bg-blue-700 cursor-pointer hover:text-slate-900/95 transition duration-300'
+            className='text-blue-700 flex gap-2 ignore-hover hover:bg-blue-700/50 cursor-pointer hover:text-blue-500/90 transition duration-300'
           >
             <LogOut /> Sair
           </button>
