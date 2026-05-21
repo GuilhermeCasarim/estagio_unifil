@@ -102,61 +102,71 @@ export const PaginaServicos = () => {
         </div>
       </div>
 
-      <div className='servicosData grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 bg-white border border-gray-200 rounded-2xl shadow-sm p-4'>
-        {servicos.map((servico, key) => (
-          <div
-            className='servico-card bg-white cursor-pointer border border-gray-200 hover:border-teal-500 hover:shadow-md transition duration-300 p-4 rounded-2xl flex flex-col gap-8'
-            key={key}
-            onClick={() => navigate(`/servico/${servico.id}`)}
-          >
-            <div className='card-header flex justify-between items-center'>
-              <div className='info1 flex flex-col gap-2'>
-                <span className='font-semibold text-gray-800'>{servico.nome_servico?.nome || '-'}</span>
-                <div className='others-info flex gap-1 items-center'>
-                  <p className='flex gap-1 items-center text-gray-600 text-xs'>
-                    <DollarSign size={12} /> R$ {servico.preco}
+      <div className='servicosData bg-white border border-gray-200 rounded-2xl shadow-sm p-4'>
+        {servicos.length === 0 ? (
+          <div className='flex min-h-40 items-center justify-center rounded-2xl border border-dashed border-gray-300 bg-gray-50 p-6 text-center text-gray-500'>
+            <p className='text-sm font-medium'>
+              Nenhum serviço cadastrado no momento.
+            </p>
+          </div>
+        ) : (
+          <div className='grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8'>
+            {servicos.map((servico, key) => (
+              <div
+                className='servico-card bg-white cursor-pointer border border-gray-200 hover:border-teal-500 hover:shadow-md transition duration-300 p-4 rounded-2xl flex flex-col gap-8'
+                key={key}
+                onClick={() => navigate(`/servico/${servico.id}`)}
+              >
+                <div className='card-header flex justify-between items-center'>
+                  <div className='info1 flex flex-col gap-2'>
+                    <span className='font-semibold text-gray-800'>{servico.nome_servico?.nome || '-'}</span>
+                    <div className='others-info flex gap-1 items-center'>
+                      <p className='flex gap-1 items-center text-gray-600 text-xs'>
+                        <DollarSign size={12} /> R$ {servico.preco}
+                      </p>
+                      {servico.categoria?.nome && (
+                        <p className='flex gap-1 items-center text-gray-600 text-xs'>
+                          <Tag size={12} /> {servico.categoria.nome}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <div className='buttons space-x-2 flex'>
+                    <button
+                      className='px-2 py-1 rounded text-gray-500 cursor-pointer hover:bg-gray-100 hover:text-teal-600 transition'
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        handleEdit(servico.id)
+                      }}
+                    >
+                      <SquarePen size={20} />
+                    </button>
+                    <button
+                      className='px-2 py-1 rounded text-rose-400 cursor-pointer hover:bg-rose-50 hover:text-rose-600 transition'
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        handleDelete(servico.id)
+                      }}
+                    >
+                      <Trash2 size={20} />
+                    </button>
+                  </div>
+                </div>
+
+                <div className='card-bottom info2 space-y-3 text-sm overflow-hidden text-gray-600'>
+                  <p className='flex gap-2 items-center'>
+                    <Clock size={16} className='text-gray-400' />
+                    Duracao: {servico.duracao} min
                   </p>
-                  {servico.categoria?.nome && (
-                    <p className='flex gap-1 items-center text-gray-600 text-xs'>
-                      <Tag size={12} /> {servico.categoria.nome}
-                    </p>
-                  )}
+                  <p className='flex gap-2 items-center'>
+                    <Users size={16} className='text-teal-500' />
+                    Profissionais: {getProfissionaisLabel(servico)}
+                  </p>
                 </div>
               </div>
-              <div className='buttons space-x-2 flex'>
-                <button
-                  className='px-2 py-1 rounded text-gray-500 cursor-pointer hover:bg-gray-100 hover:text-teal-600 transition'
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    handleEdit(servico.id)
-                  }}
-                >
-                  <SquarePen size={20} />
-                </button>
-                <button
-                  className='px-2 py-1 rounded text-rose-400 cursor-pointer hover:bg-rose-50 hover:text-rose-600 transition'
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    handleDelete(servico.id)
-                  }}
-                >
-                  <Trash2 size={20} />
-                </button>
-              </div>
-            </div>
-
-            <div className='card-bottom info2 space-y-3 text-sm overflow-hidden text-gray-600'>
-              <p className='flex gap-2 items-center'>
-                <Clock size={16} className='text-gray-400' />
-                Duracao: {servico.duracao} min
-              </p>
-              <p className='flex gap-2 items-center'>
-                <Users size={16} className='text-teal-500' />
-                Profissionais: {getProfissionaisLabel(servico)}
-              </p>
-            </div>
+            ))}
           </div>
-        ))}
+        )}
       </div>
     </div>
   )

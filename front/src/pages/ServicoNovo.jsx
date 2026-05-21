@@ -9,7 +9,7 @@ export const ServicoNovo = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors, submitCount },
+    formState: { errors },
     setValue,
     setError,
     clearErrors
@@ -172,6 +172,8 @@ export const ServicoNovo = () => {
       produto_id: Number(item.produto_id),
       quantidade_gasta: Number(item.quantidade_gasta) || 1
     }))
+
+  const getUnidadeMedidaProduto = (produto) => produto.unidade_medida || 'ml'
 
   const onSubmit = (data) => {
     const payload = {
@@ -338,7 +340,7 @@ export const ServicoNovo = () => {
                       disabled={!selecionado}
                       onChange={(e) => handleProdutoQuant(produto.id, e.target.value)}
                     />
-                    <span className='text-sm text-gray-500'>ml</span>
+                    <span className='text-sm text-gray-500'>{getUnidadeMedidaProduto(produto)}</span>
                   </div>
                 </div>
               )

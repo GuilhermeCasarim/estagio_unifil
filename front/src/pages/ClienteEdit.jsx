@@ -35,10 +35,7 @@ export const ClienteEdit = () => {
     }
 
     const onInvalid = (errors) => {
-        // Log para depuração
         console.log("Erros de validação do formulário:", errors);
-
-        // Toast de erro para alertar o usuário sobre campos obrigatórios/inválidos
         toast.error('ERRO. Revise os dados e tente novamente.')
     }
 

@@ -22,7 +22,7 @@ export const NomesServicoEdit = () => {
         reset(res.data)
       })
       .catch((error) => {
-        console.error('Erro ao buscar dados do nome de servico:', error)
+        console.error('Erro ao buscar dados do nome de serviço:', error)
         toast.error('Erro ao carregar dados.')
       })
   }, [id, reset])
@@ -30,12 +30,12 @@ export const NomesServicoEdit = () => {
   const onSubmit = (data) => {
     axios.patch(`http://localhost:3001/nomes-servico/update/${id}`, data)
       .then(() => {
-        toast.success('Nome de servico atualizado com sucesso!')
+        toast.success('Nome de serviço atualizado com sucesso!')
         navigate('/nomes-servico', { state: { refetch: true } })
       })
       .catch((err) => {
         console.error(err)
-        toast.error('Erro ao atualizar nome de servico.')
+        toast.error('Erro ao atualizar nome de serviço.')
       })
   }
 

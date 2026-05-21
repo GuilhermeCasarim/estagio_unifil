@@ -8,6 +8,12 @@ export const Servico = () => {
   const [servicoInfo, setServicoInfo] = useState({})
   const navigate = useNavigate()
 
+  const getQuantidadeProdutoLabel = (produto) => {
+    const quantidade = Number(produto?.ServicosProduto?.quantidade_gasta ?? produto?.ServicosProduto?.quant ?? 1)
+    const unidade = produto?.unidade_medida || 'ml'
+    return `${quantidade}${unidade}`
+  }
+
   const getProfissionaisLabel = (servico) => {
     const nomes = Array.isArray(servico.Profissionais)
       ? servico.Profissionais.map((profissional) => profissional.nome).filter(Boolean)
@@ -72,7 +78,7 @@ export const Servico = () => {
             <ul className='space-y-1 pl-6 list-disc'>
               {servicoInfo.Produtos.map((produto) => (
                 <li key={produto.id}>
-                  {produto.nome} (x{produto.ServicoProduto?.quant ?? 1})
+                  {produto.nome} ({getQuantidadeProdutoLabel(produto)})
                 </li>
               ))}
             </ul>

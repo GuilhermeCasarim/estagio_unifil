@@ -28,14 +28,10 @@ export const ClienteNovo = () => {
             console.log(res)
             navigate('/clientes', { state: { refetch: true } })
         })
-        // .catch((e) => toast.error('Erro ao cadastrar cliente'))
     }
 
     const onInvalid = (errors) => {
-        // Log para depuração
         console.log("Erros de validação do formulário:", errors);
-
-        // Toast de erro para alertar o usuário sobre campos obrigatórios/inválidos
         toast.error('ERRO. Revise os dados e tente novamente.')
     }
 

@@ -41,7 +41,7 @@ export const Produto = () => {
           </p>
 
           <p className='flex items-center gap-2'>
-            <strong>Volume por unidade:</strong> {Math.trunc(Number(produtoInfo.volume_unidade ?? 0))}ml
+            <strong>Volume por unidade:</strong> {Math.trunc(Number(produtoInfo.volume_unidade ?? 0))}{produtoInfo.unidade_medida || 'ml'}
           </p>
 
         </div>
@@ -55,10 +55,10 @@ export const Produto = () => {
               const atual = Number(produtoInfo.estoque_atual) || 0
 
               if (volume) {
-                return `${(atual / volume).toFixed(1)} un (${atual}ml)`
+                return `${(atual / volume).toFixed(1)} un (${atual}${produtoInfo.unidade_medida || 'ml'})`
               }
 
-              return `${atual}ml`
+              return `${atual}${produtoInfo.unidade_medida || 'ml'}`
             })()}
           </p>
           <p className='flex items-center gap-2'>
@@ -69,10 +69,10 @@ export const Produto = () => {
               const minimo = Number(produtoInfo.estoque_minimo) || 0
 
               if (volume) {
-                return `${(minimo / volume).toFixed(1)} un (${minimo}ml)`
+                return `${(minimo / volume).toFixed(1)} un (${minimo}${produtoInfo.unidade_medida || 'ml'})`
               }
 
-              return `${minimo}ml`
+              return `${minimo}${produtoInfo.unidade_medida || 'ml'}`
             })()}
           </p>
           {produtoInfo.observacoes && (

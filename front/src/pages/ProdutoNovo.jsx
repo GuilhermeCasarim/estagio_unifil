@@ -49,7 +49,7 @@ export const ProdutoNovo = () => {
         <h1 className='flex gap-2 text-2xl font-bold items-center'>
           <PackagePlus className='text-teal-600' /> Novo Produto
         </h1>
-        <button onClick={() => navigate('/produtos')} className='p-2 hover:bg-gray-100 rounded-full'>
+        <button onClick={() => navigate('/produtos')} className='p-2 hover:bg-gray-100 rounded-full cursor-pointer'>
           <X size={24} />
         </button>
       </div>

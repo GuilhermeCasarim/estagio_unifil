@@ -17,12 +17,12 @@ export const NomesServicoNovo = () => {
   const onSubmit = (data) => {
     axios.post('http://localhost:3001/nomes-servico', data)
       .then(() => {
-        toast.success('Nome de servico cadastrado com sucesso!')
+        toast.success('Nome de serviço cadastrado com sucesso!')
         navigate('/nomes-servico')
       })
       .catch((err) => {
         console.error(err)
-        toast.error('Erro ao cadastrar nome de servico.')
+        toast.error('Erro ao cadastrar nome de serviço.')
       })
   }
 

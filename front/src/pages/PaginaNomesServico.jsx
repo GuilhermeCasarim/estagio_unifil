@@ -39,7 +39,7 @@ export const PaginaNomesServico = () => {
     }).then((res) => {
       if (res.isConfirmed) {
         axios.delete(`http://localhost:3001/nomes-servico/delete/${id}`).then(() => {
-          toast.success('Nome de servico deletado com sucesso!')
+          toast.success('Nome de serviço deletado com sucesso!')
           fetchNomes()
           navigate('/nomes-servico', { state: { refetch: true } })
         })

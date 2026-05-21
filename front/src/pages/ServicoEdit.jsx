@@ -198,6 +198,8 @@ export const ServicoEdit = () => {
     quantidade_gasta: Number(item.quantidade_gasta) || 1
   }))
 
+  const getUnidadeMedidaProduto = (produto) => produto.unidade_medida || 'ml'
+
   const onSubmit = (data) => {
     const payload = {
       ...data,
@@ -360,7 +362,7 @@ export const ServicoEdit = () => {
                       disabled={!selecionado}
                       onChange={(e) => handleProdutoQuant(produto.id, e.target.value)}
                     />
-                    <span className='text-sm text-gray-500'>ml</span>
+                    <span className='text-sm text-gray-500'>{getUnidadeMedidaProduto(produto)}</span>
                   </div>
                 </div>
               )
