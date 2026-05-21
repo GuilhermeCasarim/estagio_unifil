@@ -93,7 +93,7 @@ export const ProfissionalNovo = () => {
                 <h1 className='flex gap-2 text-2xl font-bold items-center'>
                     <UserPlus className='text-teal-600' /> Novo Profissional
                 </h1>
-                <button onClick={() => navigate(-1)} className='p-2 hover:bg-gray-100 rounded-full'>
+                <button onClick={() => navigate(-1)} className='p-2 hover:bg-gray-100 rounded-full cursor-pointer'>
                     <X size={24} />
                 </button>
             </div>

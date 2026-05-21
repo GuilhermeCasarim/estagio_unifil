@@ -37,7 +37,7 @@ export const NomesServicoNovo = () => {
         <h1 className='flex gap-2 text-2xl font-bold items-center'>
           <List className='text-teal-600' /> Novo Nome de Serviço
         </h1>
-        <button onClick={() => navigate('/nomes-servico')} className='p-2 hover:bg-gray-100 rounded-full'>
+        <button onClick={() => navigate('/nomes-servico')} className='p-2 hover:bg-gray-100 rounded-full cursor-pointer'>
           <X size={24} />
         </button>
       </div>

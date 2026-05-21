@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Tag, SquarePen, Trash2 } from 'lucide-react'
+import { ArrowLeft, Tag, SquarePen, Trash2 } from 'lucide-react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import Swal from 'sweetalert2'
@@ -63,12 +63,21 @@ export const PaginaCategoriasServico = () => {
           <p>Gestão de categorias</p>
           <p>Visualize e gerencie as categorias de serviço</p>
         </div>
-        <button
-          className='bg-teal-400 text-white px-4 py-1 rounded-full hover:bg-teal-500 transition duration-300 cursor-pointer'
-          onClick={() => navigate('/categoria-servico/novo')}
-        >
-          Nova Categoria
-        </button>
+        <div className='flex items-center gap-3'>
+          <button
+            className='flex items-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-1 text-gray-700 transition duration-300 hover:border-teal-500 hover:text-teal-600 cursor-pointer'
+            onClick={() => navigate('/servicos')}
+          >
+            <ArrowLeft size={16} />
+            Voltar para Serviços
+          </button>
+          <button
+            className='bg-teal-400 text-white px-4 py-1 rounded-full hover:bg-teal-500 transition duration-300 cursor-pointer'
+            onClick={() => navigate('/categoria-servico/novo')}
+          >
+            Nova Categoria
+          </button>
+        </div>
       </div>
 
       <div className='bg-gray-200 rounded-xl p-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between'>
