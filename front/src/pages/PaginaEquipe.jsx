@@ -10,6 +10,8 @@ export const PaginaEquipe = () => {
     const navigate = useNavigate()
     const [usuarios, setUsuarios] = useState([])
     const [filter, setFilter] = useState('todos')
+    const [currentPage, setCurrentPage] = useState(1)
+    const [limit] = useState(6)
     const { setShowAdminForm, showAdminForm } = useContext(AuthContext);
     const [form, setForm] = useState({ login: '', senha: '', tipo_usuario: 'administrador' })
 
@@ -74,6 +76,21 @@ export const PaginaEquipe = () => {
         return true
     })
 
+    const totalPages = Math.ceil(filtered.length / limit)
+    const startIndex = (currentPage - 1) * limit
+    const paginatedUsuarios = filtered.slice(startIndex, startIndex + limit)
+
+    useEffect(() => {
+        if (totalPages === 0) {
+            if (currentPage !== 1) setCurrentPage(1)
+            return
+        }
+
+        if (currentPage > totalPages) {
+            setCurrentPage(totalPages)
+        }
+    }, [currentPage, totalPages])
+
     const getTipoLabel = (tipo) => {
         if (tipo === 'secretaria') return 'Secretária'
         if (tipo === 'administrador') return 'Administrador'
@@ -107,13 +124,32 @@ export const PaginaEquipe = () => {
             </div>
 
             <div className='filters flex gap-2'>
-                <button onClick={() => setFilter('todos')} className={`px-3 py-1 rounded ${filter==='todos' ? 'bg-teal-500 text-white' : 'bg-gray-200'}`}>Todos</button>
-                <button onClick={() => setFilter('administrador')} className={`px-3 py-1 rounded ${filter==='administrador' ? 'bg-teal-500 text-white' : 'bg-gray-200'}`}>Administradores</button>
-                <button onClick={() => setFilter('secretaria')} className={`px-3 py-1 rounded ${filter==='secretaria' ? 'bg-teal-500 text-white' : 'bg-gray-200'}`}>Secretárias</button>
-                <button onClick={() => setFilter('profissional')} className={`px-3 py-1 rounded ${filter==='profissional' ? 'bg-teal-500 text-white' : 'bg-gray-200'}`}>Profissionais</button>
+                <button onClick={() => { setFilter('todos'); setCurrentPage(1) }} className={`px-3 py-1 rounded ${filter==='todos' ? 'bg-teal-500 text-white' : 'bg-gray-200'}`}>Todos</button>
+                <button onClick={() => { setFilter('administrador'); setCurrentPage(1) }} className={`px-3 py-1 rounded ${filter==='administrador' ? 'bg-teal-500 text-white' : 'bg-gray-200'}`}>Administradores</button>
+                <button onClick={() => { setFilter('secretaria'); setCurrentPage(1) }} className={`px-3 py-1 rounded ${filter==='secretaria' ? 'bg-teal-500 text-white' : 'bg-gray-200'}`}>Secretárias</button>
+                <button onClick={() => { setFilter('profissional'); setCurrentPage(1) }} className={`px-3 py-1 rounded ${filter==='profissional' ? 'bg-teal-500 text-white' : 'bg-gray-200'}`}>Profissionais</button>
             </div>
 
             <div className='table bg-white p-6 rounded'>
+                <div className='mb-4 flex items-center justify-end gap-4'>
+                    <p className='text-sm text-gray-600'>Página {totalPages === 0 ? 0 : currentPage} de {totalPages}</p>
+                    <div className='flex gap-2'>
+                        <button
+                            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                            disabled={currentPage === 1 || totalPages === 0}
+                            className='rounded-full bg-gray-300 text-gray-500 px-3 py-1 transition duration-300 hover:bg-teal-600 disabled:bg-gray-200 disabled:text-gray-400'
+                        >
+                            Anterior
+                        </button>
+                        <button
+                            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                            disabled={currentPage === totalPages || totalPages === 0}
+                            className='rounded-full bg-gray-300 text-gray-500 px-3 py-1 transition duration-300 hover:bg-teal-600 disabled:bg-gray-200 disabled:text-gray-400'
+                        >
+                            Próxima
+                        </button>
+                    </div>
+                </div>
                 <table className='w-full table-auto'>
                     <thead>
                         <tr className='text-left border-b-2 border-gray-300'>
@@ -123,7 +159,7 @@ export const PaginaEquipe = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {filtered.map((u) => (
+                        {paginatedUsuarios.map((u) => (
                             <tr key={u.id} className='border-t hover:bg-gray-50' >
                                 <td className='py-4 px-4'>{u.login}</td>
                                 <td className='py-4 px-4'>{getTipoLabel(u.tipo_login)}</td>
@@ -150,6 +186,11 @@ export const PaginaEquipe = () => {
                                 </td>
                             </tr>
                         ))}
+                        {paginatedUsuarios.length === 0 && (
+                            <tr>
+                                <td colSpan={3} className='py-8 px-4 text-center text-gray-500'>Nenhum usuário encontrado.</td>
+                            </tr>
+                        )}
                     </tbody>
                 </table>
             </div>

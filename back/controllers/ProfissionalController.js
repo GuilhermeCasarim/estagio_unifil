@@ -77,9 +77,14 @@ class ProfissionalController {
 
     async create(req, res) {
         const { nomes_servico_ids, login, senha, ...profissional } = req.body
-        const nomesIds = Array.isArray(nomes_servico_ids)
-            ? nomes_servico_ids.map((id) => Number(id)).filter((id) => Number.isInteger(id))
-            : []
+        let nomesIds = []
+        if (Array.isArray(nomes_servico_ids)) {
+            nomesIds = nomes_servico_ids.map((id) => Number(id)).filter((id) => Number.isInteger(id))
+        } else if (typeof nomes_servico_ids === 'string' && nomes_servico_ids.trim() !== '') {
+            nomesIds = nomes_servico_ids.split(',').map((s) => Number(s)).filter((id) => Number.isInteger(id))
+        } else {
+            nomesIds = []
+        }
         try {
             if (nomesIds.length === 0) {
                 return res.status(400).json({ error: 'Selecione ao menos um nome de servico.' })
@@ -147,9 +152,14 @@ class ProfissionalController {
     async update(req, res) {
         const idProfissional = req.params.id
         const { nome, telefone, email, horario_inicio, horario_fim, dias_ativos, nomes_servico_ids } = req.body
-        const nomesIds = Array.isArray(nomes_servico_ids)
-            ? nomes_servico_ids.map((id) => Number(id)).filter((id) => Number.isInteger(id))
-            : []
+        let nomesIds = []
+        if (Array.isArray(nomes_servico_ids)) {
+            nomesIds = nomes_servico_ids.map((id) => Number(id)).filter((id) => Number.isInteger(id))
+        } else if (typeof nomes_servico_ids === 'string' && nomes_servico_ids.trim() !== '') {
+            nomesIds = nomes_servico_ids.split(',').map((s) => Number(s)).filter((id) => Number.isInteger(id))
+        } else {
+            nomesIds = []
+        }
         try {
             if (nomesIds.length === 0) {
                 return res.status(400).json({ error: 'Selecione ao menos um nome de servico.' })

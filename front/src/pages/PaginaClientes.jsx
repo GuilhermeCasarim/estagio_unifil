@@ -97,7 +97,7 @@ export const PaginaClientes = () => {
                 <div className="input flex flex-col gap-2 lg:flex-row items-center ">
                     <input type="text" placeholder='Pesquisar cliente...' className='w-[80%] rounded-full border-2 border-gray-300 bg-gray-100 px-3 py-2 text-gray-600 outline-0 placeholder:text-gray-400 focus:border-gray-300 focus:ring-2 focus:ring-gray-100 transition-colors' value={search} onChange={e => setSearch(e.target.value)} />
                     <div className="pages w-[20%] flex flex-col items-center">
-                        <p className=''>Página {totalPages === 0 ? 0 : currentPage} de {totalPages} </p>
+                        <p className='text-sm text-gray-600'>Página {totalPages === 0 ? 0 : currentPage} de {totalPages} </p>
                         <div className="buttons flex justify-center space-x-4">
                             <button
                                 onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}

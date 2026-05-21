@@ -45,7 +45,7 @@ export const ProfissionalEdit = () => {
                     selecionados[nomeId] = true
                 })
                 setNomesSelecionados(selecionados)
-                setValue('nomes_servico_ids', Array.from(nomesIds).join(','), { shouldValidate: true })
+                setValue('nomes_servico_ids', Array.from(nomesIds), { shouldValidate: true })
                 if (data.telefone) data.telefone = maskPhone(data.telefone);
                 reset(data);
             })
@@ -87,7 +87,7 @@ export const ProfissionalEdit = () => {
                 [nomeId]: checked
             }
             const ids = buildNomesIds(next)
-            setValue('nomes_servico_ids', ids.join(','), { shouldValidate: true })
+            setValue('nomes_servico_ids', ids, { shouldValidate: true })
             return next
         })
     }
@@ -208,7 +208,9 @@ export const ProfissionalEdit = () => {
                         <input
                             type="hidden"
                             {...register('nomes_servico_ids', {
-                                validate: (value) => (value && value.split(',').filter(Boolean).length > 0) || 'Selecione pelo menos um servico'
+                                validate: (value) => (
+                                    Array.isArray(value) ? value.length > 0 : (value && String(value).split(',').filter(Boolean).length > 0)
+                                ) || 'Selecione pelo menos um servico'
                             })}
                         />
                         {errors?.nomes_servico_ids && (

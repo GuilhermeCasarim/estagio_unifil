@@ -47,7 +47,7 @@ export const ProfissionalNovo = () => {
                 [nomeId]: checked
             }
             const ids = buildNomesIds(next)
-            setValue('nomes_servico_ids', ids.join(','), { shouldValidate: true })
+            setValue('nomes_servico_ids', ids, { shouldValidate: true })
             return next
         })
     }
@@ -193,7 +193,9 @@ export const ProfissionalNovo = () => {
                         <input
                             type="hidden"
                             {...register('nomes_servico_ids', {
-                                validate: (value) => (value && value.split(',').filter(Boolean).length > 0) || 'Selecione pelo menos um servico'
+                                validate: (value) => (
+                                    Array.isArray(value) ? value.length > 0 : (value && String(value).split(',').filter(Boolean).length > 0)
+                                ) || 'Selecione pelo menos um servico'
                             })}
                         />
                         {errors?.nomes_servico_ids && (

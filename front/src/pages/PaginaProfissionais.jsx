@@ -103,7 +103,7 @@ export const PaginaProfissionais = () => {
                     <input
                         type="text"
                         placeholder='Pesquisar profissional...'
-                        className='px-3 py-2 rounded-full bg-white border-b-2 border-gray-300 text-gray-600 outline-0 w-[80%] placeholder:text-gray-400 focus:border-teal-500 focus:ring-2 focus:ring-teal-100 transition-colors'
+                        className='w-[80%] rounded-full border-2 border-gray-300 bg-gray-100 px-3 py-2 text-gray-600 outline-0 placeholder:text-gray-400 focus:border-gray-300 focus:ring-2 focus:ring-gray-100 transition-colors'
                         value={search}
                         onChange={(e) => {
                             setSearch(e.target.value)
@@ -111,20 +111,20 @@ export const PaginaProfissionais = () => {
                         }}
                     />
                     <div className="pages w-[20%] flex flex-col items-center">
-                        <p className='text-sm text-gray-600'>Página {currentPage} de {totalPages} </p>
+                        <p className='text-sm text-gray-600'>Página {totalPages === 0 ? 0 : currentPage} de {totalPages} </p>
                         <div className="buttons flex justify-center space-x-4">
                             <button
                                 onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                                disabled={currentPage === 1}
-                                className='rounded-full bg-teal-500 text-white px-3 py-1 hover:bg-teal-600 disabled:bg-gray-300 disabled:text-gray-500 transition duration-300'
+                                disabled={currentPage === 1 || totalPages === 0}
+                                className='rounded-full bg-gray-300 text-gray-500 px-3 py-1 transition duration-300 hover:bg-teal-600 disabled:bg-gray-200 disabled:text-gray-400'
                             >
                                 Anterior
                             </button>
 
                             <button
                                 onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                                disabled={currentPage === totalPages}
-                                className='rounded-full bg-teal-500 text-white px-3 py-1 hover:bg-teal-600 disabled:bg-gray-300 disabled:text-gray-500 transition duration-300'
+                                disabled={currentPage === totalPages || totalPages === 0}
+                                className='rounded-full bg-gray-300 text-gray-500 px-3 py-1 transition duration-300 hover:bg-teal-600 disabled:bg-gray-200 disabled:text-gray-400'
                             >
                                 Próxima
                             </button>
