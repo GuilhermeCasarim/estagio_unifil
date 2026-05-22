@@ -9,11 +9,13 @@ export const PaginaFinanceiro = () => {
   const navigate = useNavigate()
   const [transacoes, setTransacoes] = useState([])
 
-  const entradasTotal = transacoes
+  const transacoesPagas = transacoes.filter((transacao) => transacao.status === 'Pago')
+
+  const entradasTotal = transacoesPagas
     .filter((transacao) => transacao.tipo === 'Receita')
     .reduce((acc, transacao) => acc + (Number(transacao.valor) || 0), 0)
 
-  const saidasTotal = transacoes
+  const saidasTotal = transacoesPagas
     .filter((transacao) => transacao.tipo === 'Despesa')
     .reduce((acc, transacao) => acc + (Number(transacao.valor) || 0), 0)
 
@@ -45,13 +47,13 @@ export const PaginaFinanceiro = () => {
     }).then((res) => {
       if (res.isConfirmed) {
         axios.delete(`http://localhost:3001/financeiro/delete/${id}`).then(() => {
-          toast.success('Transacao deletada com sucesso!')
+          toast.success('Transação deletada com sucesso!')
           fetchTransacoes()
           navigate('/financeiro', { state: { refetch: true } })
         })
       }
     })
-      .catch((e) => toast.error(e, 'Erro ao deletar transacao!'))
+      .catch((e) => toast.error(e, 'Erro ao deletar transação!'))
   }
 
   const handleEdit = (id) => {

@@ -40,7 +40,7 @@ export const Home = () => {
 
     // Calcula métricas financeiras do dia
     const calcularMetricasHoje = (dados) => {
-        const hoje = dados.filter(t => ehTransacaoHoje(t.data_pagamento))
+        const hoje = dados.filter(t => t.status === 'Pago' && ehTransacaoHoje(t.data_pagamento))
         const receitas = hoje
             .filter(t => t.tipo === 'Receita')
             .reduce((sum, t) => sum + parseFloat(t.valor || 0), 0)

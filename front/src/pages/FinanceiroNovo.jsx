@@ -124,12 +124,12 @@ export const FinanceiroNovo = ({
           <label className='font-semibold'>Descrição</label>
           <input
             type='text'
-            placeholder='Descricao da transação'
+            placeholder='Descrição da transação'
             readOnly={bloquearCampos}
             className={bloquearCampos ? 'border p-3 rounded-md bg-gray-100 cursor-not-allowed' : 'border p-3 rounded-md'}
             {...register('descricao', { required: true })}
           />
-          {errors?.descricao?.type == 'required' && <p className='text-red-500 text-sm'>Descricao obrigatoria!</p>}
+          {errors?.descricao?.type == 'required' && <p className='text-red-500 text-sm'>Descrição obrigatória!</p>}
         </div>
 
         <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
@@ -140,7 +140,7 @@ export const FinanceiroNovo = ({
               <option value='Receita'>Receita</option>
               <option value='Despesa'>Despesa</option>
             </select>
-            {errors?.tipo?.type == 'required' && <p className='text-red-500 text-sm'>Tipo obrigatorio!</p>}
+            {errors?.tipo?.type == 'required' && <p className='text-red-500 text-sm'>Tipo obrigatório!</p>}
           </div>
           <div className='flex flex-col gap-2'>
             <label className='font-semibold'>Valor</label>
@@ -167,7 +167,7 @@ export const FinanceiroNovo = ({
               className={bloquearCampos ? 'border p-3 rounded-md bg-gray-100 cursor-not-allowed' : 'border p-3 rounded-md'}
               {...register('categoria', { required: true })}
             />
-            {errors?.categoria?.type == 'required' && <p className='text-red-500 text-sm'>Categoria obrigatoria!</p>}
+            {errors?.categoria?.type == 'required' && <p className='text-red-500 text-sm'>Categoria obrigatória!</p>}
           </div>
           <div className='flex flex-col gap-2'>
             <label className='font-semibold'>Forma de pagamento</label>

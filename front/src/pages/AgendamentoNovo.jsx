@@ -112,7 +112,7 @@ export const AgendamentoNovo = () => {
           </select>
         </div>
         {errors?.root && <p className='text-red-500 text-sm'>{errors.root.message}</p>}
-        <button type='submit' className='bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600 transition'>Salvar Agendamento</button>
+        <button type='submit' className='bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600 transition cursor-pointer'>Salvar Agendamento</button>
       </form>
     </div>
   )

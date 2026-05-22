@@ -4,7 +4,7 @@ import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { UserPlus, X, Clock } from 'lucide-react'
 import { toast } from 'react-toastify'
-import { maskPhone, maskName, validateTimeRange } from '../utils/masks.js'
+import { maskPhone, maskName, validateTimeRange, validateBusinessHour } from '../utils/masks.js'
 
 export const ProfissionalNovo = () => {
     const {
@@ -159,9 +159,20 @@ export const ProfissionalNovo = () => {
                 <div className="bg-teal-50 p-3 rounded-lg border border-teal-100 grid grid-cols-2 gap-3">
                     <div className="flex flex-col gap-1.5">
                         <label className='font-medium flex items-center gap-1'><Clock size={16} /> Início</label>
-                        <input className='border p-2 rounded' type="time" {...register('horario_inicio', { required: true })} />
+                        <input
+                            className='border p-2 rounded'
+                            type="time"
+                            min='08:00'
+                            max='18:00'
+                            {...register('horario_inicio', {
+                                required: true,
+                                validate: validateBusinessHour
+                            })}
+                        />
                         {errors?.horario_inicio?.type == 'required' &&
                             <p className='text-red-500 text-sm'>Horário necessário!</p>}
+                        {errors?.horario_inicio?.type == 'validate' &&
+                            <p className='text-red-500 text-sm'>{errors.horario_inicio.message}</p>}
 
                     </div>
                     <div className="flex flex-col gap-1.5">
@@ -169,6 +180,8 @@ export const ProfissionalNovo = () => {
                         <input
                             className={`border p-2 rounded ${errors.horario_fim ? 'border-red-500' : 'border-gray-300'}`}
                             type="time"
+                            min='08:00'
+                            max='18:00'
                             {...register('horario_fim', {
                                 required: true,
                                 validate: (v) => validateTimeRange(horarioInicio, v)
@@ -177,7 +190,7 @@ export const ProfissionalNovo = () => {
                         {errors?.horario_fim?.type == 'required' &&
                             <p className='text-red-500 text-sm'>Horário necessário!</p>}
                         {errors?.horario_fim?.type == 'validate' &&
-                            <p className='text-red-500 text-sm'>O horário inicial deve ser anterior ao final!</p>}
+                            <p className='text-red-500 text-sm'>{errors.horario_fim.message}</p>}
                     </div>
                 </div>
 

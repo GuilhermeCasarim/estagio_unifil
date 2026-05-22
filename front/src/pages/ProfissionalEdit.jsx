@@ -4,7 +4,7 @@ import axios from 'axios'
 import { useNavigate, useParams } from 'react-router-dom'
 import { SquarePen, X, Clock, Calendar, Briefcase } from 'lucide-react'
 import { toast } from 'react-toastify'
-import { maskPhone, maskName, validateTimeRange } from '../utils/masks.js'
+import { maskPhone, maskName, validateTimeRange, validateBusinessHour } from '../utils/masks.js'
 
 export const ProfissionalEdit = () => {
     const { 
@@ -176,16 +176,24 @@ export const ProfissionalEdit = () => {
                         <input 
                             className='border p-3 rounded-md border-gray-300' 
                             type="time" 
-                            {...register('horario_inicio', { required: true })} 
+                            min='08:00'
+                            max='18:00'
+                            {...register('horario_inicio', {
+                                required: 'Horario necessario!',
+                                validate: validateBusinessHour
+                            })} 
                         />
+                        {errors.horario_inicio && <p className='text-red-500 text-sm'>{errors.horario_inicio.message}</p>}
                     </div>
                     <div className="flex flex-col gap-2">
                         <label className='font-medium flex items-center gap-1'><Clock size={16}/> Fim</label>
                         <input 
                             className={`border p-3 rounded-md ${errors.horario_fim ? 'border-red-500' : 'border-gray-300'}`} 
                             type="time" 
+                            min='08:00'
+                            max='18:00'
                             {...register('horario_fim', { 
-                                required: true,
+                                required: 'Horario necessario!',
                                 validate: (v) => validateTimeRange(horarioInicio, v)
                             })} 
                         />

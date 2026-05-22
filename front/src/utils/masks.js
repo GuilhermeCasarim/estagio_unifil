@@ -56,11 +56,31 @@ export const validatePastDate = (value) => {
 export const validateTimeRange = (startTime, endTime) => {
     if (!startTime || !endTime) return true;
 
+    const HORA_ABERTURA = '08:00';
+    const HORA_FECHAMENTO = '18:00';
+
+    if (startTime < HORA_ABERTURA || startTime > HORA_FECHAMENTO || endTime < HORA_ABERTURA || endTime > HORA_FECHAMENTO) {
+        return 'Horario fora do funcionamento. O salao funciona de 08:00 as 18:00.';
+    }
+
     if (endTime > startTime) {
         return true;
     }
 
     return 'O horário de término deve ser posterior ao horário de início.';
+};
+
+export const validateBusinessHour = (time) => {
+    if (!time) return true;
+
+    const HORA_ABERTURA = '08:00';
+    const HORA_FECHAMENTO = '18:00';
+
+    if (time < HORA_ABERTURA || time > HORA_FECHAMENTO) {
+        return 'Horario fora do funcionamento. O salao funciona de 08:00 as 18:00.';
+    }
+
+    return true;
 };
 
 export const maskName = (value) => {
