@@ -54,10 +54,15 @@ export const PaginaClientes = () => {
             cancelButtonText: 'Cancelar'
         }).then((res) => {
             if (res.isConfirmed) {
-                axios.delete(`http://localhost:3001/clientes/delete/${id}`).then(() => {
-                    toast.success('Cliente deletado com sucesso!')
-                    navigate('/clientes', { state: { refetch: true } })
-                })
+                axios.delete(`http://localhost:3001/clientes/delete/${id}`)
+                    .then(() => {
+                        toast.success('Cliente deletado com sucesso!')
+                        navigate('/clientes', { state: { refetch: true } })
+                    })
+                    .catch((error) => {
+                        const mensagem = error.response?.data?.error || 'Erro ao deletar cliente!'
+                        toast.error(mensagem)
+                    })
             }
         })
             .catch((e) => toast.error(e, 'Erro ao deletar cliente!'))

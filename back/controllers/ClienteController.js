@@ -1,4 +1,4 @@
-const { Clientes } = require('../models')
+const { Clientes, Agendamentos } = require('../models')
 const { Op } = require('sequelize');
 
 class ClienteController {
@@ -82,18 +82,30 @@ class ClienteController {
     async delete(req, res) {
         const idCliente = req.params.id
         try {
+            const totalAgendamentos = await Agendamentos.count({
+                where: {
+                    cliente_id: idCliente
+                }
+            })
+
+            if (totalAgendamentos > 0) {
+                return res.status(400).json({
+                    error: 'Não é possível excluir o cliente porque existem agendamentos vinculados a ele'
+                })
+            }
+
             const resultado = await Clientes.destroy({
                 where: {
                     id: idCliente
                 }
             })
             if (resultado > 0) {
-                res.json('cliente deletado')
+                return res.json('cliente deletado')
             } else {
-                res.json('cliente não encontrado ou já deletado')
+                return res.status(404).json({ error: 'cliente não encontrado ou já deletado' })
             }
         } catch (e) {
-            res.json({ error: 'erro ao deletar cliente' })
+            return res.status(500).json({ error: 'erro ao deletar cliente' })
         }
     }
 }
