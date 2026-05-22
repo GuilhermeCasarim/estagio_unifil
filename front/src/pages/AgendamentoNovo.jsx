@@ -14,6 +14,30 @@ export const AgendamentoNovo = () => {
   const [profissionaisFiltrados, setProfissionaisFiltrados] = useState([])
   const [servicoSelecionado, setServicoSelecionado] = useState('')
 
+  const getMinDateTimeLocal = () => {
+    const now = new Date()
+    const offset = now.getTimezoneOffset() * 60000
+    const localNow = new Date(now.getTime() - offset)
+    localNow.setSeconds(0, 0)
+    return localNow.toISOString().slice(0, 16)
+  }
+
+  const validarDataAtualOuFutura = (value) => {
+    if (!value) return 'Data e hora obrigatória!'
+
+    const selecionada = new Date(value)
+    const agora = new Date()
+
+    selecionada.setSeconds(0, 0)
+    agora.setSeconds(0, 0)
+
+    if (Number.isNaN(selecionada.getTime())) {
+      return 'Data e hora inválida!'
+    }
+
+    return selecionada >= agora || 'Data e hora deve ser atual ou futura!'
+  }
+
   useEffect(() => {
     axios.get('http://localhost:3001/servicos')
       .then(res => setServicos(Array.isArray(res.data) ? res.data : (res.data.data || [])))
@@ -99,7 +123,11 @@ export const AgendamentoNovo = () => {
         </div>
         <div className='flex flex-col gap-2'>
           <label className='font-semibold'>Data e Hora</label>
-          <input type='datetime-local' {...register('data_hora', { required: true })} />
+          <input
+            type='datetime-local'
+            min={getMinDateTimeLocal()}
+            {...register('data_hora', { validate: validarDataAtualOuFutura })}
+          />
           {errors?.data_hora && <p className='text-red-500 text-sm'>{errors.data_hora.message || 'Data e hora obrigatória!'}</p>}
         </div>
         <div className='flex flex-col gap-2'>

@@ -3,6 +3,17 @@ const { Op } = require('sequelize');
 
 
 class AgendamentosController {
+    validarDataAtualOuFutura(dataHora) {
+        const selecionada = new Date(dataHora);
+
+        if (Number.isNaN(selecionada.getTime())) {
+            return false;
+        }
+
+        const agora = new Date();
+        return selecionada >= agora;
+    }
+
     // Método auxiliar para verificar sobreposição de horários (corrigido)
     async verificarHorario(profissional_id, dataInicio, dataFim) {
         // 1. Criar objetos Date limpos para o início e fim do dia
@@ -198,6 +209,12 @@ class AgendamentosController {
             const dataFim = new Date(dataInicio.getTime() + servico.duracao * 60000); // minutos para ms
             console.log('Data início:', dataInicio.toISOString(), 'Data fim:', dataFim.toISOString(), 'Duração:', servico.duracao);
 
+            if (!this.validarDataAtualOuFutura(dataInicio)) {
+                return res.status(400).json({
+                    error: 'Agendamento não pode ser criado no passado.'
+                });
+            }
+
             // Validar se está dentro do horário de funcionamento (08:00 - 18:00)
             if (!this.validarHorarioFuncionamento(dataInicio, dataFim)) {
                 const horaInicio = dataInicio.getHours();
@@ -260,6 +277,12 @@ class AgendamentosController {
             // Calcular data_fim usando a duração do serviço
             const dataInicio = new Date(data_hora);
             const dataFim = new Date(dataInicio.getTime() + servico.duracao * 60000);
+
+            if (!this.validarDataAtualOuFutura(dataInicio)) {
+                return res.status(400).json({
+                    error: 'Agendamento não pode ser atualizado para uma data no passado.'
+                });
+            }
 
             // Validar se está dentro do horário de funcionamento (08:00 - 18:00)
             if (!this.validarHorarioFuncionamento(dataInicio, dataFim)) {
