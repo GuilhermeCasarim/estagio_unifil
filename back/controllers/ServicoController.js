@@ -1,4 +1,4 @@
-const { Servicos, Produtos, ServicosProduto, CategoriasServico, NomesServico, Profissionais, ProfissionaisServico } = require('../models');
+const { Servicos, Produtos, ServicosProduto, CategoriasServico, NomesServico, Profissionais, ProfissionaisServico, Agendamentos } = require('../models');
 const { Op } = require('sequelize');
 
 const obterProfissionaisInvalidos = async (profissionaisIds, nomeServicoId) => {
@@ -284,11 +284,12 @@ class ServicoController {
     async delete(req, res) {
         const idServico = req.params.id;
         try {
-            const resultado = await Servicos.destroy({
-                where: {
-                    id: idServico
-                }
-            });
+            const totalAgendamentos = await Agendamentos.count({ where: { servico_id: idServico } });
+            if (totalAgendamentos > 0) {
+                return res.status(400).json({ error: 'Não é possível excluir o serviço porque existem agendamentos vinculados a ele' });
+            }
+
+            const resultado = await Servicos.destroy({ where: { id: idServico } });
             if (resultado > 0) {
                 return res.json('Servico deletado');
             }

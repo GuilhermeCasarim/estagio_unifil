@@ -1,4 +1,4 @@
-const { Produtos } = require('../models');
+const { Produtos, ServicosProduto } = require('../models');
 const { Op } = require('sequelize');
 
 class ProdutoController {
@@ -76,11 +76,12 @@ class ProdutoController {
     async delete(req, res) {
         const idProduto = req.params.id;
         try {
-            const resultado = await Produtos.destroy({
-                where: {
-                    id: idProduto
-                }
-            });
+            const totalVinculos = await ServicosProduto.count({ where: { produto_id: idProduto } });
+            if (totalVinculos > 0) {
+                return res.status(400).json({ error: 'Não é possível excluir o produto porque ele é utilizado em um ou mais serviços.' });
+            }
+
+            const resultado = await Produtos.destroy({ where: { id: idProduto } });
             if (resultado > 0) {
                 res.json('Produto deletado');
             } else {

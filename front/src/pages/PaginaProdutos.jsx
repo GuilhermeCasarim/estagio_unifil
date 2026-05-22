@@ -41,7 +41,7 @@ export const PaginaProdutos = () => {
   const handleDelete = (id) => {
     Swal.fire({
       title: 'Tem certeza?',
-      text: 'Voce nao podera reverter esta acao!',
+      text: 'Voce não poderá reverter esta ação!',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#d33',
@@ -54,10 +54,16 @@ export const PaginaProdutos = () => {
           toast.success('Produto deletado com sucesso!')
           fetchProdutos()
           navigate('/produtos', { state: { refetch: true } })
+        }).catch((error) => {
+          const mensagem = error.response?.data?.error || 'Erro ao deletar produto!'
+          toast.error(mensagem)
         })
       }
     })
-      .catch((e) => toast.error(e, 'Erro ao deletar produto!'))
+      .catch((e) => {
+        const mensagem = e.response?.data?.error || 'Erro ao deletar produto!'
+        toast.error(mensagem)
+      })
   }
 
   const handleEdit = (id) => {

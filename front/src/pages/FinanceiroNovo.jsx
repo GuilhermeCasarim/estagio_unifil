@@ -92,7 +92,8 @@ export const FinanceiroNovo = ({
       navigate(-1)
     } catch (err) {
       console.error(err)
-      toast.error('Erro ao cadastrar transação.')
+      const mensagem = err.response?.data?.error || err.response?.data?.details || 'Erro ao cadastrar transação'
+      toast.error(mensagem)
     }
   }
 

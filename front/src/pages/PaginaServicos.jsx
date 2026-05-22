@@ -29,7 +29,7 @@ export const PaginaServicos = () => {
   const handleDelete = (id) => {
     Swal.fire({
       title: 'Tem certeza?',
-      text: 'Voce nao podera reverter esta acao!',
+      text: 'Voce não poderá reverter esta ação!',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#d33',
@@ -42,10 +42,16 @@ export const PaginaServicos = () => {
           toast.success('Serviço deletado com sucesso!')
           fetchServicos()
           navigate('/servicos', { state: { refetch: true } })
+        }).catch((error) => {
+          const mensagem = error.response?.data?.error || 'Erro ao deletar serviço!'
+          toast.error(mensagem)
         })
       }
     })
-      .catch((e) => toast.error(e, 'Erro ao deletar serviço!'))
+      .catch((e) => {
+        const mensagem = e.response?.data?.error || 'Erro ao deletar serviço!'
+        toast.error(mensagem)
+      })
   }
 
   const handleEdit = (id) => {

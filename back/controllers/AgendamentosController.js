@@ -14,6 +14,42 @@ class AgendamentosController {
         return selecionada >= agora;
     }
 
+    async validarEstoqueServico(servicoId) {
+        const servico = await Servicos.findByPk(servicoId, {
+            include: [
+                {
+                    model: Produtos,
+                    through: {
+                        attributes: ['quantidade_gasta']
+                    }
+                }
+            ]
+        });
+
+        if (!servico) {
+            return { ok: false, error: 'Serviço não encontrado.' };
+        }
+
+        for (const produto of servico.Produtos || []) {
+            const quantidadeGasta = Number(produto.ServicosProduto?.quantidade_gasta) || 0;
+
+            if (quantidadeGasta <= 0) {
+                continue;
+            }
+
+            const estoqueAtual = Number(produto.estoque_atual) || 0;
+
+            if (estoqueAtual < quantidadeGasta) {
+                return {
+                    ok: false,
+                    error: `Não é possível agendar este serviço porque o produto ${produto.nome} possui estoque insuficiente.`
+                };
+            }
+        }
+
+        return { ok: true, servico };
+    }
+
     // Método auxiliar para verificar sobreposição de horários (corrigido)
     async verificarHorario(profissional_id, dataInicio, dataFim) {
         // 1. Criar objetos Date limpos para o início e fim do dia
@@ -193,11 +229,12 @@ class AgendamentosController {
                 console.log('Cliente não encontrado:', cliente_id);
                 return res.status(400).json({ error: 'Cliente não encontrado.' });
             }
-            const servico = await Servicos.findByPk(servico_id);
-            if (!servico) {
-                console.log('Serviço não encontrado:', servico_id);
-                return res.status(400).json({ error: 'Serviço não encontrado.' });
+            const validacaoServico = await this.validarEstoqueServico(servico_id);
+            if (!validacaoServico.ok) {
+                console.log('Falha ao validar estoque do serviço:', servico_id, validacaoServico.error);
+                return res.status(400).json({ error: validacaoServico.error });
             }
+            const servico = validacaoServico.servico;
             const profissional = await Profissionais.findByPk(profissional_id);
             if (!profissional) {
                 console.log('Profissional não encontrado:', profissional_id);
@@ -265,10 +302,11 @@ class AgendamentosController {
             if (!cliente) {
                 return res.status(400).json({ error: 'Cliente não encontrado.' });
             }
-            const servico = await Servicos.findByPk(servico_id);
-            if (!servico) {
-                return res.status(400).json({ error: 'Serviço não encontrado.' });
+            const validacaoServico = await this.validarEstoqueServico(servico_id);
+            if (!validacaoServico.ok) {
+                return res.status(400).json({ error: validacaoServico.error });
             }
+            const servico = validacaoServico.servico;
             const profissional = await Profissionais.findByPk(profissional_id);
             if (!profissional) {
                 return res.status(400).json({ error: 'Profissional não encontrado.' });
@@ -366,22 +404,12 @@ class AgendamentosController {
             const transaction = await Agendamentos.sequelize.transaction();
 
             try {
-                const servicoComProdutos = await Servicos.findByPk(agendamento.servico_id, {
-                    include: [
-                        {
-                            model: Produtos,
-                            through: {
-                                attributes: ['quantidade_gasta']
-                            }
-                        }
-                    ],
-                    transaction
-                });
-
-                if (!servicoComProdutos) {
+                const validacaoServico = await this.validarEstoqueServico(agendamento.servico_id);
+                if (!validacaoServico.ok) {
                     await transaction.rollback();
-                    return res.status(404).json({ error: 'Serviço do agendamento não encontrado.' });
+                    return res.status(400).json({ error: validacaoServico.error });
                 }
+                const servicoComProdutos = validacaoServico.servico;
 
                 for (const produto of servicoComProdutos.Produtos || []) {
                     const quantidadeGasta = Number(produto.ServicosProduto?.quantidade_gasta) || 0;
