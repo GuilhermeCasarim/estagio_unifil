@@ -138,9 +138,9 @@ export const ProfissionalEdit = () => {
                     <input 
                         type="text" 
                         className={`border p-3 rounded-md outline-none ${errors.nome ? 'border-red-500' : 'border-gray-300 focus:border-teal-500'}`}
+                        {...register('nome', { required: 'Nome obrigatório' })}
                         value={nomeValue || ''}
                         onChange={handleNameChange}
-                        {...register('nome', { required: 'Nome obrigatório' })}
                     />
                     {errors.nome && <p className='text-red-500 text-sm'>{errors.nome.message}</p>}
                 </div>
@@ -152,9 +152,9 @@ export const ProfissionalEdit = () => {
                         <input 
                             type="text" 
                             className={`border p-3 rounded-md outline-none ${errors.telefone ? 'border-red-500' : 'border-gray-300'}`}
+                            {...register('telefone', { required: true, minLength: 15 })}
                             value={telefoneValue || ''}
                             onChange={handlePhoneChange}
-                            {...register('telefone', { required: true, minLength: 15 })}
                         />
                         {errors.telefone && <p className='text-red-500 text-sm'>Telefone inválido</p>}
                     </div>

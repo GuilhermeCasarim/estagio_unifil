@@ -52,14 +52,23 @@ export const RelatorioFaturamentos = () => {
   const faturamentoConsolidado = useMemo(() => {
     const agendamentosPorId = new Map(agendamentos.map((agendamento) => [agendamento.id, agendamento]))
     const receitas = financeiro.filter((item) => item.tipo === 'Receita' && item.status === 'Pago')
+    const receitasVinculadas = receitas.filter((receita) => {
+      const agendamentoId = Number(receita.agendamento_id)
 
-    const totalFaturado = receitas.reduce((total, item) => total + Number(item.valor || 0), 0)
+      if (!agendamentoId) {
+        return false
+      }
+
+      return agendamentosPorId.has(agendamentoId)
+    })
+
+    const totalFaturado = receitasVinculadas.reduce((total, item) => total + Number(item.valor || 0), 0)
 
     const agregar = (chaveFn) => {
       const mapa = new Map()
 
-      receitas.forEach((receita) => {
-        const agendamento = agendamentosPorId.get(receita.agendamento_id)
+      receitasVinculadas.forEach((receita) => {
+        const agendamento = agendamentosPorId.get(Number(receita.agendamento_id))
         if (!agendamento) {
           return
         }
@@ -80,6 +89,7 @@ export const RelatorioFaturamentos = () => {
 
     return {
       totalFaturado,
+      receitasVinculadas,
       porServico: agregar((agendamento) => agendamento.Servico?.nome_servico?.nome || 'Serviço não informado'),
       porProfissional: agregar((agendamento) => agendamento.Profissional?.nome || 'Profissional não informado'),
       porCliente: agregar((agendamento) => agendamento.Cliente?.nome || 'Cliente não informado')
@@ -106,7 +116,7 @@ export const RelatorioFaturamentos = () => {
         </div>
         <div className='rounded-lg border border-gray-200 bg-white p-6'>
           <p className='flex items-center gap-2 text-sm text-gray-600'><BadgeDollarSign size={16} /> Receitas válidas</p>
-          <p className='mt-2 text-2xl font-bold text-gray-800'>{financeiro.filter((item) => item.tipo === 'Receita' && item.status === 'Pago').length}</p>
+          <p className='mt-2 text-2xl font-bold text-gray-800'>{faturamentoConsolidado.receitasVinculadas.length}</p>
         </div>
         <div className='rounded-lg border border-gray-200 bg-white p-6'>
           <p className='flex items-center gap-2 text-sm text-gray-600'><Users size={16} /> Clientes com faturamento</p>

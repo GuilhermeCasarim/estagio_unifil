@@ -54,14 +54,14 @@ export const PaginaCategoriasServico = () => {
 
   return (
     <div className='space-y-8'>
-      <div className='header border-b-2 border-gray-400 pb-2'>
-        <h1 className='flex gap-4'> <Tag /> Categorias </h1>
+      <div className='header border-b-2 border-teal-200 pb-2 text-teal-600 text-2xl font-bold'>
+        <h1 className='flex gap-4 items-center'> <Tag /> Categorias </h1>
       </div>
 
       <div className='intro flex items-center justify-between'>
         <div className='texto'>
-          <p>Gestão de categorias</p>
-          <p>Visualize e gerencie as categorias de serviço</p>
+          <p className='text-gray-700'>Gestão de categorias</p>
+          <p className='text-gray-500'>Visualize e gerencie as categorias de serviço</p>
         </div>
         <div className='flex items-center gap-3'>
           <button

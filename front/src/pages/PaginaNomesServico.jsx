@@ -54,14 +54,14 @@ export const PaginaNomesServico = () => {
 
   return (
     <div className='space-y-8'>
-      <div className='header border-b-2 border-gray-400 pb-2'>
-        <h1 className='flex gap-4'> <List /> Nomes de Serviço </h1>
+      <div className='header border-b-2 border-teal-200 pb-2 text-teal-600 text-2xl font-bold'>
+        <h1 className='flex gap-4 items-center'> <List /> Nomes de Serviço </h1>
       </div>
 
       <div className='intro flex items-center justify-between'>
         <div className='texto'>
-          <p>Gestão de nomes de serviço</p>
-          <p>Visualize e gerencie os nomes dos serviços</p>
+          <p className='text-gray-700'>Gestão de nomes de serviço</p>
+          <p className='text-gray-500'>Visualize e gerencie os nomes dos serviços</p>
         </div>
         <div className='flex items-center gap-3'>
           <button

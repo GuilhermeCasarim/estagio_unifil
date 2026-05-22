@@ -119,11 +119,6 @@ class AgendamentosController {
                 if (fim) {
                     where.data_hora[Op.lte] = new Date(fim);
                 }
-            } else {
-                where[Op.or] = [
-                    { status: 'concluido' },
-                    { data_hora: { [Op.lte]: new Date() } }
-                ];
             }
 
             const historico = await Agendamentos.findAll({

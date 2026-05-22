@@ -110,12 +110,12 @@ export const PaginaEquipe = () => {
                     <p>Liste, filtre e cadastre membros da equipe (Administradores, Secretárias e Profissionais)</p>
                 </div>
                 <div className='flex gap-2'>
-                    <button className='bg-teal-500 text-white px-4 py-1 rounded-full hover:bg-teal-600 transition duration-300 flex items-center gap-2'
+                    <button className='bg-teal-500 text-white px-4 py-1 rounded-full hover:bg-teal-600 transition duration-300 flex items-center gap-2 cursor-pointer'
                         onClick={() => navigate('/profissional/novo')}>
                         <Scissors size={16} />
                         <span>Cadastro Profissional</span>
                     </button>
-                    <button className='bg-teal-500 text-white px-4 py-1 rounded-full hover:bg-teal-600 transition duration-300 flex items-center gap-2'
+                    <button className='bg-teal-500 text-white px-4 py-1 rounded-full hover:bg-teal-600 transition duration-300 flex items-center gap-2 cursor-pointer'
                         onClick={() => setShowAdminForm(true)}>
                         <UserCog size={16} />
                         <span>Cadastro Administrativo</span>
@@ -218,8 +218,8 @@ export const PaginaEquipe = () => {
                             </div>
 
                             <div className='flex justify-end gap-2'>
-                                <button type='button' className='px-4 py-1 bg-gray-200 rounded' onClick={() => setShowAdminForm(false)}>Cancelar</button>
-                                <button type='submit' className='px-4 py-1 bg-teal-500 text-white rounded'>Salvar</button>
+                                <button type='button' className='px-4 py-1 bg-gray-200 rounded cursor-pointer hover:bg-gray-300 transition duration-300' onClick={() => setShowAdminForm(false)}>Cancelar</button>
+                                <button type='submit' className='px-4 py-1 bg-teal-500 text-white rounded cursor-pointer hover:bg-teal-600 transition duration-300'>Salvar</button>
                             </div>
                         </form>
                     </div>
