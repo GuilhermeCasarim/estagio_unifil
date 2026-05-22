@@ -59,11 +59,16 @@ export const PaginaProfissionais = () => {
             cancelButtonText: 'Cancelar'
         }).then((res) => {
             if (res.isConfirmed) {
-                axios.delete(`http://localhost:3001/profissionais/delete/${id}`).then(() => {
-                    toast.success('Profissional deletado com sucesso!')
-                    fetchProfissionais();
-                    navigate('/profissionais', { state: { refetch: true } })
-                })
+                axios.delete(`http://localhost:3001/profissionais/delete/${id}`)
+                    .then(() => {
+                        toast.success('Profissional deletado com sucesso!')
+                        fetchProfissionais();
+                        navigate('/profissionais', { state: { refetch: true } })
+                    })
+                    .catch((error) => {
+                        const mensagem = error.response?.data?.error || 'Erro ao deletar profissional!'
+                        toast.error(mensagem)
+                    })
             }
         })
             .catch((e) => toast.error(e, 'Erro ao deletar profissional!'))

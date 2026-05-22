@@ -1,4 +1,4 @@
-const { Profissionais, NomesServico, ProfissionaisNomesServico, Usuarios } = require('../models')
+const { Profissionais, NomesServico, ProfissionaisNomesServico, Usuarios, Agendamentos } = require('../models')
 const { Op } = require('sequelize');
 
 class ProfissionalController {
@@ -205,18 +205,30 @@ class ProfissionalController {
     async delete(req, res) {
         const idProfissional = req.params.id
         try {
+            const totalAgendamentos = await Agendamentos.count({
+                where: {
+                    profissional_id: idProfissional
+                }
+            })
+
+            if (totalAgendamentos > 0) {
+                return res.status(400).json({
+                    error: 'Não é possível excluir o profissional porque existem agendamentos vinculados a ele'
+                })
+            }
+
             const resultado = await Profissionais.destroy({
                 where: {
                     id: idProfissional
                 }
             })
             if (resultado > 0) {
-                res.json('Profissional deletado')
+                return res.json('Profissional deletado')
             } else {
-                res.json('Profissional não encontrado ou já deletado')
+                return res.status(404).json({ error: 'Profissional não encontrado ou já deletado' })
             }
         } catch (e) {
-            res.json({ error: 'Erro ao deletar profissional' })
+            return res.status(500).json({ error: 'Erro ao deletar profissional' })
         }
     }
 }
