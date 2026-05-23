@@ -86,7 +86,7 @@ class ServicoController {
                     {
                         model: Produtos,
                         through: {
-                            attributes: ['quant', 'quantidade_gasta', 'data_hora']
+                            attributes: ['quantidade_gasta', 'data_hora']
                         }
                     },
                     {
@@ -166,12 +166,12 @@ class ServicoController {
                             as: 'categoria',
                             attributes: ['id', 'nome']
                         },
-                        {
-                            model: Produtos,
-                            through: {
-                                attributes: ['quant', 'quantidade_gasta', 'data_hora']
-                            }
-                        },
+                            {
+                                model: Produtos,
+                                through: {
+                                    attributes: ['quantidade_gasta', 'data_hora']
+                                }
+                            },
                         {
                             model: Profissionais,
                             through: {

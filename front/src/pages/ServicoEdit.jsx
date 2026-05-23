@@ -35,7 +35,7 @@ export const ServicoEdit = () => {
             const through = produto.ServicosProduto || produto.ServicoProduto || produto.servicosproduto || {}
             selecionados.push({
               produto_id: produto.id,
-              quantidade_gasta: through.quantidade_gasta ?? through.quant ?? 1
+              quantidade_gasta: through.quantidade_gasta ?? 1
             })
           })
         }

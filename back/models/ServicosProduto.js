@@ -8,11 +8,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             allowNull: false
         },
-        quant: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-            defaultValue: 1
-        },
         quantidade_gasta: {
             type: DataTypes.INTEGER,
             allowNull: false,

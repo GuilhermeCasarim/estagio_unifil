@@ -50,9 +50,8 @@ class AgendamentosController {
         return { ok: true, servico };
     }
 
-    // Método auxiliar para verificar sobreposição de horários (corrigido)
+    // evitar duplicacao de horario
     async verificarHorario(profissional_id, dataInicio, dataFim) {
-        // 1. Criar objetos Date limpos para o início e fim do dia
         const inicioDia = new Date(dataInicio);
         inicioDia.setHours(0, 0, 0, 0);
         

@@ -92,17 +92,15 @@ class ProdutoController {
         }
     }
 
-    // fazzer botao pra atualizar estoque, tipo +1 ou -1
     async updateEstoque(req, res) {
         const { id } = req.params;
-        const { quantidade } = req.body; // pode ser 1 ou -1
+        const { quantidade } = req.body;
         try {
             const produto = await Produtos.findByPk(id);
             if (!produto) return res.status(404).json({ error: 'Produto não encontrado' });
 
             produto.estoque_atual += quantidade;
             
-            // Impede estoque negativo(colocar isso no front?)
             if (produto.estoque_atual < 0) produto.estoque_atual = 0;
 
             await produto.save();

@@ -9,7 +9,7 @@ export const Servico = () => {
   const navigate = useNavigate()
 
   const getQuantidadeProdutoLabel = (produto) => {
-    const quantidade = Number(produto?.ServicosProduto?.quantidade_gasta ?? produto?.ServicosProduto?.quant ?? 1)
+    const quantidade = Number(produto?.ServicosProduto?.quantidade_gasta ?? 1)
     const unidade = produto?.unidade_medida || 'ml'
     return `${quantidade}${unidade}`
   }

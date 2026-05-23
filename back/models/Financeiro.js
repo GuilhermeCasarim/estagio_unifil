@@ -30,19 +30,14 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true,
             defaultValue: DataTypes.NOW
         },
-
-        //transacao complexa
-        fornecedor: {
-            type: DataTypes.STRING,
-            allowNull: true, // compra do adm
-        },
+        // campo `fornecedor` removido por migration
         agendamento_id: {
             type: DataTypes.INTEGER,
             allowNull: true, // FK para ligar ao agendamento e mudar o status para concluído, depois de ter confirmado o pagamento
         },
         usuario_id: {
             type: DataTypes.INTEGER,
-            allowNull: true, // quem registrou (Secretária ou adm)
+            allowNull: true, // quem registrou
         }
     }, {
         freezeTableName: true,

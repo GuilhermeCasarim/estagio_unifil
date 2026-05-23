@@ -151,7 +151,6 @@ export const PaginaAgendamentos = () => {
                     <div className='text-gray-500 col-span-full text-center font-medium'>Nenhum agendamento cadastrado.</div>
                 ) : (
                     agendamentos.map((ag, key) => {
-                        // Corrigir nomes dos campos para garantir que sempre pega o certo
                         const cliente = ag.Cliente?.nome || ag.cliente?.nome || ag.cliente_nome || '-';
                         const servico = ag.Servico?.nome_servico?.nome || ag.Servico?.nome || ag.servico?.nome_servico?.nome || ag.servico?.nome || ag.servico_nome || '-';
                         const profissional = ag.Profissional?.nome || ag.Profissionai?.nome || ag.profissional?.nome || ag.profissional_nome || '-';
