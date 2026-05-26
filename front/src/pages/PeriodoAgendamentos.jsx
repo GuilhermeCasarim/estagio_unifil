@@ -87,6 +87,13 @@ export const PeriodoAgendamentos = () => {
           <Calendar className='text-teal-600' size={28} />
           <h1 className='text-2xl font-bold'>Agenda</h1>
         </div>
+        <button
+          type='button'
+          className='rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100 transition duration-300'
+          onClick={() => navigate('/agendamentos')}
+        >
+          Voltar para agendamentos
+        </button>
       </div>
 
       <div className='rounded-2xl border border-gray-200 bg-white p-4 shadow-sm'>

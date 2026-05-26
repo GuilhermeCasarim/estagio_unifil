@@ -54,6 +54,9 @@ class AgendamentosController {
         }
 
         const agora = new Date();
+        // Comparar no nível de minuto para permitir o horário atual.
+        selecionada.setSeconds(0, 0);
+        agora.setSeconds(0, 0);
         return selecionada >= agora;
     }
 

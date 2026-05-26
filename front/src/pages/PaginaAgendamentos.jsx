@@ -7,10 +7,29 @@ import Swal from 'sweetalert2'
 import { FinanceiroNovo } from './FinanceiroNovo'
 import { AuthContext } from '../helpers/AuthContext'
 
+const getHojeInput = () => {
+    const now = new Date()
+    const offset = now.getTimezoneOffset() * 60000
+    return new Date(now.getTime() - offset).toISOString().slice(0, 10)
+}
+
+const getDataLocal = (value) => {
+    if (!value) return ''
+
+    const data = new Date(value)
+    if (Number.isNaN(data.getTime())) return ''
+
+    const offset = data.getTimezoneOffset() * 60000
+    return new Date(data.getTime() - offset).toISOString().slice(0, 10)
+}
+
 export const PaginaAgendamentos = () => {
     const navigate = useNavigate()
     const { authState } = useContext(AuthContext)
     const [agendamentos, setAgendamentos] = useState([])
+    const [abaAtiva, setAbaAtiva] = useState('pendentes')
+    const [filtroInicio, setFiltroInicio] = useState(getHojeInput())
+    const [filtroFim, setFiltroFim] = useState(getHojeInput())
     const [isFinanceiroOpen, setIsFinanceiroOpen] = useState(false)
     const [agendamentoSelecionado, setAgendamentoSelecionado] = useState(null)
     const [isConsumoOpen, setIsConsumoOpen] = useState(false)
@@ -19,6 +38,12 @@ export const PaginaAgendamentos = () => {
     const [produtosMarcados, setProdutosMarcados] = useState([])
     const [carregandoConsumo, setCarregandoConsumo] = useState(false)
     const [salvandoConsumo, setSalvandoConsumo] = useState(false)
+
+    useEffect(() => {
+        if (filtroInicio && filtroFim && filtroFim < filtroInicio) {
+            setFiltroFim(filtroInicio)
+        }
+    }, [filtroInicio, filtroFim])
 
     const fetchAgendamentos = () => {
         axios.get('http://localhost:3001/agendamentos')
@@ -96,7 +121,7 @@ export const PaginaAgendamentos = () => {
             setProdutosConsumo(itens)
             setProdutosMarcados(itens.filter((item) => item.marcado).map((item) => item.id))
             setIsConsumoOpen(true)
-        } catch (error) {
+        } catch {
             toast.error('Erro ao carregar consumo do agendamento.')
         } finally {
             setCarregandoConsumo(false)
@@ -197,7 +222,31 @@ export const PaginaAgendamentos = () => {
         window.open(url, '_blank')
     }
 
-    const agendamentosVisiveis = agendamentos.filter((ag) => ag.status !== 'concluido')
+    const tabs = [
+        { key: 'todos', label: 'Todos' },
+        { key: 'pendentes', label: 'Pendentes' },
+        { key: 'concluidos', label: 'Concluídos' },
+        { key: 'cancelados', label: 'Cancelados' }
+    ]
+
+    const agendamentosFiltrados = agendamentos.filter((ag) => {
+        const status = ag.status
+        const dataAgendamento = getDataLocal(ag.data_hora)
+        const inicio = filtroInicio || ''
+        const fim = filtroFim || ''
+
+        const correspondeAba = abaAtiva === 'todos'
+            ? true
+            : abaAtiva === 'pendentes'
+            ? ['agendado', 'confirmado'].includes(status)
+            : abaAtiva === 'concluidos'
+                ? status === 'concluido'
+                : status === 'cancelado'
+
+        const dentroDoPeriodo = (!inicio || dataAgendamento >= inicio) && (!fim || dataAgendamento <= fim)
+
+        return correspondeAba && dentroDoPeriodo
+    })
 
     return (
         <div className='space-y-8'>
@@ -220,12 +269,6 @@ export const PaginaAgendamentos = () => {
                         Período
                     </button>
                     <button
-                        className='cursor-pointer rounded-full border border-gray-300 bg-white px-4 py-1 text-gray-700 hover:bg-gray-100 transition duration-300'
-                        onClick={() => navigate('/agendamentos/historico')}
-                    >
-                        Histórico
-                    </button>
-                    <button
                         className='bg-teal-500 text-white px-4 py-1 rounded-full hover:bg-teal-600 transition duration-300 cursor-pointer flex items-center gap-2'
                         onClick={() => navigate('/agendamento/novo')}
                     >
@@ -234,14 +277,63 @@ export const PaginaAgendamentos = () => {
                 </div>
             </div>
 
+            <div className='rounded-2xl border border-gray-200 bg-white p-4 shadow-sm'>
+                <div className='flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between'>
+                    <div className='flex flex-wrap gap-2'>
+                        {tabs.map((tab) => (
+                            <button
+                                key={tab.key}
+                                type='button'
+                                className={`rounded-full px-4 py-2 text-sm font-semibold transition duration-300 ${abaAtiva === tab.key
+                                    ? 'bg-teal-500 text-white shadow-sm'
+                                    : 'border border-gray-300 bg-white text-gray-700 hover:bg-gray-100'
+                                    }`}
+                                onClick={() => setAbaAtiva(tab.key)}
+                            >
+                                {tab.label}
+                            </button>
+                        ))}
+                    </div>
+
+                    <div className='flex items-end gap-3'>
+                        <div className='flex flex-col gap-1'>
+                            <label className='text-sm font-medium text-gray-700'>De</label>
+                            <input
+                                type='date'
+                                className='rounded-lg border border-gray-300 px-3 py-2 text-gray-700 focus:border-teal-500 focus:outline-none'
+                                value={filtroInicio}
+                                onChange={(e) => setFiltroInicio(e.target.value)}
+                            />
+                        </div>
+                        <div className='flex flex-col gap-1'>
+                            <label className='text-sm font-medium text-gray-700'>Até</label>
+                            <input
+                                type='date'
+                                className='rounded-lg border border-gray-300 px-3 py-2 text-gray-700 focus:border-teal-500 focus:outline-none'
+                                value={filtroFim}
+                                onChange={(e) => setFiltroFim(e.target.value)}
+                                min={filtroInicio || undefined}
+                            />
+                        </div>
+                    </div>
+                </div>
+                <p className='mt-3 text-sm text-gray-500'>Mostrando agendamentos de {filtroInicio ? new Date(`${filtroInicio}T12:00:00`).toLocaleDateString('pt-BR') : 'hoje'} até {filtroFim ? new Date(`${filtroFim}T12:00:00`).toLocaleDateString('pt-BR') : 'hoje'}.</p>
+            </div>
+
             <div className='agendamentosData grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 bg-white p-4 rounded-2xl border border-gray-200 shadow-sm min-h-30'>
-                {agendamentosVisiveis.length === 0 ? (
+                {agendamentosFiltrados.length === 0 ? (
                     <div className='text-gray-500 col-span-full text-center font-medium'>Nenhum agendamento cadastrado.</div>
                 ) : (
-                    agendamentosVisiveis.map((ag, key) => {
+                    agendamentosFiltrados.map((ag, key) => {
                         const cliente = ag.Cliente?.nome || ag.cliente?.nome || ag.cliente_nome || '-';
                         const servico = ag.Servico?.nome_servico?.nome || ag.Servico?.nome || ag.servico?.nome_servico?.nome || ag.servico?.nome || ag.servico_nome || '-';
                         const profissional = ag.Profissional?.nome || ag.Profissionai?.nome || ag.profissional?.nome || ag.profissional_nome || '-';
+                        const dataHoraAgendamento = ag.data_hora ? new Date(ag.data_hora) : null
+                        const podeFinalizar = dataHoraAgendamento instanceof Date && !Number.isNaN(dataHoraAgendamento.getTime())
+                            ? new Date() >= dataHoraAgendamento
+                            : false
+                        const ehPendentes = abaAtiva === 'pendentes'
+                        const ehTodos = abaAtiva === 'todos'
                         return (
                             <div
                                 className='agendamento-card bg-white border border-gray-200 hover:border-teal-500 hover:shadow-md transition duration-300 p-4 flex flex-col gap-4 rounded-2xl shadow-sm relative cursor-pointer'
@@ -249,7 +341,7 @@ export const PaginaAgendamentos = () => {
                                 onClick={() => navigate(`/agendamento/${ag.id}`)}
                             >
                                 <div className='absolute top-2 right-2 flex gap-2'>
-                                    {ag.status !== 'concluido' && ag.status !== 'cancelado' && (
+                                    {(ehPendentes || ehTodos) && ag.status !== 'cancelado' && (
                                         <button 
                                             className='px-2 py-1 text-green-500 cursor-pointer hover:text-green-600 transition duration-300'
                                             onClick={(e) => { e.stopPropagation(); enviarNotificacaoZap(ag) }}
@@ -257,18 +349,29 @@ export const PaginaAgendamentos = () => {
                                             <BellRing size={20} />
                                         </button>
                                     )}
-                                    <button
-                                        className='px-2 py-1 rounded text-gray-400 cursor-pointer hover:text-teal-600'
-                                        onClick={(e) => { e.stopPropagation(); handleEdit(ag.id) }}
-                                    >
-                                        <SquarePen size={20} />
-                                    </button>
-                                    <button
-                                        className='px-2 py-1 rounded text-red-400 cursor-pointer hover:text-red-600'
-                                        onClick={(e) => { e.stopPropagation(); handleDelete(ag.id) }}
-                                    >
-                                        <Trash2 size={20} />
-                                    </button>
+                                    {ehPendentes || ehTodos ? (
+                                        <>
+                                            <button
+                                                className='px-2 py-1 rounded text-gray-400 cursor-pointer hover:text-teal-600'
+                                                onClick={(e) => { e.stopPropagation(); handleEdit(ag.id) }}
+                                            >
+                                                <SquarePen size={20} />
+                                            </button>
+                                            <button
+                                                className='px-2 py-1 rounded text-red-400 cursor-pointer hover:text-red-600'
+                                                onClick={(e) => { e.stopPropagation(); handleDelete(ag.id) }}
+                                            >
+                                                <Trash2 size={20} />
+                                            </button>
+                                        </>
+                                    ) : (
+                                        <button
+                                            className='rounded-full border border-gray-300 bg-white px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-100'
+                                            onClick={(e) => { e.stopPropagation(); navigate(`/agendamento/${ag.id}`) }}
+                                        >
+                                            Ver Resumo
+                                        </button>
+                                    )}
                                 </div>
                                 <div className='flex flex-col gap-2'>
                                     <span className='font-semibold flex items-center gap-2 text-lg text-gray-800'>
@@ -293,7 +396,7 @@ export const PaginaAgendamentos = () => {
                                             {ag.status?.charAt(0).toUpperCase() + ag.status?.slice(1) || '-'}
                                         </span>
 
-                                        {ag.status !== 'concluido' && (
+                                        {(ehPendentes || ehTodos) && (
                                             <div className='flex flex-col items-end gap-2'>
                                                     <button
                                                         className='rounded-full border border-teal-200 bg-teal-50 px-2.5 py-1 text-xs font-semibold text-teal-700 hover:bg-teal-100 transition duration-300 cursor-pointer flex items-center gap-1.5 whitespace-nowrap'
@@ -303,8 +406,10 @@ export const PaginaAgendamentos = () => {
                                                         Validar Consumo
                                                     </button>
                                                     <button
-                                                        className='rounded-full bg-teal-500 px-3 py-1 text-sm font-semibold text-white hover:bg-teal-600 transition duration-300 cursor-pointer'
+                                                        className='rounded-full bg-teal-500 px-3 py-1 text-sm font-semibold text-white hover:bg-teal-600 transition duration-300 cursor-pointer disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-gray-400'
                                                         onClick={(e) => { e.stopPropagation(); handleFinalizar(ag) }}
+                                                        disabled={!podeFinalizar}
+                                                        title={!podeFinalizar ? 'Disponível apenas no horário do agendamento' : 'Finalizar atendimento'}
                                                     >
                                                         Finalizar
                                                     </button>

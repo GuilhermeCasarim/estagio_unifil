@@ -40,7 +40,6 @@ import { PaginaEquipe } from '../pages/PaginaEquipe'
 import { EquipeEdit } from '../pages/EquipeEdit'
 import { FinanceiroNovo } from '../pages/FinanceiroNovo'
 import { Financeiro } from '../pages/Financeiro'
-import { HistoricoAgendamentos } from '../pages/HistoricoAgendamentos'
 import { RelatorioAgendamentos } from '../pages/RelatorioAgendamentos'
 import { RelatorioFaturamentos } from '../pages/RelatorioFaturamentos'
 import { RelatorioMateriais } from '../pages/RelatorioMateriais'
@@ -72,7 +71,6 @@ export const MainLayout = () => {
           <Route path='/clientes' element={<PaginaClientes />} />
           <Route path='/agendamentos' element={<PaginaAgendamentos />} />
           <Route path='/agendamentos/periodo' element={<PeriodoAgendamentos />} />
-          <Route path='/agendamentos/historico' element={<HistoricoAgendamentos />} />
           <Route path='/agendamento/novo' element={<AgendamentoNovo />} />
           <Route path='/agendamento/:id' element={<Agendamento />} />
           <Route path='/agendamento/edit/:id' element={<AgendamentoEdit />} />
