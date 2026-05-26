@@ -5,11 +5,59 @@ import axios from 'axios'
 import { toast } from 'react-toastify'
 import Swal from 'sweetalert2'
 
+const getHojeInput = () => {
+  const now = new Date()
+  const offset = now.getTimezoneOffset() * 60000
+  return new Date(now.getTime() - offset).toISOString().slice(0, 10)
+}
+
+const getDataLocal = (value) => {
+  if (!value) return ''
+
+  const data = new Date(value)
+  if (Number.isNaN(data.getTime())) return ''
+
+  const offset = data.getTimezoneOffset() * 60000
+  return new Date(data.getTime() - offset).toISOString().slice(0, 10)
+}
+
 export const PaginaFinanceiro = () => {
   const navigate = useNavigate()
   const [transacoes, setTransacoes] = useState([])
+  const [abaAtiva, setAbaAtiva] = useState('todos')
+  const [filtroInicio, setFiltroInicio] = useState(getHojeInput())
+  const [filtroFim, setFiltroFim] = useState(getHojeInput())
 
-  const transacoesPagas = transacoes.filter((transacao) => transacao.status === 'Pago')
+  useEffect(() => {
+    if (filtroInicio && filtroFim && filtroFim < filtroInicio) {
+      setFiltroFim(filtroInicio)
+    }
+  }, [filtroInicio, filtroFim])
+
+  const tabs = [
+    { key: 'todos', label: 'Todos' },
+    { key: 'pago', label: 'Pago' },
+    { key: 'pendente', label: 'Pendente' }
+  ]
+
+  const transacoesFiltradas = transacoes.filter((transacao) => {
+    const statusNormalizado = String(transacao.status || '').toLowerCase()
+    const dataTransacao = getDataLocal(transacao.data_pagamento)
+    const inicio = filtroInicio || ''
+    const fim = filtroFim || ''
+
+    const correspondeStatus = abaAtiva === 'todos'
+      ? true
+      : abaAtiva === 'pago'
+        ? statusNormalizado === 'pago'
+        : statusNormalizado !== 'pago'
+
+    const dentroDoPeriodo = (!inicio || dataTransacao >= inicio) && (!fim || dataTransacao <= fim)
+
+    return correspondeStatus && dentroDoPeriodo
+  })
+
+  const transacoesPagas = transacoesFiltradas.filter((transacao) => String(transacao.status || '').toLowerCase() === 'pago')
 
   const entradasTotal = transacoesPagas
     .filter((transacao) => transacao.tipo === 'Receita')
@@ -79,6 +127,49 @@ export const PaginaFinanceiro = () => {
         </button>
       </div>
 
+      <div className='rounded-2xl border border-gray-200 bg-white p-4 shadow-sm'>
+        <div className='flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between'>
+          <div className='flex flex-wrap gap-2'>
+            {tabs.map((tab) => (
+              <button
+                key={tab.key}
+                type='button'
+                className={`rounded-full px-4 py-2 text-sm font-semibold transition duration-300 ${abaAtiva === tab.key
+                  ? 'bg-teal-500 text-white shadow-sm'
+                  : 'border border-gray-300 bg-white text-gray-700 hover:bg-gray-100'
+                  }`}
+                onClick={() => setAbaAtiva(tab.key)}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          <div className='flex items-end gap-3'>
+            <div className='flex flex-col gap-1'>
+              <label className='text-sm font-medium text-gray-700'>De</label>
+              <input
+                type='date'
+                className='rounded-lg border border-gray-300 px-3 py-2 text-gray-700 focus:border-teal-500 focus:outline-none'
+                value={filtroInicio}
+                onChange={(e) => setFiltroInicio(e.target.value)}
+              />
+            </div>
+            <div className='flex flex-col gap-1'>
+              <label className='text-sm font-medium text-gray-700'>Até</label>
+              <input
+                type='date'
+                className='rounded-lg border border-gray-300 px-3 py-2 text-gray-700 focus:border-teal-500 focus:outline-none'
+                value={filtroFim}
+                onChange={(e) => setFiltroFim(e.target.value)}
+                min={filtroInicio || undefined}
+              />
+            </div>
+          </div>
+        </div>
+        <p className='mt-3 text-sm text-gray-500'>Mostrando transações de {filtroInicio ? new Date(`${filtroInicio}T12:00:00`).toLocaleDateString('pt-BR') : 'hoje'} até {filtroFim ? new Date(`${filtroFim}T12:00:00`).toLocaleDateString('pt-BR') : 'hoje'}.</p>
+      </div>
+
       <div className='rounded-2xl border border-teal-100 bg-teal-50 p-4 shadow-sm flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between'>
         <div className='flex items-center gap-3 rounded-lg bg-green-200/80 px-4 py-2 text-sm'>
           <span className='flex items-center gap-2 font-semibold text-green-800'>
@@ -97,7 +188,7 @@ export const PaginaFinanceiro = () => {
       </div>
 
       <div className='financeiroData rounded-2xl bg-white border border-gray-200 shadow-sm p-4'>
-        {transacoes.length === 0 ? (
+        {transacoesFiltradas.length === 0 ? (
           <div className='flex min-h-55 items-center justify-center rounded-2xl border border-dashed border-gray-300 bg-gray-50 p-6 text-center text-gray-600'>
             <div className='space-y-2'>
               <p className='text-lg font-semibold text-gray-800'>Nenhuma transação encontrada</p>
@@ -106,7 +197,12 @@ export const PaginaFinanceiro = () => {
           </div>
         ) : (
           <div className='grid grid-cols-2 gap-8 lg:grid-cols-3 xl:grid-cols-4'>
-            {transacoes.map((transacao, key) => (
+            {transacoesFiltradas.map((transacao, key) => (
+              (() => {
+                const statusNormalizado = String(transacao.status || '').toLowerCase()
+                const ehPago = statusNormalizado === 'pago'
+
+                return (
               <div
                 className='financeiro-card bg-white cursor-pointer border border-gray-200 hover:border-teal-500 hover:shadow-md transition duration-300 p-4 rounded-2xl flex flex-col gap-6'
                 key={key}
@@ -122,26 +218,28 @@ export const PaginaFinanceiro = () => {
                       <span>R$ {transacao.valor}</span>
                     </div>
                   </div>
-                  <div className='buttons space-x-2 flex'>
-                    <button
-                      className='px-2 py-1 rounded text-gray-500 cursor-pointer hover:bg-gray-100 hover:text-teal-600 transition'
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        handleEdit(transacao.id)
-                      }}
-                    >
-                      <SquarePen size={20} />
-                    </button>
-                    <button
-                      className='px-2 py-1 rounded text-rose-400 cursor-pointer hover:bg-rose-50 hover:text-rose-600 transition'
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        handleDelete(transacao.id)
-                      }}
-                    >
-                      <Trash2 size={20} />
-                    </button>
-                  </div>
+                  {!ehPago && (
+                    <div className='buttons space-x-2 flex'>
+                      <button
+                        className='px-2 py-1 rounded text-gray-500 cursor-pointer hover:bg-gray-100 hover:text-teal-600 transition'
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleEdit(transacao.id)
+                        }}
+                      >
+                        <SquarePen size={20} />
+                      </button>
+                      <button
+                        className='px-2 py-1 rounded text-rose-400 cursor-pointer hover:bg-rose-50 hover:text-rose-600 transition'
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleDelete(transacao.id)
+                        }}
+                      >
+                        <Trash2 size={20} />
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 <div className='card-bottom info2 space-y-2 text-sm overflow-hidden text-gray-600'>
@@ -164,6 +262,8 @@ export const PaginaFinanceiro = () => {
                   </div>
                 </div>
               </div>
+                )
+              })()
             ))}
           </div>
         )}

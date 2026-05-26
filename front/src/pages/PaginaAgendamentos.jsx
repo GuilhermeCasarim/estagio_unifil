@@ -334,6 +334,7 @@ export const PaginaAgendamentos = () => {
                             : false
                         const ehPendentes = abaAtiva === 'pendentes'
                         const ehTodos = abaAtiva === 'todos'
+                        const ehSomenteLeitura = ag.status === 'concluido' || ag.status === 'cancelado'
                         return (
                             <div
                                 className='agendamento-card bg-white border border-gray-200 hover:border-teal-500 hover:shadow-md transition duration-300 p-4 flex flex-col gap-4 rounded-2xl shadow-sm relative cursor-pointer'
@@ -341,7 +342,7 @@ export const PaginaAgendamentos = () => {
                                 onClick={() => navigate(`/agendamento/${ag.id}`)}
                             >
                                 <div className='absolute top-2 right-2 flex gap-2'>
-                                    {(ehPendentes || ehTodos) && ag.status !== 'cancelado' && (
+                                    {!ehSomenteLeitura && (ehPendentes || ehTodos) && ag.status !== 'cancelado' && (
                                         <button 
                                             className='px-2 py-1 text-green-500 cursor-pointer hover:text-green-600 transition duration-300'
                                             onClick={(e) => { e.stopPropagation(); enviarNotificacaoZap(ag) }}
@@ -349,7 +350,7 @@ export const PaginaAgendamentos = () => {
                                             <BellRing size={20} />
                                         </button>
                                     )}
-                                    {ehPendentes || ehTodos ? (
+                                    {!ehSomenteLeitura && (ehPendentes || ehTodos) ? (
                                         <>
                                             <button
                                                 className='px-2 py-1 rounded text-gray-400 cursor-pointer hover:text-teal-600'
@@ -364,7 +365,7 @@ export const PaginaAgendamentos = () => {
                                                 <Trash2 size={20} />
                                             </button>
                                         </>
-                                    ) : (
+                                        ) : (
                                         <button
                                             className='rounded-full border border-gray-300 bg-white px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-100'
                                             onClick={(e) => { e.stopPropagation(); navigate(`/agendamento/${ag.id}`) }}
@@ -396,7 +397,7 @@ export const PaginaAgendamentos = () => {
                                             {ag.status?.charAt(0).toUpperCase() + ag.status?.slice(1) || '-'}
                                         </span>
 
-                                        {(ehPendentes || ehTodos) && (
+                                        {!ehSomenteLeitura && (ehPendentes || ehTodos) && (
                                             <div className='flex flex-col items-end gap-2'>
                                                     <button
                                                         className='rounded-full border border-teal-200 bg-teal-50 px-2.5 py-1 text-xs font-semibold text-teal-700 hover:bg-teal-100 transition duration-300 cursor-pointer flex items-center gap-1.5 whitespace-nowrap'
