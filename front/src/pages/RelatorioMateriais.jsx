@@ -76,12 +76,24 @@ export const RelatorioMateriais = () => {
 
       const listaMateriais = Array.from(mapa.values()).sort((a, b) => b.quantidade_total - a.quantidade_total)
 
-      const totalConsumido = listaMateriais.reduce((total, item) => total + (Number(item.quantidade_total) || 0), 0)
+      // Somar consumo em unidades (un): para cada item, se houver volume_unidade
+      // convertemos a quantidade bruta para unidades: unidades = quantidade_total / volume_unidade
+      // caso não haja volume_unidade, assumimos que quantidade_total já está em unidades
+      const totalConsumidoUn = listaMateriais.reduce((total, item) => {
+        const quantidade = Number(item.quantidade_total) || 0
+        const volume = Number(item.volume_unidade) || 0
+
+        if (volume > 0) {
+          return total + quantidade / volume
+        }
+
+        return total + quantidade
+      }, 0)
 
       setMateriaisMaisUsados(listaMateriais)
       setEstatisticas({
         totalMateriais: listaMateriais.length,
-        totalConsumido,
+        totalConsumido: totalConsumidoUn,
         materiaisSemConsumo: listaMateriais.filter((it) => Number(it.quantidade_total) === 0).length
       })
 
@@ -92,16 +104,17 @@ export const RelatorioMateriais = () => {
     }
   }, [])
 
-  const formatQuantidadeConsumida = (quantidadeTotal, volumeUnidade) => {
+  const formatQuantidadeConsumida = (quantidadeTotal, volumeUnidade, unidadeMedida) => {
     const volume = Number(volumeUnidade) || 0
     const total = Number(quantidadeTotal) || 0
+    const unidade = (unidadeMedida || 'ml').toLowerCase()
 
     if (!volume) {
-      return `${total}ml`
+      return `${total}${unidade}`
     }
 
     const unidades = total / volume
-    return `${unidades.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} un (${total}ml)`
+    return `${unidades.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} un (${total}${unidade})`
   }
 
   useEffect(() => {
@@ -128,19 +141,19 @@ export const RelatorioMateriais = () => {
           <p className='mt-2 text-3xl font-bold text-gray-800'>{estatisticas.totalMateriais}</p>
         </div>
         <div className='rounded-lg border border-gray-200 bg-white p-6'>
-          <p className='flex items-center gap-2 text-sm text-gray-600'><TrendingUp size={16} /> Total consumido</p>
-          <p className='mt-2 text-3xl font-bold text-gray-800'>{estatisticas.totalConsumido}</p>
+          <p className='flex items-center gap-2 text-sm text-gray-600'><TrendingUp size={16} /> Total consumido (un)</p>
+          <p className='mt-2 text-3xl font-bold text-gray-800'>{Number(estatisticas.totalConsumido || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
         </div>
         <div className='rounded-lg border border-gray-200 bg-white p-6'>
           <p className='flex items-center gap-2 text-sm text-gray-600'><AlertCircle size={16} /> Sem consumo</p>
           <p className='mt-2 text-3xl font-bold text-gray-800'>{estatisticas.materiaisSemConsumo}</p>
         </div>
         <div className='rounded-lg border border-gray-200 bg-white p-6'>
-          <p className='text-sm text-gray-600'>Consumo médio por material</p>
+          <p className='text-sm text-gray-600'>Consumo médio por material (un)</p>
           <p className='mt-2 text-3xl font-bold text-gray-800'>
             {estatisticas.totalMateriais > 0 
-              ? (estatisticas.totalConsumido / estatisticas.totalMateriais).toFixed(2)
-              : 0}
+              ? Number(estatisticas.totalConsumido / estatisticas.totalMateriais).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+              : '0.00'}
           </p>
         </div>
       </div>
@@ -169,7 +182,7 @@ export const RelatorioMateriais = () => {
                 </div>
                 <div className='flex items-center gap-8'>
                   <div className='text-right'>
-                    <p className='text-2xl font-bold text-teal-600'>{formatQuantidadeConsumida(item.quantidade_total, item.volume_unidade)}</p>
+                    <p className='text-2xl font-bold text-teal-600'>{formatQuantidadeConsumida(item.quantidade_total, item.volume_unidade, item.unidade_medida)}</p>
                     <p className='text-xs text-gray-500'>consumido</p>
                   </div>
                   <div className='h-2 w-24 rounded-full bg-gray-200'>

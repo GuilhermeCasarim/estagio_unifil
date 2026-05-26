@@ -197,6 +197,8 @@ export const PaginaAgendamentos = () => {
         window.open(url, '_blank')
     }
 
+    const agendamentosVisiveis = agendamentos.filter((ag) => ag.status !== 'concluido')
+
     return (
         <div className='space-y-8'>
             <div className='header border-b-2 border-teal-200 pb-2 text-teal-600 text-2xl font-bold'>
@@ -233,10 +235,10 @@ export const PaginaAgendamentos = () => {
             </div>
 
             <div className='agendamentosData grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 bg-white p-4 rounded-2xl border border-gray-200 shadow-sm min-h-30'>
-                {agendamentos.length === 0 ? (
+                {agendamentosVisiveis.length === 0 ? (
                     <div className='text-gray-500 col-span-full text-center font-medium'>Nenhum agendamento cadastrado.</div>
                 ) : (
-                    agendamentos.map((ag, key) => {
+                    agendamentosVisiveis.map((ag, key) => {
                         const cliente = ag.Cliente?.nome || ag.cliente?.nome || ag.cliente_nome || '-';
                         const servico = ag.Servico?.nome_servico?.nome || ag.Servico?.nome || ag.servico?.nome_servico?.nome || ag.servico?.nome || ag.servico_nome || '-';
                         const profissional = ag.Profissional?.nome || ag.Profissionai?.nome || ag.profissional?.nome || ag.profissional_nome || '-';
@@ -294,10 +296,10 @@ export const PaginaAgendamentos = () => {
                                         {ag.status !== 'concluido' && (
                                             <div className='flex flex-col items-end gap-2'>
                                                     <button
-                                                        className='rounded-full border border-teal-200 bg-teal-50 px-3 py-1 text-sm font-semibold text-teal-700 hover:bg-teal-100 transition duration-300 cursor-pointer flex items-center gap-2'
+                                                        className='rounded-full border border-teal-200 bg-teal-50 px-2.5 py-1 text-xs font-semibold text-teal-700 hover:bg-teal-100 transition duration-300 cursor-pointer flex items-center gap-1.5 whitespace-nowrap'
                                                         onClick={(e) => { e.stopPropagation(); abrirValidacaoConsumo(ag) }}
                                                     >
-                                                        <ClipboardCheck size={16} />
+                                                        <ClipboardCheck size={14} />
                                                         Validar Consumo
                                                     </button>
                                                     <button

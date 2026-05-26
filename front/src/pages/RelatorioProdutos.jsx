@@ -110,24 +110,61 @@ export const RelatorioProdutos = () => {
 		buscarDados()
 	}, [buscarDados])
 
+	const contarProdutosDistintos = (produtos = []) => {
+		return new Set(
+			produtos
+				.map((p) => Number(p.id))
+				.filter((id) => Number.isInteger(id) && id > 0)
+		).size
+	}
+
 	const maxTotalServico = useMemo(() => {
-		return Math.max(...itensServico.map((it) => it.Produtos.reduce((sum, p) => sum + (p.valorEmMlOuG || 0), 0)), 1)
+		return Math.max(...itensServico.map((it) => contarProdutosDistintos(it.Produtos)), 1)
 	}, [itensServico])
 
 	const maxTotalProfissional = useMemo(() => {
-		return Math.max(...itensProfissional.map((it) => it.Produtos.reduce((sum, p) => sum + (p.valorEmMlOuG || 0), 0)), 1)
+		return Math.max(...itensProfissional.map((it) => contarProdutosDistintos(it.Produtos)), 1)
 	}, [itensProfissional])
 
 	const renderTagsProdutos = (produtos) => {
 		if (!Array.isArray(produtos) || produtos.length === 0) return null
 
+		const mapaProdutos = new Map()
+
+		produtos.forEach((p) => {
+			const id = Number(p.id)
+			if (!Number.isInteger(id) || id <= 0) return
+
+			const quantidade = Number(p.quantidade_bruta) || 0
+			const unidade = (p.unidade_medida || 'un').toLowerCase()
+
+			if (mapaProdutos.has(id)) {
+				const existente = mapaProdutos.get(id)
+				mapaProdutos.set(id, {
+					...existente,
+					quantidade_bruta: existente.quantidade_bruta + quantidade
+				})
+			} else {
+				mapaProdutos.set(id, {
+					id,
+					nome: p.nome,
+					quantidade_bruta: quantidade,
+					unidade_medida: unidade
+				})
+			}
+		})
+
+		const produtosConsolidados = Array.from(mapaProdutos.values())
+
 		return (
 			<div className='mt-2 flex flex-wrap gap-2'>
-				{produtos.map((p) => {
-					// só exibir etiqueta com ML ou g quando souber o valor
-					const valor = p.valorEmMlOuG
-					const sufixo = p.unidade_medida === 'g' ? 'g' : 'ml'
-					const textoValor = (typeof valor === 'number' && !isNaN(valor)) ? ` ${valor}${sufixo}` : ''
+				{produtosConsolidados.map((p) => {
+					const unidade = (p.unidade_medida || 'un').toLowerCase()
+					const quantidade = Number(p.quantidade_bruta) || 0
+					const valorFormatado = Number.isInteger(quantidade)
+						? String(quantidade)
+						: quantidade.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+					const textoValor = ` ${valorFormatado}${unidade}`
 
 					return (
 						<span
@@ -171,8 +208,8 @@ export const RelatorioProdutos = () => {
 								) : (
 									<div className='space-y-3'>
 										{itensServico.map((item, idx) => {
-											const totalItem = item.Produtos.reduce((s, p) => s + (p.valorEmMlOuG || 0), 0)
-											const largura = ((totalItem / maxTotalServico) * 100)
+											const totalProdutosDistintos = contarProdutosDistintos(item.Produtos)
+											const largura = ((totalProdutosDistintos / maxTotalServico) * 100)
 
 											return (
 												<div key={item.id || idx} className='rounded-lg border border-gray-100 bg-gray-50 px-4 py-3'>
@@ -183,8 +220,8 @@ export const RelatorioProdutos = () => {
 														</div>
 														<div className='flex items-center gap-4'>
 															<div className='text-right'>
-																<p className='text-lg font-bold text-indigo-600'>{totalItem} ml</p>
-																<p className='text-xs text-gray-500'>consumido</p>
+																<p className='text-lg font-bold text-indigo-600'>{totalProdutosDistintos} produtos</p>
+																<p className='text-xs text-gray-500'>consumidos</p>
 															</div>
 														</div>
 													</div>
@@ -209,8 +246,8 @@ export const RelatorioProdutos = () => {
 								) : (
 									<div className='space-y-3'>
 										{itensProfissional.map((item, idx) => {
-											const totalItem = item.Produtos.reduce((s, p) => s + (p.valorEmMlOuG || 0), 0)
-											const largura = ((totalItem / maxTotalProfissional) * 100)
+											const totalProdutosDistintos = contarProdutosDistintos(item.Produtos)
+											const largura = ((totalProdutosDistintos / maxTotalProfissional) * 100)
 
 											return (
 												<div key={item.id || idx} className='rounded-lg border border-gray-100 bg-gray-50 px-4 py-3'>
@@ -221,8 +258,8 @@ export const RelatorioProdutos = () => {
 														</div>
 														<div className='flex items-center gap-4'>
 															<div className='text-right'>
-																<p className='text-lg font-bold text-emerald-600'>{totalItem} ml</p>
-																<p className='text-xs text-gray-500'>consumido</p>
+																<p className='text-lg font-bold text-emerald-600'>{totalProdutosDistintos} produtos</p>
+																<p className='text-xs text-gray-500'>consumidos</p>
 															</div>
 														</div>
 													</div>
