@@ -20,75 +20,79 @@ export const RelatorioProdutos = () => {
 			const mapaServicos = new Map()
 			const mapaProfissionais = new Map()
 
-			await Promise.all(agendamentos.map(async (ag) => {
+			agendamentos.forEach((ag) => {
 				const servicoId = ag.servico_id || ag.Servico?.id
 				if (!servicoId) return
-				try {
-					const detalheRes = await axios.get(`http://localhost:3001/servicos/byId/${servicoId}`)
-					const servicoDetalhe = detalheRes.data || {}
 
-					const chave = servicoDetalhe.id || servicoId
-					if (!mapaServicos.has(chave)) {
-						mapaServicos.set(chave, {
-							id: chave,
-							nome: servicoDetalhe.nome_servico?.nome || servicoDetalhe.nome || 'Servico sem nome',
+				const chave = servicoId
+				if (!mapaServicos.has(chave)) {
+					mapaServicos.set(chave, {
+						id: chave,
+						nome: ag.Servico?.nome_servico?.nome || ag.Servico?.nome || 'Servico sem nome',
+						Produtos: []
+					})
+				}
+
+				// identificar profissional deste agendamento (para agregar por profissional)
+				const profissionalId = ag.profissional_id || ag.Profissional?.id
+				if (profissionalId) {
+					if (!mapaProfissionais.has(profissionalId)) {
+						mapaProfissionais.set(profissionalId, {
+							id: profissionalId,
+							nome: ag.Profissional?.nome || `Profissional ${profissionalId}`,
 							Produtos: []
 						})
 					}
+				}
 
-					// identificar profissional deste agendamento (para agregar por profissional)
-					const profissionalId = ag.profissional_id || ag.Profissional?.id
-					if (profissionalId) {
-						if (!mapaProfissionais.has(profissionalId)) {
-							mapaProfissionais.set(profissionalId, {
-								id: profissionalId,
-								nome: ag.Profissional?.nome || `Profissional ${profissionalId}`,
-								Produtos: []
-							})
-						}
+				const consumosSalvos = Array.isArray(ag.ConsumoAgendamentos) && ag.ConsumoAgendamentos.length > 0
+					? ag.ConsumoAgendamentos.map((consumo) => ({
+						id: consumo.id_produto || consumo.Produto?.id,
+						nome: consumo.Produto?.nome || 'Produto sem nome',
+						quantidade_bruta: Number(consumo.quantidade_utilizada) || 0,
+						volume_unidade: Number(consumo.Produto?.volume_unidade) || 0,
+						unidade_medida: (consumo.Produto?.unidade_medida || '').toLowerCase()
+					}))
+					: (ag.Servico?.Produtos || []).map((p) => ({
+						id: p.id,
+						nome: p.nome || p.nome_produto || 'Produto sem nome',
+						quantidade_bruta: Number(p.ServicosProduto?.quantidade_gasta) || 0,
+						volume_unidade: Number(p.volume_unidade) || 0,
+						unidade_medida: (p.unidade_medida || '').toLowerCase()
+					}))
+
+				consumosSalvos.forEach((p) => {
+					const quantidadeBruta = Number(p.quantidade_bruta) || 0
+					const volume_unidade = Number(p.volume_unidade) || 0
+					const unidade_medida = p.unidade_medida || ''
+
+					let valorEmMlOuG = null
+					if (unidade_medida === 'ml' || unidade_medida === 'g') {
+						valorEmMlOuG = Math.round(quantidadeBruta)
+					} else if (unidade_medida === 'un' && volume_unidade) {
+						valorEmMlOuG = Math.round(quantidadeBruta * volume_unidade)
+					} else if (volume_unidade) {
+						valorEmMlOuG = Math.round(quantidadeBruta)
 					}
 
-					// Produtos pode estar em servicoDetalhe.Produtos
-					const produtosArray = Array.isArray(servicoDetalhe.Produtos) ? servicoDetalhe.Produtos : []
+					const prod = {
+						id: p.id,
+						nome: p.nome,
+						quantidade_bruta: quantidadeBruta,
+						volume_unidade,
+						unidade_medida,
+						valorEmMlOuG
+					}
 
-					produtosArray.forEach((p) => {
-						const quantidadeBruta = Number(p.ServicosProduto?.quantidade_gasta) || 0
-						const volume_unidade = Number(p.volume_unidade) || 0
-						const unidade_medida = (p.unidade_medida || '').toLowerCase()
+					const entry = mapaServicos.get(chave)
+					entry.Produtos.push(prod)
 
-						// calcular ml/gramas quando possível:
-						let valorEmMlOuG = null
-						if (unidade_medida === 'ml' || unidade_medida === 'g') {
-							valorEmMlOuG = Math.round(quantidadeBruta)
-						} else if (unidade_medida === 'un' && volume_unidade) {
-							valorEmMlOuG = Math.round(quantidadeBruta * volume_unidade)
-						} else if (volume_unidade) {
-							// fallback: tratar como ml quando houver volume_unidade
-							valorEmMlOuG = Math.round(quantidadeBruta)
-						}
-
-						const prod = {
-							id: p.id,
-							nome: p.nome || p.nome_produto || 'Produto sem nome',
-							quantidade_bruta: quantidadeBruta,
-							volume_unidade,
-							unidade_medida,
-							valorEmMlOuG
-						}
-
-						const entry = mapaServicos.get(chave)
-						entry.Produtos.push(prod)
-
-						if (profissionalId) {
-							const profEntry = mapaProfissionais.get(profissionalId)
-							profEntry.Produtos.push(prod)
-						}
-					})
-
-				} catch (e) {
-					return
-				}
-			}))
+					if (profissionalId) {
+						const profEntry = mapaProfissionais.get(profissionalId)
+						profEntry.Produtos.push(prod)
+					}
+				})
+			})
 
 			const listaServicos = Array.from(mapaServicos.values()).map((s) => ({ ...s }))
 			const listaProfissionais = Array.from(mapaProfissionais.values()).map((p) => ({ ...p }))

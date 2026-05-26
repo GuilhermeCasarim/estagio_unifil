@@ -30,7 +30,6 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true,
             defaultValue: DataTypes.NOW
         },
-        // campo `fornecedor` removido por migration
         agendamento_id: {
             type: DataTypes.INTEGER,
             allowNull: true, // FK para ligar ao agendamento e mudar o status para concluído, depois de ter confirmado o pagamento

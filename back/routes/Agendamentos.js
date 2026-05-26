@@ -7,6 +7,7 @@ const boundController = {
 	getAll: AgendamentosController.getAll.bind(AgendamentosController),
 	getHistorico: AgendamentosController.getHistorico.bind(AgendamentosController),
 	getById: AgendamentosController.getById.bind(AgendamentosController),
+	salvarConsumoAgendamento: AgendamentosController.salvarConsumoAgendamento.bind(AgendamentosController),
 	create: AgendamentosController.create.bind(AgendamentosController),
 	update: AgendamentosController.update.bind(AgendamentosController),
 	delete: AgendamentosController.delete.bind(AgendamentosController),
@@ -20,6 +21,8 @@ router.get('/', boundController.getAll);
 router.get('/historico', boundController.getHistorico);
 
 router.get('/byId/:id', boundController.getById);
+
+router.post('/:id/consumo', boundController.salvarConsumoAgendamento);
 
 router.post('/', boundController.create);
 

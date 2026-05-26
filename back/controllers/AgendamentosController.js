@@ -1,8 +1,51 @@
-const { Agendamentos, Clientes, Servicos, Produtos, Profissionais, Financeiro } = require('../models');
+const { Agendamentos, Clientes, Servicos, Produtos, Profissionais, Financeiro, ConsumoAgendamento } = require('../models');
 const { Op } = require('sequelize');
 
 
 class AgendamentosController {
+    extrairIdsProdutosSelecionados(dados) {
+        const fontes = [
+            dados?.produtosSelecionados,
+            dados?.produto_ids,
+            dados?.produtos
+        ];
+
+        for (const fonte of fontes) {
+            if (!Array.isArray(fonte)) {
+                continue;
+            }
+
+            return fonte
+                .map((item) => Number(item?.id ?? item?.produto_id ?? item))
+                .filter((id) => Number.isInteger(id));
+        }
+
+        return [];
+    }
+
+    async buscarConsumosAgendamento(idAgendamento, transaction = null) {
+        return ConsumoAgendamento.findAll({
+            where: { id_agendamento: idAgendamento },
+            include: [
+                {
+                    model: Produtos,
+                    as: 'Produto'
+                }
+            ],
+            transaction
+        });
+    }
+
+    async montarItensConsumoPadrao(servico, idAgendamento) {
+        return (servico.Produtos || [])
+            .map((produto) => ({
+                id_agendamento: idAgendamento,
+                id_produto: produto.id,
+                quantidade_utilizada: Number(produto.ServicosProduto?.quantidade_gasta) || 0
+            }))
+            .filter((item) => item.quantidade_utilizada > 0);
+    }
+
     validarDataAtualOuFutura(dataHora) {
         const selecionada = new Date(dataHora);
 
@@ -115,10 +158,26 @@ class AgendamentosController {
                     { 
                         model: Servicos,
                         include: [
+                            {
+                                model: Produtos,
+                                through: {
+                                    attributes: ['quantidade_gasta', 'data_hora']
+                                }
+                            },
                             { association: 'nome_servico' }
                         ]
                     },
-                    { model: Profissionais, as: 'Profissional' }
+                    { model: Profissionais, as: 'Profissional' },
+                    {
+                        model: ConsumoAgendamento,
+                        as: 'ConsumoAgendamentos',
+                        include: [
+                            {
+                                model: Produtos,
+                                as: 'Produto'
+                            }
+                        ]
+                    }
                 ]
             });
             if (agendamentos.length === 0) {
@@ -175,10 +234,26 @@ class AgendamentosController {
                     {
                         model: Servicos,
                         include: [
+                            {
+                                model: Produtos,
+                                through: {
+                                    attributes: ['quantidade_gasta', 'data_hora']
+                                }
+                            },
                             { association: 'nome_servico' }
                         ]
                     },
-                    { model: Profissionais, as: 'Profissional' }
+                    { model: Profissionais, as: 'Profissional' },
+                    {
+                        model: ConsumoAgendamento,
+                        as: 'ConsumoAgendamentos',
+                        include: [
+                            {
+                                model: Produtos,
+                                as: 'Produto'
+                            }
+                        ]
+                    }
                 ]
             });
 
@@ -201,10 +276,26 @@ class AgendamentosController {
                     { 
                         model: Servicos,
                         include: [
+                            {
+                                model: Produtos,
+                                through: {
+                                    attributes: ['quantidade_gasta', 'data_hora']
+                                }
+                            },
                             { association: 'nome_servico' }
                         ]
                     },
-                    { model: Profissionais, as: 'Profissional' }
+                    { model: Profissionais, as: 'Profissional' },
+                    {
+                        model: ConsumoAgendamento,
+                        as: 'ConsumoAgendamentos',
+                        include: [
+                            {
+                                model: Produtos,
+                                as: 'Produto'
+                            }
+                        ]
+                    }
                 ]
             });
             if (agendamento) {
@@ -366,6 +457,91 @@ class AgendamentosController {
         }
     }
 
+    async salvarConsumoAgendamento(req, res) {
+        const id = req.params.id;
+
+        try {
+            const agendamento = await Agendamentos.findByPk(id, {
+                include: [
+                    {
+                        model: Servicos,
+                        include: [
+                            {
+                                model: Produtos,
+                                through: {
+                                    attributes: ['quantidade_gasta', 'data_hora']
+                                }
+                            }
+                        ]
+                    }
+                ]
+            });
+
+            if (!agendamento) {
+                return res.status(404).json({ error: 'Agendamento não encontrado.' });
+            }
+
+            const idsSelecionados = this.extrairIdsProdutosSelecionados(req.body);
+            if (idsSelecionados.length === 0) {
+                return res.status(400).json({ error: 'Selecione ao menos um produto para validar o consumo.' });
+            }
+
+            const produtosServico = agendamento.Servico?.Produtos || agendamento.Servicos?.Produtos || [];
+            const mapaProdutos = new Map(produtosServico.map((produto) => [Number(produto.id), produto]));
+
+            const itensConsumo = idsSelecionados
+                .map((produtoId) => {
+                    const produto = mapaProdutos.get(Number(produtoId));
+                    if (!produto) {
+                        return null;
+                    }
+
+                    const quantidadeUtilizada = Number(produto.ServicosProduto?.quantidade_gasta) || 0;
+                    if (quantidadeUtilizada <= 0) {
+                        return null;
+                    }
+
+                    return {
+                        id_agendamento: Number(id),
+                        id_produto: Number(produto.id),
+                        quantidade_utilizada: quantidadeUtilizada
+                    };
+                })
+                .filter(Boolean);
+
+            if (itensConsumo.length === 0) {
+                return res.status(400).json({ error: 'Nenhum produto válido foi selecionado.' });
+            }
+
+            const transaction = await Agendamentos.sequelize.transaction();
+
+            try {
+                await ConsumoAgendamento.destroy({
+                    where: { id_agendamento: id },
+                    transaction
+                });
+
+                await ConsumoAgendamento.bulkCreate(itensConsumo, { transaction });
+
+                await transaction.commit();
+
+                return res.status(201).json({
+                    message: 'Consumo validado com sucesso.',
+                    itens: itensConsumo
+                });
+            } catch (error) {
+                await transaction.rollback();
+                throw error;
+            }
+        } catch (error) {
+            console.error('Erro ao salvar consumo do agendamento:', error);
+            return res.status(400).json({
+                error: 'Erro ao validar consumo do agendamento.',
+                details: error.message
+            });
+        }
+    }
+
     async delete(req, res) {
         const id = req.params.id;
         try {
@@ -403,32 +579,46 @@ class AgendamentosController {
             const transaction = await Agendamentos.sequelize.transaction();
 
             try {
-                const validacaoServico = await this.validarEstoqueServico(agendamento.servico_id);
-                if (!validacaoServico.ok) {
-                    await transaction.rollback();
-                    return res.status(400).json({ error: validacaoServico.error });
-                }
-                const servicoComProdutos = validacaoServico.servico;
+                let itensConsumo = await this.buscarConsumosAgendamento(id, transaction);
 
-                for (const produto of servicoComProdutos.Produtos || []) {
-                    const quantidadeGasta = Number(produto.ServicosProduto?.quantidade_gasta) || 0;
+                if (itensConsumo.length === 0) {
+                    const validacaoServico = await this.validarEstoqueServico(agendamento.servico_id);
+                    if (!validacaoServico.ok) {
+                        await transaction.rollback();
+                        return res.status(400).json({ error: validacaoServico.error });
+                    }
+
+                    const servicoComProdutos = validacaoServico.servico;
+                    const itensPadrao = await this.montarItensConsumoPadrao(servicoComProdutos, id);
+
+                    if (itensPadrao.length === 0) {
+                        await transaction.rollback();
+                        return res.status(400).json({ error: 'Serviço sem produtos cadastrados para consumo.' });
+                    }
+
+                    await ConsumoAgendamento.bulkCreate(itensPadrao, { transaction });
+                    itensConsumo = itensPadrao;
+                }
+
+                for (const consumo of itensConsumo) {
+                    const quantidadeGasta = Number(consumo.quantidade_utilizada) || 0;
                     if (quantidadeGasta <= 0) continue;
 
-                    const produtoAtual = await Produtos.findByPk(produto.id, { transaction });
+                    const produtoAtual = await Produtos.findByPk(consumo.id_produto, { transaction });
                     if (!produtoAtual) {
-                        throw new Error(`Produto ${produto.id} não encontrado.`);
+                        throw new Error(`Produto ${consumo.id_produto} não encontrado.`);
                     }
 
                     const estoqueAtual = Number(produtoAtual.estoque_atual) || 0;
                     const novoEstoque = estoqueAtual - quantidadeGasta;
 
                     if (novoEstoque < 0) {
-                        throw new Error(`Estoque insuficiente para o produto ${produto.nome}.`);
+                        throw new Error(`Estoque insuficiente para o produto ${produtoAtual.nome}.`);
                     }
 
                     await Produtos.update(
                         { estoque_atual: novoEstoque },
-                        { where: { id: produto.id }, transaction }
+                        { where: { id: consumo.id_produto }, transaction }
                     );
                 }
 

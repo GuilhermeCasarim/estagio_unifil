@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { CalendarCheck, User, Scissors, UserCheck, Clock, CheckCircle, XCircle, SquarePen, Trash2, BellRing } from 'lucide-react'
+import { CalendarCheck, User, Scissors, UserCheck, Clock, CheckCircle, XCircle, SquarePen, Trash2, BellRing, ClipboardCheck, X } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { toast } from 'react-toastify'
@@ -13,6 +13,12 @@ export const PaginaAgendamentos = () => {
     const [agendamentos, setAgendamentos] = useState([])
     const [isFinanceiroOpen, setIsFinanceiroOpen] = useState(false)
     const [agendamentoSelecionado, setAgendamentoSelecionado] = useState(null)
+    const [isConsumoOpen, setIsConsumoOpen] = useState(false)
+    const [agendamentoConsumo, setAgendamentoConsumo] = useState(null)
+    const [produtosConsumo, setProdutosConsumo] = useState([])
+    const [produtosMarcados, setProdutosMarcados] = useState([])
+    const [carregandoConsumo, setCarregandoConsumo] = useState(false)
+    const [salvandoConsumo, setSalvandoConsumo] = useState(false)
 
     const fetchAgendamentos = () => {
         axios.get('http://localhost:3001/agendamentos')
@@ -51,6 +57,86 @@ export const PaginaAgendamentos = () => {
 
     const handleEdit = (id) => {
         navigate(`/agendamento/edit/${id}`)
+    }
+
+    const abrirValidacaoConsumo = async (agendamento) => {
+        try {
+            setCarregandoConsumo(true)
+            const resposta = await axios.get(`http://localhost:3001/agendamentos/byId/${agendamento.id}`)
+            const dados = resposta.data
+            const produtosServico = dados.Servico?.Produtos || dados.Servicos?.Produtos || []
+            const consumosExistentes = Array.isArray(dados.ConsumoAgendamentos) ? dados.ConsumoAgendamentos : []
+            const consumosMarcados = new Set(consumosExistentes.map((item) => Number(item.id_produto)))
+
+            const itens = produtosServico
+                .map((produto) => {
+                    const quantidadeDefault = Number(produto.ServicosProduto?.quantidade_gasta) || 0
+
+                    if (quantidadeDefault <= 0) {
+                        return null
+                    }
+
+                    const idProduto = Number(produto.id)
+
+                    return {
+                        id: idProduto,
+                        nome: produto.nome || 'Produto sem nome',
+                        quantidadeDefault,
+                        marcado: consumosExistentes.length > 0 ? consumosMarcados.has(idProduto) : true
+                    }
+                })
+                .filter(Boolean)
+
+            if (itens.length === 0) {
+                toast.error('Este serviço não possui produtos para validar.')
+                return
+            }
+
+            setAgendamentoConsumo(dados)
+            setProdutosConsumo(itens)
+            setProdutosMarcados(itens.filter((item) => item.marcado).map((item) => item.id))
+            setIsConsumoOpen(true)
+        } catch (error) {
+            toast.error('Erro ao carregar consumo do agendamento.')
+        } finally {
+            setCarregandoConsumo(false)
+        }
+    }
+
+    const alternarProdutoConsumo = (idProduto) => {
+        setProdutosMarcados((prev) => (
+            prev.includes(idProduto)
+                ? prev.filter((item) => item !== idProduto)
+                : [...prev, idProduto]
+        ))
+    }
+
+    const salvarValidacaoConsumo = async () => {
+        if (!agendamentoConsumo) {
+            return
+        }
+
+        if (produtosMarcados.length === 0) {
+            toast.error('Selecione ao menos um produto para validar o consumo.')
+            return
+        }
+
+        try {
+            setSalvandoConsumo(true)
+            await axios.post(`http://localhost:3001/agendamentos/${agendamentoConsumo.id}/consumo`, {
+                produtosSelecionados: produtosMarcados
+            })
+            toast.success('Consumo validado com sucesso!')
+            setIsConsumoOpen(false)
+            setAgendamentoConsumo(null)
+            setProdutosConsumo([])
+            setProdutosMarcados([])
+            fetchAgendamentos()
+        } catch (error) {
+            toast.error(error.response?.data?.error || 'Erro ao salvar consumo.')
+        } finally {
+            setSalvandoConsumo(false)
+        }
     }
 
     const handleFinalizar = (agendamento) => {
@@ -206,12 +292,21 @@ export const PaginaAgendamentos = () => {
                                         </span>
 
                                         {ag.status !== 'concluido' && (
-                                            <button
-                                                className='rounded-full bg-teal-500 px-3 py-1 text-sm font-semibold text-white hover:bg-teal-600 transition duration-300 cursor-pointer'
-                                                onClick={(e) => { e.stopPropagation(); handleFinalizar(ag) }}
-                                            >
-                                                Finalizar
-                                            </button>
+                                            <div className='flex flex-col items-end gap-2'>
+                                                    <button
+                                                        className='rounded-full border border-teal-200 bg-teal-50 px-3 py-1 text-sm font-semibold text-teal-700 hover:bg-teal-100 transition duration-300 cursor-pointer flex items-center gap-2'
+                                                        onClick={(e) => { e.stopPropagation(); abrirValidacaoConsumo(ag) }}
+                                                    >
+                                                        <ClipboardCheck size={16} />
+                                                        Validar Consumo
+                                                    </button>
+                                                    <button
+                                                        className='rounded-full bg-teal-500 px-3 py-1 text-sm font-semibold text-white hover:bg-teal-600 transition duration-300 cursor-pointer'
+                                                        onClick={(e) => { e.stopPropagation(); handleFinalizar(ag) }}
+                                                    >
+                                                        Finalizar
+                                                    </button>
+                                                </div>
                                         )}
                                     </div>
                                 </div>
@@ -237,6 +332,86 @@ export const PaginaAgendamentos = () => {
                             onSubmitFinanceiro={(payload) => axios.post(`http://localhost:3001/agendamentos/${agendamentoSelecionado.agendamento_id}/finalizar`, payload)}
                             onSuccess={handleFinalizarSuccess}
                         />
+                    </div>
+                </div>
+            )}
+
+            {isConsumoOpen && agendamentoConsumo && (
+                <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4'>
+                    <div className='max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white shadow-2xl'>
+                        <div className='flex items-center justify-between border-b border-gray-200 px-6 py-4'>
+                            <div>
+                                <h2 className='flex items-center gap-2 text-xl font-bold text-gray-800'>
+                                    <ClipboardCheck className='text-teal-600' size={22} />
+                                    Validar Consumo
+                                </h2>
+                                <p className='mt-1 text-sm text-gray-500'>
+                                    Confirme os produtos usados no atendimento antes da finalização.
+                                </p>
+                            </div>
+                            <button
+                                className='rounded-full p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-800'
+                                onClick={() => {
+                                    setIsConsumoOpen(false)
+                                    setAgendamentoConsumo(null)
+                                    setProdutosConsumo([])
+                                    setProdutosMarcados([])
+                                }}
+                            >
+                                <X size={20} />
+                            </button>
+                        </div>
+
+                        <div className='space-y-4 px-6 py-5'>
+                            <div className='rounded-xl border border-gray-200 bg-gray-50 p-4 text-sm text-gray-600'>
+                                <p className='font-semibold text-gray-800'>
+                                    {agendamentoConsumo.Servico?.nome_servico?.nome || agendamentoConsumo.Servico?.nome || 'Serviço'}
+                                </p>
+                                <p className='mt-1'>Marque apenas os produtos realmente utilizados. Os itens marcados serão salvos com a quantidade padrão do serviço.</p>
+                            </div>
+
+                            {carregandoConsumo ? (
+                                <div className='py-10 text-center text-gray-500'>Carregando consumo...</div>
+                            ) : (
+                                <div className='space-y-3'>
+                                    {produtosConsumo.map((produto) => (
+                                        <label key={produto.id} className='flex cursor-pointer items-center justify-between rounded-xl border border-gray-200 bg-white px-4 py-3 transition hover:border-teal-400 hover:bg-teal-50'>
+                                            <div>
+                                                <p className='font-semibold text-gray-800'>{produto.nome}</p>
+                                                <p className='text-xs text-gray-500'>Quantidade padrão: {produto.quantidadeDefault}</p>
+                                            </div>
+                                            <input
+                                                type='checkbox'
+                                                className='h-5 w-5 accent-teal-600'
+                                                checked={produtosMarcados.includes(produto.id)}
+                                                onChange={() => alternarProdutoConsumo(produto.id)}
+                                            />
+                                        </label>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+
+                        <div className='flex items-center justify-end gap-3 border-t border-gray-200 px-6 py-4'>
+                            <button
+                                className='rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100'
+                                onClick={() => {
+                                    setIsConsumoOpen(false)
+                                    setAgendamentoConsumo(null)
+                                    setProdutosConsumo([])
+                                    setProdutosMarcados([])
+                                }}
+                            >
+                                Cancelar
+                            </button>
+                            <button
+                                className='rounded-full bg-teal-500 px-4 py-2 text-sm font-semibold text-white hover:bg-teal-600 disabled:cursor-not-allowed disabled:bg-teal-300'
+                                onClick={salvarValidacaoConsumo}
+                                disabled={salvandoConsumo || carregandoConsumo}
+                            >
+                                {salvandoConsumo ? 'Salvando...' : 'Salvar consumo'}
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}
