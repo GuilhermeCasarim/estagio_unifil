@@ -485,9 +485,6 @@ class AgendamentosController {
             }
 
             const idsSelecionados = this.extrairIdsProdutosSelecionados(req.body);
-            if (idsSelecionados.length === 0) {
-                return res.status(400).json({ error: 'Selecione ao menos um produto para validar o consumo.' });
-            }
 
             const produtosServico = agendamento.Servico?.Produtos || agendamento.Servicos?.Produtos || [];
             const mapaProdutos = new Map(produtosServico.map((produto) => [Number(produto.id), produto]));
@@ -512,10 +509,6 @@ class AgendamentosController {
                 })
                 .filter(Boolean);
 
-            if (itensConsumo.length === 0) {
-                return res.status(400).json({ error: 'Nenhum produto válido foi selecionado.' });
-            }
-
             const transaction = await Agendamentos.sequelize.transaction();
 
             try {
@@ -524,12 +517,21 @@ class AgendamentosController {
                     transaction
                 });
 
-                await ConsumoAgendamento.bulkCreate(itensConsumo, { transaction });
+                if (itensConsumo.length > 0) {
+                    await ConsumoAgendamento.bulkCreate(itensConsumo, { transaction });
+                }
+
+                await Agendamentos.update(
+                    { consumo_validado: true },
+                    { where: { id }, transaction }
+                );
 
                 await transaction.commit();
 
                 return res.status(201).json({
-                    message: 'Consumo validado com sucesso.',
+                    message: itensConsumo.length > 0
+                        ? 'Consumo validado com sucesso.'
+                        : 'Consumo validado sem produtos.',
                     itens: itensConsumo
                 });
             } catch (error) {
@@ -584,7 +586,7 @@ class AgendamentosController {
             try {
                 let itensConsumo = await this.buscarConsumosAgendamento(id, transaction);
 
-                if (itensConsumo.length === 0) {
+                if (itensConsumo.length === 0 && !agendamento.consumo_validado) {
                     const validacaoServico = await this.validarEstoqueServico(agendamento.servico_id);
                     if (!validacaoServico.ok) {
                         await transaction.rollback();

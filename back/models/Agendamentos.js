@@ -20,6 +20,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.ENUM('agendado', 'confirmado', 'cancelado', 'concluido'),
             allowNull: false,
             defaultValue: 'agendado'
+        },
+        consumo_validado: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: false
         }
     });
 

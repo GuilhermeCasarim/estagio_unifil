@@ -103,19 +103,18 @@ export const PaginaAgendamentos = () => {
 
                     const idProduto = Number(produto.id)
 
+                    const marcadoPadrao = consumosExistentes.length > 0
+                        ? consumosMarcados.has(idProduto)
+                        : (dados.consumo_validado ? false : true)
+
                     return {
                         id: idProduto,
                         nome: produto.nome || 'Produto sem nome',
                         quantidadeDefault,
-                        marcado: consumosExistentes.length > 0 ? consumosMarcados.has(idProduto) : true
+                        marcado: marcadoPadrao
                     }
                 })
                 .filter(Boolean)
-
-            if (itens.length === 0) {
-                toast.error('Este serviço não possui produtos para validar.')
-                return
-            }
 
             setAgendamentoConsumo(dados)
             setProdutosConsumo(itens)
@@ -138,11 +137,6 @@ export const PaginaAgendamentos = () => {
 
     const salvarValidacaoConsumo = async () => {
         if (!agendamentoConsumo) {
-            return
-        }
-
-        if (produtosMarcados.length === 0) {
-            toast.error('Selecione ao menos um produto para validar o consumo.')
             return
         }
 
@@ -481,22 +475,28 @@ export const PaginaAgendamentos = () => {
                             {carregandoConsumo ? (
                                 <div className='py-10 text-center text-gray-500'>Carregando consumo...</div>
                             ) : (
-                                <div className='space-y-3'>
-                                    {produtosConsumo.map((produto) => (
-                                        <label key={produto.id} className='flex cursor-pointer items-center justify-between rounded-xl border border-gray-200 bg-white px-4 py-3 transition hover:border-teal-400 hover:bg-teal-50'>
-                                            <div>
-                                                <p className='font-semibold text-gray-800'>{produto.nome}</p>
-                                                <p className='text-xs text-gray-500'>Quantidade padrão: {produto.quantidadeDefault}</p>
-                                            </div>
-                                            <input
-                                                type='checkbox'
-                                                className='h-5 w-5 accent-teal-600'
-                                                checked={produtosMarcados.includes(produto.id)}
-                                                onChange={() => alternarProdutoConsumo(produto.id)}
-                                            />
-                                        </label>
-                                    ))}
-                                </div>
+                                produtosConsumo.length === 0 ? (
+                                    <div className='rounded-xl border border-dashed border-gray-300 bg-gray-50 px-4 py-6 text-center text-sm text-gray-500'>
+                                        Nenhum produto precisa ser validado para este atendimento.
+                                    </div>
+                                ) : (
+                                    <div className='space-y-3'>
+                                        {produtosConsumo.map((produto) => (
+                                            <label key={produto.id} className='flex cursor-pointer items-center justify-between rounded-xl border border-gray-200 bg-white px-4 py-3 transition hover:border-teal-400 hover:bg-teal-50'>
+                                                <div>
+                                                    <p className='font-semibold text-gray-800'>{produto.nome}</p>
+                                                    <p className='text-xs text-gray-500'>Quantidade padrão: {produto.quantidadeDefault}</p>
+                                                </div>
+                                                <input
+                                                    type='checkbox'
+                                                    className='h-5 w-5 accent-teal-600'
+                                                    checked={produtosMarcados.includes(produto.id)}
+                                                    onChange={() => alternarProdutoConsumo(produto.id)}
+                                                />
+                                            </label>
+                                        ))}
+                                    </div>
+                                )
                             )}
                         </div>
 
