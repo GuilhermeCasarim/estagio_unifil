@@ -436,7 +436,10 @@ class AgendamentosController {
                     data_hora: {
                         [Op.between]: [inicioDia, fimDia]
                     },
-                    id: { [Op.ne]: id }
+                    id: { [Op.ne]: id },
+                    status: {
+                        [Op.notIn]: ['concluido', 'cancelado']
+                    }
                 },
                 include: [{ model: Servicos }]
             });

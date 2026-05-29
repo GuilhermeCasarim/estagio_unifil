@@ -323,9 +323,10 @@ export const PaginaAgendamentos = () => {
                         const servico = ag.Servico?.nome_servico?.nome || ag.Servico?.nome || ag.servico?.nome_servico?.nome || ag.servico?.nome || ag.servico_nome || '-';
                         const profissional = ag.Profissional?.nome || ag.Profissionai?.nome || ag.profissional?.nome || ag.profissional_nome || '-';
                         const dataHoraAgendamento = ag.data_hora ? new Date(ag.data_hora) : null
-                        const podeFinalizar = dataHoraAgendamento instanceof Date && !Number.isNaN(dataHoraAgendamento.getTime())
-                            ? new Date() >= dataHoraAgendamento
-                            : false
+                        const hojeLocal = getHojeInput()
+                        const dataAgendamentoLocal = getDataLocal(ag.data_hora)
+                        const podeFinalizar = ['agendado', 'confirmado'].includes(ag.status)
+                            && dataAgendamentoLocal === hojeLocal
                         const ehPendentes = abaAtiva === 'pendentes'
                         const ehTodos = abaAtiva === 'todos'
                         const ehSomenteLeitura = ag.status === 'concluido' || ag.status === 'cancelado'
