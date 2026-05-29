@@ -127,15 +127,29 @@ class FinanceiroController {
     async delete(req, res) {
         const idTransacao = req.params.id;
         try {
+            const transacao = await Financeiro.findByPk(idTransacao);
+
+            if (!transacao) {
+                return res.status(404).json({ error: 'Transacao nao encontrada' });
+            }
+
+            if (transacao.agendamento_id) {
+                return res.status(409).json({
+                    error: 'Não é permitido excluir uma transação vinculada a um agendamento.'
+                });
+            }
+
             const resultado = await Financeiro.destroy({
                 where: {
                     id: idTransacao
                 }
             });
+
             if (resultado > 0) {
                 return res.json('Transacao deletada');
             }
-            return res.json('Transacao nao encontrada ou ja deletada');
+
+            return res.status(404).json({ error: 'Transacao nao encontrada' });
         } catch (e) {
             return res.status(500).json({ error: 'Erro ao deletar transacao' });
         }

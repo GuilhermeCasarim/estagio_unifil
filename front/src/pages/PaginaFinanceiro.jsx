@@ -82,7 +82,12 @@ export const PaginaFinanceiro = () => {
     fetchTransacoes()
   }, [])
 
-  const handleDelete = (id) => {
+  const handleDelete = (transacao) => {
+    if (transacao?.agendamento_id) {
+      toast.error('Nao e permitido excluir uma transacao vinculada a agendamento.')
+      return
+    }
+
     Swal.fire({
       title: 'Tem certeza?',
       text: 'Voce não podera reverter esta ação!',
@@ -94,14 +99,18 @@ export const PaginaFinanceiro = () => {
       cancelButtonText: 'Cancelar'
     }).then((res) => {
       if (res.isConfirmed) {
-        axios.delete(`http://localhost:3001/financeiro/delete/${id}`).then(() => {
-          toast.success('Transação deletada com sucesso!')
-          fetchTransacoes()
-          navigate('/financeiro', { state: { refetch: true } })
-        })
+        axios.delete(`http://localhost:3001/financeiro/delete/${transacao.id}`)
+          .then(() => {
+            toast.success('Transação deletada com sucesso!')
+            fetchTransacoes()
+            navigate('/financeiro', { state: { refetch: true } })
+          })
+          .catch((error) => {
+            const mensagem = error.response?.data?.error || 'Erro ao deletar transação!'
+            toast.error(mensagem)
+          })
       }
     })
-      .catch((e) => toast.error(e, 'Erro ao deletar transação!'))
   }
 
   const handleEdit = (id) => {
@@ -167,7 +176,11 @@ export const PaginaFinanceiro = () => {
             </div>
           </div>
         </div>
-        <p className='mt-3 text-sm text-gray-500'>Mostrando transações de {filtroInicio ? new Date(`${filtroInicio}T12:00:00`).toLocaleDateString('pt-BR') : 'hoje'} até {filtroFim ? new Date(`${filtroFim}T12:00:00`).toLocaleDateString('pt-BR') : 'hoje'}.</p>
+        <p className='mt-3 text-sm text-gray-500'>
+          {filtroInicio || filtroFim
+            ? `Mostrando transações de ${filtroInicio ? new Date(`${filtroInicio}T12:00:00`).toLocaleDateString('pt-BR') : 'qualquer data'} até ${filtroFim ? new Date(`${filtroFim}T12:00:00`).toLocaleDateString('pt-BR') : 'qualquer data'}.`
+            : 'Mostrando todas as transações. Se quiser, selecione um período.'}
+        </p>
       </div>
 
       <div className='rounded-2xl border border-teal-100 bg-teal-50 p-4 shadow-sm flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between'>
@@ -233,7 +246,7 @@ export const PaginaFinanceiro = () => {
                         className='px-2 py-1 rounded text-rose-400 cursor-pointer hover:bg-rose-50 hover:text-rose-600 transition'
                         onClick={(e) => {
                           e.stopPropagation()
-                          handleDelete(transacao.id)
+                          handleDelete(transacao)
                         }}
                       >
                         <Trash2 size={20} />
