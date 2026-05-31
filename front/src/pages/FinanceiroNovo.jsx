@@ -6,6 +6,16 @@ import { DollarSign, X } from 'lucide-react'
 import { toast } from 'react-toastify'
 import { AuthContext } from '../helpers/AuthContext'
 
+const pad2 = (n) => String(n).padStart(2, '0')
+
+const hojeLocal = () => {
+  const now = new Date()
+  const y = now.getFullYear()
+  const m = pad2(now.getMonth() + 1)
+  const d = pad2(now.getDate())
+  return `${y}-${m}-${d}`
+}
+
 const defaultValues = {
   descricao: '',
   tipo: 'Receita',
@@ -13,7 +23,7 @@ const defaultValues = {
   categoria: 'Serviços',
   forma_pagamento: '',
   status: 'Pago',
-  data_pagamento: new Date().toISOString().slice(0, 10),
+  data_pagamento: hojeLocal(),
   agendamento_id: '',
   cliente_id: '',
   usuario_id: ''
@@ -73,6 +83,12 @@ export const FinanceiroNovo = ({
       cliente_id: data.cliente_id ? Number(data.cliente_id) : undefined,
       agendamento_id: data.agendamento_id ? Number(data.agendamento_id) : undefined,
       usuario_id: data.usuario_id ? Number(data.usuario_id) : authState?.id ? Number(authState.id) : undefined
+    }
+
+    // Se `data_pagamento` vier no formato YYYY-MM-DD, force um horário no meio do dia
+    // para evitar que parsing/UTC converta para o dia anterior em alguns fusos.
+    if (payload.data_pagamento && /^\d{4}-\d{2}-\d{2}$/.test(payload.data_pagamento)) {
+      payload.data_pagamento = `${payload.data_pagamento}T12:00:00`
     }
 
     try {
