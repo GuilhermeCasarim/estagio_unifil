@@ -15,7 +15,7 @@ export const Header = () => {
     { nome: 'Profissionais', rota: '/profissionais', icone: UserStar, permissao: ['administrador'] },
     { nome: 'Serviços', rota: '/servicos', icone: Scissors, permissao: ['administrador'] },
     { nome: 'Estoque', rota: '/produtos', icone: Package, permissao: ['administrador'] },
-    { nome: 'Financeiro', rota: '/financeiro', icone: DollarSign, permissao: ['administrador'] },
+    { nome: 'Financeiro', rota: '/financeiro', icone: DollarSign, permissao: ['administrador', 'secretaria'] },
     { nome: 'Relatórios', rota: '/relatorios', icone: ChartColumnIncreasing, permissao: ['administrador'] },
     { nome: 'Equipe', rota: '/equipe', icone: Users, permissao: ['administrador'] },
   ]
