@@ -111,6 +111,9 @@ class AgendamentosController {
                 profissional_id,
                 data_hora: {
                     [Op.between]: [inicioDia, fimDia]
+                },
+                status: {
+                    [Op.notIn]: ['concluido', 'cancelado']
                 }
             },
             include: [{ model: Servicos }]
