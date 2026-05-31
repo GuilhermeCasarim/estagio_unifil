@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
+import { AuthContext } from '../helpers/AuthContext'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { toast } from 'react-toastify'
@@ -14,6 +15,7 @@ export const PeriodoAgendamentos = () => {
   const [agendamentos, setAgendamentos] = useState([])
   const [eventos, setEventos] = useState([])
   const [carregando, setCarregando] = useState(true)
+  const { authState } = useContext(AuthContext)
 
   const STATUS_COLORS = {
     concluido: '#16a34a',
@@ -70,11 +72,21 @@ export const PeriodoAgendamentos = () => {
     ;(async () => {
       const dados = await fetchAgendamentos()
       if (!mounted) return
-      const ev = mapToEvents(dados)
+
+      // Se for profissional, filtrar apenas agendamentos vinculados ao profissional logado
+      let dadosFiltrados = dados
+      if (authState?.tipo_login === 'profissional') {
+        dadosFiltrados = dados.filter((ag) => {
+          const usuarioProfissional = ag.Profissional?.usuario_id || ag.Profissional?.Usuario?.id
+          return usuarioProfissional && Number(usuarioProfissional) === Number(authState.id)
+        })
+      }
+
+      const ev = mapToEvents(dadosFiltrados)
       setEventos(ev)
     })()
     return () => { mounted = false }
-  }, [])
+  }, [authState])
 
   const handleEventClick = (info) => {
     navigate(`/agendamento/${info.event.id}`)

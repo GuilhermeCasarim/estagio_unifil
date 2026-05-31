@@ -229,6 +229,14 @@ export const PaginaAgendamentos = () => {
         const inicio = filtroInicio || ''
         const fim = filtroFim || ''
 
+        // Se for profissional, mostrar apenas agendamentos vinculados a ele
+        if (authState?.tipo_login === 'profissional') {
+            const usuarioProfissional = ag.Profissional?.usuario_id || ag.Profissional?.Usuario?.id || undefined
+            if (!usuarioProfissional || Number(usuarioProfissional) !== Number(authState.id)) {
+                return false
+            }
+        }
+
         const correspondeAba = abaAtiva === 'todos'
             ? true
             : abaAtiva === 'pendentes'
@@ -322,7 +330,6 @@ export const PaginaAgendamentos = () => {
                         const cliente = ag.Cliente?.nome || ag.cliente?.nome || ag.cliente_nome || '-';
                         const servico = ag.Servico?.nome_servico?.nome || ag.Servico?.nome || ag.servico?.nome_servico?.nome || ag.servico?.nome || ag.servico_nome || '-';
                         const profissional = ag.Profissional?.nome || ag.Profissionai?.nome || ag.profissional?.nome || ag.profissional_nome || '-';
-                        const dataHoraAgendamento = ag.data_hora ? new Date(ag.data_hora) : null
                         const hojeLocal = getHojeInput()
                         const dataAgendamentoLocal = getDataLocal(ag.data_hora)
                         const podeFinalizar = ['agendado', 'confirmado'].includes(ag.status)

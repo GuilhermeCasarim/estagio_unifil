@@ -1,5 +1,6 @@
 import { House, Clock, User, Scissors, UserCheck, TrendingUp, TrendingDown, Wallet } from 'lucide-react';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
+import { AuthContext } from '../helpers/AuthContext'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 
@@ -7,6 +8,7 @@ export const Home = () => {
     const [agendamentos, setAgendamentos] = useState([])
     const [financeiro, setFinanceiro] = useState([])
     const [carregando, setCarregando] = useState(true)
+    const { authState } = useContext(AuthContext)
 
     const dataAtual = new Date()
     const semana = ["Domingo", "Segunda-Feira", "Terça-Feira", "Quarta-Feira", "Quinta-Feira", "Sexta-Feira", "Sábado"]
@@ -58,9 +60,17 @@ export const Home = () => {
                 // Buscar agendamentos
                 const resAgendamentos = await axios.get('http://localhost:3001/agendamentos')
                 const dataAg = Array.isArray(resAgendamentos.data) ? resAgendamentos.data : (resAgendamentos.data.data || [])
-                const agendamentosHoje = dataAg
+                let agendamentosHoje = dataAg
                     .filter(ag => ehAgendamentoHoje(ag.data_hora))
                     .sort((a, b) => new Date(a.data_hora) - new Date(b.data_hora))
+
+                // Se for profissional, mostrar só os agendamentos vinculados ao usuário/profissional logado
+                if (authState?.tipo_login === 'profissional') {
+                    agendamentosHoje = agendamentosHoje.filter(ag => {
+                        const usuarioProfissional = ag.Profissional?.usuario_id || ag.Profissional?.Usuario?.id
+                        return usuarioProfissional && Number(usuarioProfissional) === Number(authState.id)
+                    })
+                }
                 
                 setAgendamentos(agendamentosHoje)
 
