@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowDownCircle, ArrowUpCircle, DollarSign, Calendar, CreditCard, Tag, SquarePen, Trash2 } from 'lucide-react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import Swal from 'sweetalert2'
+import { AuthContext } from '../helpers/AuthContext'
 
 const getHojeInput = () => {
   const now = new Date()
@@ -23,10 +24,12 @@ const getDataLocal = (value) => {
 
 export const PaginaFinanceiro = () => {
   const navigate = useNavigate()
+  const { authState } = useContext(AuthContext)
   const [transacoes, setTransacoes] = useState([])
   const [abaAtiva, setAbaAtiva] = useState('todos')
   const [filtroInicio, setFiltroInicio] = useState(getHojeInput())
   const [filtroFim, setFiltroFim] = useState(getHojeInput())
+  const isSecretaria = authState?.tipo_login === 'secretaria'
 
   useEffect(() => {
     if (filtroInicio && filtroFim && filtroFim < filtroInicio) {
@@ -242,15 +245,17 @@ export const PaginaFinanceiro = () => {
                       >
                         <SquarePen size={20} />
                       </button>
-                      <button
-                        className='px-2 py-1 rounded text-rose-400 cursor-pointer hover:bg-rose-50 hover:text-rose-600 transition'
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          handleDelete(transacao)
-                        }}
-                      >
-                        <Trash2 size={20} />
-                      </button>
+                      {!isSecretaria && (
+                        <button
+                          className='px-2 py-1 rounded text-rose-400 cursor-pointer hover:bg-rose-50 hover:text-rose-600 transition'
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            handleDelete(transacao)
+                          }}
+                        >
+                          <Trash2 size={20} />
+                        </button>
+                      )}
                     </div>
                   )}
                 </div>

@@ -26,6 +26,7 @@ const getDataLocal = (value) => {
 export const PaginaAgendamentos = () => {
     const navigate = useNavigate()
     const { authState } = useContext(AuthContext)
+    const isProfissional = authState?.tipo_login === 'profissional'
     const [agendamentos, setAgendamentos] = useState([])
     const [abaAtiva, setAbaAtiva] = useState('pendentes')
     const [filtroInicio, setFiltroInicio] = useState(getHojeInput())
@@ -270,12 +271,14 @@ export const PaginaAgendamentos = () => {
                     >
                         Período
                     </button>
-                    <button
-                        className='bg-teal-500 text-white px-4 py-1 rounded-full hover:bg-teal-600 transition duration-300 cursor-pointer flex items-center gap-2'
-                        onClick={() => navigate('/agendamento/novo')}
-                    >
-                        Novo Agendamento
-                    </button>
+                    {!isProfissional && (
+                        <button
+                            className='bg-teal-500 text-white px-4 py-1 rounded-full hover:bg-teal-600 transition duration-300 cursor-pointer flex items-center gap-2'
+                            onClick={() => navigate('/agendamento/novo')}
+                        >
+                            Novo Agendamento
+                        </button>
+                    )}
                 </div>
             </div>
 
@@ -344,7 +347,7 @@ export const PaginaAgendamentos = () => {
                                 onClick={() => navigate(`/agendamento/${ag.id}`)}
                             >
                                 <div className='absolute top-2 right-2 flex gap-2'>
-                                    {!ehSomenteLeitura && (ehPendentes || ehTodos) && ag.status !== 'cancelado' && (
+                                    {!isProfissional && !ehSomenteLeitura && (ehPendentes || ehTodos) && ag.status !== 'cancelado' && (
                                         <button 
                                             className='px-2 py-1 text-green-500 cursor-pointer hover:text-green-600 transition duration-300'
                                             onClick={(e) => { e.stopPropagation(); enviarNotificacaoZap(ag) }}
@@ -352,7 +355,7 @@ export const PaginaAgendamentos = () => {
                                             <BellRing size={20} />
                                         </button>
                                     )}
-                                    {!ehSomenteLeitura && (ehPendentes || ehTodos) ? (
+                                    {!isProfissional && !ehSomenteLeitura && (ehPendentes || ehTodos) ? (
                                         <>
                                             <button
                                                 className='px-2 py-1 rounded text-gray-400 cursor-pointer hover:text-teal-600'
@@ -368,12 +371,14 @@ export const PaginaAgendamentos = () => {
                                             </button>
                                         </>
                                         ) : (
+                                        !isProfissional ? (
                                         <button
                                             className='rounded-full border border-gray-300 bg-white px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-100'
                                             onClick={(e) => { e.stopPropagation(); navigate(`/agendamento/${ag.id}`) }}
                                         >
                                             Ver Resumo
                                         </button>
+                                        ) : null
                                     )}
                                 </div>
                                 <div className='flex flex-col gap-2'>
@@ -401,6 +406,7 @@ export const PaginaAgendamentos = () => {
 
                                         {!ehSomenteLeitura && (ehPendentes || ehTodos) && (
                                             <div className='flex flex-col items-end gap-2'>
+                                                {isProfissional ? (
                                                     <button
                                                         className='rounded-full border border-teal-200 bg-teal-50 px-2.5 py-1 text-xs font-semibold text-teal-700 hover:bg-teal-100 transition duration-300 cursor-pointer flex items-center gap-1.5 whitespace-nowrap'
                                                         onClick={(e) => { e.stopPropagation(); abrirValidacaoConsumo(ag) }}
@@ -408,14 +414,25 @@ export const PaginaAgendamentos = () => {
                                                         <ClipboardCheck size={14} />
                                                         Validar Consumo
                                                     </button>
-                                                    <button
-                                                        className='rounded-full bg-teal-500 px-3 py-1 text-sm font-semibold text-white hover:bg-teal-600 transition duration-300 cursor-pointer disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-gray-400'
-                                                        onClick={(e) => { e.stopPropagation(); handleFinalizar(ag) }}
-                                                        disabled={!podeFinalizar}
-                                                        title={!podeFinalizar ? 'Disponível apenas no horário do agendamento' : 'Finalizar atendimento'}
-                                                    >
-                                                        Finalizar
-                                                    </button>
+                                                ) : (
+                                                    <>
+                                                        <button
+                                                            className='rounded-full border border-teal-200 bg-teal-50 px-2.5 py-1 text-xs font-semibold text-teal-700 hover:bg-teal-100 transition duration-300 cursor-pointer flex items-center gap-1.5 whitespace-nowrap'
+                                                            onClick={(e) => { e.stopPropagation(); abrirValidacaoConsumo(ag) }}
+                                                        >
+                                                            <ClipboardCheck size={14} />
+                                                            Validar Consumo
+                                                        </button>
+                                                        <button
+                                                            className='rounded-full bg-teal-500 px-3 py-1 text-sm font-semibold text-white hover:bg-teal-600 transition duration-300 cursor-pointer disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-gray-400'
+                                                            onClick={(e) => { e.stopPropagation(); handleFinalizar(ag) }}
+                                                            disabled={!podeFinalizar}
+                                                            title={!podeFinalizar ? 'Disponível apenas no horário do agendamento' : 'Finalizar atendimento'}
+                                                        >
+                                                            Finalizar
+                                                        </button>
+                                                    </>
+                                                )}
                                                 </div>
                                         )}
                                     </div>
