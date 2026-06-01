@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
         },
     }, {
         hooks: {
-            //hash automatico da senha antes de salvar
+            //hash automatico da senha antes de salvar, tanto para criacao/editar
             beforeSave: async (usuario) => {
                 if (usuario.changed('senha')) {
                     usuario.senha = await bcrypt.hash(usuario.senha, 10);

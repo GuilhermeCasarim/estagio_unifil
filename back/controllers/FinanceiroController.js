@@ -22,7 +22,7 @@ class FinanceiroController {
             });
             if (transacoes.length === 0) {
                 return res.status(200).json({
-                    message: 'Nenhuma transacao encontrada.',
+                    message: 'Nenhuma transação encontrada.',
                     data: []
                 });
             }

@@ -43,7 +43,7 @@ module.exports = (sequelize, DataTypes) => {
                 const qtd = this.estoque_atual / this.volume_unidade;
                 const medida = this.unidade_medida || 'ml';
 
-                //ex: "2,00 un (1000ml)"
+                //ex: 2un e 200ml
                 return `${qtd.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} un (${this.estoque_atual}${medida})`;
             }
         }

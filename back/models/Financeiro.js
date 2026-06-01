@@ -32,11 +32,11 @@ module.exports = (sequelize, DataTypes) => {
         },
         agendamento_id: {
             type: DataTypes.INTEGER,
-            allowNull: true, // FK para ligar ao agendamento e mudar o status para concluído, depois de ter confirmado o pagamento
+            allowNull: true,
         },
         usuario_id: {
             type: DataTypes.INTEGER,
-            allowNull: true, // quem registrou
+            allowNull: true,
         }
     }, {
         freezeTableName: true,

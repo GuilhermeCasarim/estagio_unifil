@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const AgendamentosController = require('../controllers/AgendamentosController');
 
-// Garante que o contexto do this está correto para métodos que usam this
+// feito isso apenas no agnendamento pra garantir que o this fica certo.
 const boundController = {
 	getAll: AgendamentosController.getAll.bind(AgendamentosController),
 	getHistorico: AgendamentosController.getHistorico.bind(AgendamentosController),

@@ -3,6 +3,8 @@ const { Op } = require('sequelize');
 
 
 class AgendamentosController {
+
+    //pega os id de produtos selecionados pelo profissional em validar produtos/consumo de produtos
     extrairIdsProdutosSelecionados(dados) {
         const fontes = [
             dados?.produtosSelecionados,
@@ -23,7 +25,9 @@ class AgendamentosController {
         return [];
     }
 
+    //utiliza os produtos selecionados, caso seja modificado em validarProdutos
     async buscarConsumosAgendamento(idAgendamento, transaction = null) {
+        
         return ConsumoAgendamento.findAll({
             where: { id_agendamento: idAgendamento },
             include: [
@@ -36,6 +40,7 @@ class AgendamentosController {
         });
     }
 
+    //caso o validarProdutos nao seja utilizado
     async montarItensConsumoPadrao(servico, idAgendamento) {
         return (servico.Produtos || [])
             .map((produto) => ({
@@ -46,6 +51,7 @@ class AgendamentosController {
             .filter((item) => item.quantidade_utilizada > 0);
     }
 
+    //valida o agendamento para nao ser marcado em data passada
     validarDataAtualOuFutura(dataHora) {
         const selecionada = new Date(dataHora);
 
@@ -54,12 +60,12 @@ class AgendamentosController {
         }
 
         const agora = new Date();
-        // Comparar no nível de minuto para permitir o horário atual.
         selecionada.setSeconds(0, 0);
         agora.setSeconds(0, 0);
         return selecionada >= agora;
     }
 
+    //pega valores default dos produtos utilizados no servico
     async validarEstoqueServico(servicoId) {
         const servico = await Servicos.findByPk(servicoId, {
             include: [
@@ -100,7 +106,7 @@ class AgendamentosController {
     async verificarHorario(profissional_id, dataInicio, dataFim) {
         const inicioDia = new Date(dataInicio);
         inicioDia.setHours(0, 0, 0, 0);
-        
+
         const fimDia = new Date(dataInicio);
         fimDia.setHours(23, 59, 59, 999);
 
@@ -121,33 +127,30 @@ class AgendamentosController {
 
         for (const existente of agendamentosNoMesmoDia) {
             const inicioExistente = new Date(existente.data_hora);
-            // Garante que pegamos a duração independente de como o Sequelize nomeou a associação
             const servicoData = existente.Servico || existente.Servicos || {};
-            const duracao = servicoData.duracao || 30; // 30min padrão caso falhe
-            
+            const duracao = servicoData.duracao || 30;
+
             const fimExistente = new Date(inicioExistente.getTime() + duracao * 60000);
 
             console.log(`Checando contra ID ${existente.id}: ${inicioExistente.toISOString()} - ${fimExistente.toISOString()}`);
 
-            // Regra de Overlap correta
             if (dataInicio < fimExistente && dataFim > inicioExistente) {
-                return true; 
+                return true;
             }
         }
         return false;
     }
 
-    // Método auxiliar para validar se o horário está dentro do funcionamento (08:00 - 18:00)
+    //valida horario entre (08:00 - 18:00)
     validarHorarioFuncionamento(dataInicio, dataFim) {
         const horaInicio = dataInicio.getHours() + dataInicio.getMinutes() / 60;
         const horaFim = dataFim.getHours() + dataFim.getMinutes() / 60;
 
-        const HORA_ABERTURA = 8;    // 08:00
-        const HORA_FECHAMENTO = 18; // 18:00
+        const HORA_ABERTURA = 8;
+        const HORA_FECHAMENTO = 18;
 
         console.log(`Validando horário: ${horaInicio.toFixed(2)} - ${horaFim.toFixed(2)}`);
 
-        // Verifica se o início é antes das 08:00 ou o fim é depois das 18:00
         if (horaInicio < HORA_ABERTURA || horaFim > HORA_FECHAMENTO) {
             return false;
         }
@@ -161,7 +164,7 @@ class AgendamentosController {
                 order: [['data_hora', 'DESC']],
                 include: [
                     { model: Clientes },
-                    { 
+                    {
                         model: Servicos,
                         include: [
                             {
@@ -202,6 +205,7 @@ class AgendamentosController {
         }
     }
 
+    //metodo usado para relatorio de agendamentos
     async getHistorico(req, res) {
         const { inicio, fim, cliente_id, profissional_id, status } = req.query;
 
@@ -279,7 +283,7 @@ class AgendamentosController {
             const agendamento = await Agendamentos.findByPk(id, {
                 include: [
                     { model: Clientes },
-                    { 
+                    {
                         model: Servicos,
                         include: [
                             {
@@ -318,8 +322,6 @@ class AgendamentosController {
         try {
             console.log('--- DEBUG CREATE AGENDAMENTO ---');
             console.log('Payload recebido:', req.body);
-
-            // Validação de existência das entidades relacionadas
             const cliente = await Clientes.findByPk(cliente_id);
             if (!cliente) {
                 console.log('Cliente não encontrado:', cliente_id);
@@ -337,7 +339,6 @@ class AgendamentosController {
                 return res.status(400).json({ error: 'Profissional não encontrado.' });
             }
 
-            // Calcular data_fim usando a duração do serviço
             const dataInicio = new Date(data_hora);
             const dataFim = new Date(dataInicio.getTime() + servico.duracao * 60000); // minutos para ms
             console.log('Data início:', dataInicio.toISOString(), 'Data fim:', dataFim.toISOString(), 'Duração:', servico.duracao);
@@ -348,17 +349,16 @@ class AgendamentosController {
                 });
             }
 
-            // Validar se está dentro do horário de funcionamento (08:00 - 18:00)
+
             if (!this.validarHorarioFuncionamento(dataInicio, dataFim)) {
                 const horaInicio = dataInicio.getHours();
                 const minInicio = dataInicio.getMinutes();
                 console.log(`Horário fora do funcionamento: ${horaInicio}:${String(minInicio).padStart(2, '0')}`);
-                return res.status(400).json({ 
-                    error: 'Agendamento fora do horário de funcionamento. O salão funciona de 08:00 às 18:00.' 
+                return res.status(400).json({
+                    error: 'Agendamento fora do horário de funcionamento. O salão funciona de 08:00 às 18:00.'
                 });
             }
 
-            // Verificar sobreposição de horário
             const ocupado = await this.verificarHorario(profissional_id, dataInicio, dataFim);
             if (ocupado) {
                 console.log('Conflito detectado, não pode criar agendamento!');
@@ -373,7 +373,6 @@ class AgendamentosController {
                 status
             });
 
-            // Retornar o agendamento com os dados relacionados
             const agendamentoCriado = await Agendamentos.findByPk(novoAgendamento.id, {
                 include: [
                     { model: Clientes },
@@ -393,7 +392,6 @@ class AgendamentosController {
         const id = req.params.id;
         const { cliente_id, servico_id, profissional_id, data_hora, status } = req.body;
         try {
-            // Validação de existência das entidades relacionadas
             const cliente = await Clientes.findByPk(cliente_id);
             if (!cliente) {
                 return res.status(400).json({ error: 'Cliente não encontrado.' });
@@ -408,7 +406,6 @@ class AgendamentosController {
                 return res.status(400).json({ error: 'Profissional não encontrado.' });
             }
 
-            // Calcular data_fim usando a duração do serviço
             const dataInicio = new Date(data_hora);
             const dataFim = new Date(dataInicio.getTime() + servico.duracao * 60000);
 
@@ -418,17 +415,15 @@ class AgendamentosController {
                 });
             }
 
-            // Validar se está dentro do horário de funcionamento (08:00 - 18:00)
             if (!this.validarHorarioFuncionamento(dataInicio, dataFim)) {
                 const horaInicio = dataInicio.getHours();
                 const minInicio = dataInicio.getMinutes();
                 console.log(`Horário fora do funcionamento: ${horaInicio}:${String(minInicio).padStart(2, '0')}`);
-                return res.status(400).json({ 
-                    error: 'Agendamento fora do horário de funcionamento. O salão funciona de 08:00 às 18:00.' 
+                return res.status(400).json({
+                    error: 'Agendamento fora do horário de funcionamento. O salão funciona de 08:00 às 18:00.'
                 });
             }
 
-            // Verificar sobreposição de horário ignorando o próprio agendamento
             const inicioDia = new Date(dataInicio);
             inicioDia.setHours(0, 0, 0, 0);
             const fimDia = new Date(dataInicio);

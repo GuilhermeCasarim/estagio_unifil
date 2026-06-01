@@ -2,7 +2,7 @@ const { Clientes, Agendamentos } = require('../models')
 const { Op } = require('sequelize');
 
 class ClienteController {
-    async getAll(req, res) {
+    async getAll(req, res) { //c/ pagination
         try {
             const page = parseInt(req.query.page) || 1; //pagina atual
             const limit = parseInt(req.query.limit) || 12; //qnts registro
@@ -35,8 +35,6 @@ class ClienteController {
                 totalPages: totalPages,
                 totalClientes: totalClientes
             });
-            // const listaClientes = await Clientes.findAll()
-            // return res.json(listaClientes)
         } catch (error) {
             return res.status(500).json({ error: 'Erro ao buscar clientes.' })
         }
@@ -67,7 +65,7 @@ class ClienteController {
 
     async update(req, res) {
         const idCliente = req.params.id
-        const { nome, telefone, email, cpf, data_nascimento, observacoes } = req.body //5 dados
+        const { nome, telefone, email, cpf, data_nascimento, observacoes } = req.body
         try {
             await Clientes.update(
                 { nome, telefone, email, cpf, data_nascimento, observacoes },
@@ -102,10 +100,10 @@ class ClienteController {
             if (resultado > 0) {
                 return res.json('cliente deletado')
             } else {
-                return res.status(404).json({ error: 'cliente não encontrado ou já deletado' })
+                return res.status(404).json({ error: 'Cliente não encontrado ou já deletado' })
             }
         } catch (e) {
-            return res.status(500).json({ error: 'erro ao deletar cliente' })
+            return res.status(500).json({ error: 'Erro ao deletar cliente' })
         }
     }
 }

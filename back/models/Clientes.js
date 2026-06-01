@@ -25,13 +25,5 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     })
-
-    // Clientes.associate = (models) => {
-    //     Clientes.hasMany(models.Agendamentos,{
-    //         onDelete: cascade 
-    //         //deleta o agendamento se deletar o cliente
-    //     })
-    // }
-    //e cria rota + import para o agendamento
     return Clientes;
 }
