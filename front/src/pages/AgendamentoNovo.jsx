@@ -16,10 +16,10 @@ export const AgendamentoNovo = () => {
 
   const getMinDateTimeLocal = () => {
     const now = new Date()
-    const offset = now.getTimezoneOffset() * 60000
-    const localNow = new Date(now.getTime() - offset)
-    localNow.setSeconds(0, 0)
-    return localNow.toISOString().slice(0, 16)
+    const year = now.getFullYear()
+    const month = String(now.getMonth() + 1).padStart(2, '0')
+    const day = String(now.getDate()).padStart(2, '0')
+    return `${year}-${month}-${day}T00:00`
   }
 
   const validarDataAtualOuFutura = (value) => {
@@ -28,14 +28,14 @@ export const AgendamentoNovo = () => {
     const selecionada = new Date(value)
     const agora = new Date()
 
-    selecionada.setSeconds(0, 0)
-    agora.setSeconds(0, 0)
+    selecionada.setHours(0, 0, 0, 0)
+    agora.setHours(0, 0, 0, 0)
 
     if (Number.isNaN(selecionada.getTime())) {
       return 'Data e hora inválida!'
     }
 
-    return selecionada >= agora || 'Data e hora deve ser atual ou futura!'
+    return selecionada >= agora || 'Data e hora deve ser do dia atual ou futura!'
   }
 
   useEffect(() => {

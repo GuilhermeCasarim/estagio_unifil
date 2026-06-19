@@ -1,5 +1,3 @@
-
-
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -19,10 +17,10 @@ export const AgendamentoEdit = () => {
 
   const getMinDateTimeLocal = () => {
     const now = new Date()
-    const offset = now.getTimezoneOffset() * 60000
-    const localNow = new Date(now.getTime() - offset)
-    localNow.setSeconds(0, 0)
-    return localNow.toISOString().slice(0, 16)
+    const year = now.getFullYear()
+    const month = String(now.getMonth() + 1).padStart(2, '0')
+    const day = String(now.getDate()).padStart(2, '0')
+    return `${year}-${month}-${day}T00:00`
   }
 
   const validarDataAtualOuFutura = (value) => {
@@ -31,14 +29,14 @@ export const AgendamentoEdit = () => {
     const selecionada = new Date(value)
     const agora = new Date()
 
-    selecionada.setSeconds(0, 0)
-    agora.setSeconds(0, 0)
+    selecionada.setHours(0, 0, 0, 0)
+    agora.setHours(0, 0, 0, 0)
 
     if (Number.isNaN(selecionada.getTime())) {
       return 'Data e hora inválida!'
     }
 
-    return selecionada >= agora || 'Data e hora deve ser atual ou futura!'
+    return selecionada >= agora || 'Data e hora deve ser do dia atual ou futura!'
   }
 
   useEffect(() => {
@@ -57,10 +55,8 @@ export const AgendamentoEdit = () => {
     axios.get(`http://localhost:3001/agendamentos/byId/${id}`)
       .then(res => {
         const agendamento = res.data
-        // Corrigir data/hora para o formato do input datetime-local
         if (agendamento.data_hora) {
           const dt = new Date(agendamento.data_hora)
-          // Ajuste para timezone local e formato yyyy-MM-ddTHH:mm
           const tzOffset = dt.getTimezoneOffset() * 60000
           const localISO = new Date(dt.getTime() - tzOffset).toISOString().slice(0, 16)
           agendamento.data_hora = localISO
@@ -82,7 +78,6 @@ export const AgendamentoEdit = () => {
     } else {
       setProfissionaisFiltrados([])
     }
-    // Não limpar o profissional_id aqui, pois pode ser o mesmo já selecionado
   }, [servicoSelecionado, servicos])
 
   const onSubmit = (data) => {

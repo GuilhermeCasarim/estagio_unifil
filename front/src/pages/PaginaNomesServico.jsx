@@ -29,7 +29,7 @@ export const PaginaNomesServico = () => {
   const handleDelete = (id) => {
     Swal.fire({
       title: 'Tem certeza?',
-      text: 'Voce nao podera reverter esta acao!',
+      text: 'Você não poderá reverter esta ação!',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#d33',

@@ -21,16 +21,14 @@ export const ProfissionalEdit = () => {
     const [nomesServico, setNomesServico] = useState([])
     const [nomesSelecionados, setNomesSelecionados] = useState({})
 
-    // Observa os valores para máscaras e validações
     const nomeValue = watch('nome');
     const telefoneValue = watch('telefone');
     const horarioInicio = watch('horario_inicio');
 
     useEffect(() => {
-        // Busca dados do profissional para preencher o formulário
+        
         axios.get(`http://localhost:3001/profissionais/byId/${id}`)
             .then((res) => {
-                // Aplica a máscara no telefone que vem do banco (sem máscara) antes de resetar o form
                 const data = res.data;
                 const nomesIds = new Set()
                 if (Array.isArray(data.NomesServicos)) {
@@ -96,7 +94,7 @@ export const ProfissionalEdit = () => {
         const payload = {
             ...data,
             nomes_servico_ids: buildNomesIds(nomesSelecionados),
-            telefone: data.telefone.replace(/\D/g, '') // Remove máscara antes de enviar
+            telefone: data.telefone.replace(/\D/g, '')
         };
 
         axios.patch(`http://localhost:3001/profissionais/update/${id}`, payload)
@@ -132,7 +130,6 @@ export const ProfissionalEdit = () => {
             </div>
 
             <form onSubmit={handleSubmit(onSubmit, onInvalid)} className='flex flex-col space-y-6'>
-                {/* Nome */}
                 <div className="flex flex-col gap-2">
                     <label className='font-semibold'>Nome</label>
                     <input 
@@ -145,7 +142,6 @@ export const ProfissionalEdit = () => {
                     {errors.nome && <p className='text-red-500 text-sm'>{errors.nome.message}</p>}
                 </div>
 
-                {/* Telefone e Email */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="flex flex-col gap-2">
                         <label className='font-semibold'>Telefone</label>
@@ -169,7 +165,6 @@ export const ProfissionalEdit = () => {
                     </div>
                 </div>
 
-                {/* Horários */}
                 <div className="bg-teal-50 p-6 rounded-lg grid grid-cols-2 gap-6 border border-teal-100">
                     <div className="flex flex-col gap-2">
                         <label className='font-medium flex items-center gap-1'><Clock size={16}/> Início</label>
@@ -201,7 +196,6 @@ export const ProfissionalEdit = () => {
                     </div>
                 </div>
 
-                {/* Dias e Especialidade */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="flex flex-col gap-2">
                         <label className='font-semibold flex items-center gap-2'><Calendar size={18}/> Dias Ativos</label>
@@ -218,7 +212,7 @@ export const ProfissionalEdit = () => {
                             {...register('nomes_servico_ids', {
                                 validate: (value) => (
                                     Array.isArray(value) ? value.length > 0 : (value && String(value).split(',').filter(Boolean).length > 0)
-                                ) || 'Selecione pelo menos um servico'
+                                ) || 'Selecione pelo menos um serviço'
                             })}
                         />
                         {errors?.nomes_servico_ids && (

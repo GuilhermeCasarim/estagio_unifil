@@ -19,7 +19,7 @@ export const Header = () => {
     { nome: 'Relatórios', rota: '/relatorios', icone: ChartColumnIncreasing, permissao: ['administrador'] },
     { nome: 'Equipe', rota: '/equipe', icone: Users, permissao: ['administrador'] },
   ]
-  //text black ou slate-100 
+
   return (
     <div className='flex flex-col text-slate-400
     space-y-2 p-2 h-full'>
@@ -61,4 +61,4 @@ export const Header = () => {
   )
 }
 
-//authState seria o login, que caso esteja logado aparece as funcoes do sistema, e caso nao esteja logado, precisa fazer para acessar as funcoes do sistema.
+//authState seria pra verificar o login(identificado pelo token), que caso esteja logado aparece as funcoes do sistema, e caso nao esteja logado, precisa fazer para acessar as funcoes do sistema.

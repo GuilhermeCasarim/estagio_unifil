@@ -7,20 +7,18 @@ import { useEffect } from 'react'
 import { SquarePen, X, Phone, Mail, Calendar, FileText, User } from 'lucide-react'
 import { toast } from 'react-toastify';
 import { maskCPF, maskPhone, maskName, validatePastDate } from '../utils/masks.js'
-//edicao/form clientes edit
 
 export const ClienteEdit = () => {
 
     const { register, handleSubmit, formState: { errors }, reset, setValue, watch } = useForm();
     console.log(errors)
     const navigate = useNavigate()
-    let { id } = useParams(); //pega id pela url com o clique do usenavigate
+    let { id } = useParams();
     const nomeValue = watch('nome')
     const telefoneValue = watch('telefone')
     const cpfValue = watch('cpf')
 
     useEffect(() => {
-        //busca dados do cliente editado para preencher o form atual
         axios.get(`http://localhost:3001/clientes/byId/${id}`)
             .then((res) => {
                 const data = res.data

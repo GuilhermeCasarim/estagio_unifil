@@ -57,7 +57,6 @@ export const MainLayout = () => {
       <aside
         className={`w-1/5 fixed h-screen top-0 left-0 z-50 transition-colors duration-300 ${showAdminForm ? 'bg-black/40' : 'bg-slate-900/95'
           }`}
-          // bg-neutral-100 ou slate-800
       >
         <Header />
       </aside>

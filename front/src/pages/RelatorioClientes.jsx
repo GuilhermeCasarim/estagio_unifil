@@ -38,7 +38,6 @@ export const RelatorioClientes = () => {
         axios.get('http://localhost:3001/financeiro')
       ])
 
-      // O endpoint de clientes retorna { clientes: [...] , currentPage, ... }
       const listaClientes = Array.isArray(clientesRes.data?.clientes)
         ? clientesRes.data.clientes
         : (Array.isArray(clientesRes.data) ? clientesRes.data : [])
@@ -57,10 +56,9 @@ export const RelatorioClientes = () => {
   }, [buscarDados])
 
   const relatorioClientes = useMemo(() => {
-    // Mapear clientes por ID
     const mapaClientes = new Map(clientes.map((cliente) => [cliente.id, cliente]))
 
-    // Contar apenas agendamentos concluídos por cliente
+    // filtro agendamento por cliente
     const agendamentosConcluidosPorCliente = new Map()
     agendamentos.forEach((agendamento) => {
       if (agendamento.status !== 'concluido') return
@@ -72,12 +70,11 @@ export const RelatorioClientes = () => {
       agendamentosConcluidosPorCliente.set(clienteId, contador + 1)
     })
 
-    // Calcular faturamento por cliente (apenas receitas pagas)
+    // filtra faturamento por cliente
     const faturamentoPorCliente = new Map()
     const receitas = financeiro.filter((item) => item.tipo === 'Receita' && item.status === 'Pago')
 
     receitas.forEach((receita) => {
-      // Encontrar o agendamento correspondente
       const agendamento = agendamentos.find((ag) => ag.id === receita.agendamento_id)
       if (!agendamento) return
 
@@ -88,7 +85,6 @@ export const RelatorioClientes = () => {
       faturamentoPorCliente.set(clienteId, valorAtual + Number(receita.valor || 0))
     })
 
-    // Consolidar dados dos clientes com atividade (apenas concluídos)
     const clientesComAtividade = []
     
     mapaClientes.forEach((cliente) => {
@@ -105,10 +101,8 @@ export const RelatorioClientes = () => {
       }
     })
 
-    // Ordenar por agendamentos
     const top10PorAgendamentos = clientesComAtividade.sort((a, b) => b.agendamentos - a.agendamentos).slice(0, 10)
 
-    // Ordenar por faturamento
     const top10PorFaturamento = [...clientesComAtividade].sort((a, b) => b.faturamento - a.faturamento).slice(0, 10)
 
     const totalClientes = clientes.length

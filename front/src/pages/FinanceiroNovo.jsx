@@ -85,8 +85,6 @@ export const FinanceiroNovo = ({
       usuario_id: data.usuario_id ? Number(data.usuario_id) : authState?.id ? Number(authState.id) : undefined
     }
 
-    // Se `data_pagamento` vier no formato YYYY-MM-DD, force um horário no meio do dia
-    // para evitar que parsing/UTC converta para o dia anterior em alguns fusos.
     if (payload.data_pagamento && /^\d{4}-\d{2}-\d{2}$/.test(payload.data_pagamento)) {
       payload.data_pagamento = `${payload.data_pagamento}T12:00:00`
     }

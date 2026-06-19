@@ -200,7 +200,6 @@ export const PaginaEquipe = () => {
                     <div className='bg-white p-6 rounded w-full max-w-md'>
                         <h2 className='flex gap-2 items-center mb-4'><UserPlus /> Novo Usuário Administrativo</h2>
                         <form onSubmit={handleCreateAdmin} className='space-y-3'>
-                            {/* Nome não é persistido em Usuarios - omitido */}
                             <div className='flex flex-col'>
                                 <label>Login</label>
                                 <input value={form.login} onChange={e => setForm({...form, login: e.target.value})} className='border px-2 py-1 rounded' required />

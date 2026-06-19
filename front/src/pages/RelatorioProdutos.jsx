@@ -33,7 +33,7 @@ export const RelatorioProdutos = () => {
 					})
 				}
 
-				// identificar profissional deste agendamento (para agregar por profissional)
+				//procurar profissional do agnedmaneto alvo
 				const profissionalId = ag.profissional_id || ag.Profissional?.id
 				if (profissionalId) {
 					if (!mapaProfissionais.has(profissionalId)) {
@@ -200,7 +200,6 @@ export const RelatorioProdutos = () => {
 					<div className='text-center text-gray-600'>Nenhum dado encontrado.</div>
 				) : (
 						<div className='grid gap-6 md:grid-cols-2'>
-							{/* Por Serviço */}
 							<div className='rounded-lg border border-gray-200 bg-white p-6'>
 								<h2 className='mb-4 text-lg font-semibold text-gray-800'>Consumo por serviço</h2>
 								{itensServico.length === 0 ? (
@@ -238,7 +237,6 @@ export const RelatorioProdutos = () => {
 								)}
 							</div>
 
-							{/* Por Profissional */}
 							<div className='rounded-lg border border-gray-200 bg-white p-6'>
 								<h2 className='mb-4 text-lg font-semibold text-gray-800'>Consumo por profissional</h2>
 								{itensProfissional.length === 0 ? (

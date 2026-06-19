@@ -30,17 +30,17 @@ export const Home = () => {
 
     const hojeChave = `${String(dataAtual.getFullYear())}-${String(dataAtual.getMonth() + 1).padStart(2, '0')}-${String(dataAtual.getDate()).padStart(2, '0')}`
 
-    // Função para verificar se um agendamento é do dia atual
+    // agendamentos dia atual
     const ehAgendamentoHoje = (dataHora) => {
         return normalizarChaveData(dataHora) === hojeChave
     }
 
-    // Função para verificar se uma transação é do dia atual
+    // transacoes dia atual
     const ehTransacaoHoje = (dataPagamento) => {
         return normalizarChaveData(dataPagamento) === hojeChave
     }
 
-    // Calcula métricas financeiras do dia
+    // calculo transacoes dia
     const calcularMetricasHoje = (dados) => {
         const hoje = dados.filter(t => t.status === 'Pago' && ehTransacaoHoje(t.data_pagamento))
         const receitas = hoje
@@ -57,14 +57,14 @@ export const Home = () => {
             try {
                 setCarregando(true)
                 
-                // Buscar agendamentos
+                // agendamentos do dia
                 const resAgendamentos = await axios.get('http://localhost:3001/agendamentos')
                 const dataAg = Array.isArray(resAgendamentos.data) ? resAgendamentos.data : (resAgendamentos.data.data || [])
                 let agendamentosHoje = dataAg
                     .filter(ag => ehAgendamentoHoje(ag.data_hora))
                     .sort((a, b) => new Date(a.data_hora) - new Date(b.data_hora))
 
-                // Se for profissional, mostrar só os agendamentos vinculados ao usuário/profissional logado
+                // filtra agendamentos por profissional, caso o usuário seja do tipo profissional
                 if (authState?.tipo_login === 'profissional') {
                     agendamentosHoje = agendamentosHoje.filter(ag => {
                         const usuarioProfissional = ag.Profissional?.usuario_id || ag.Profissional?.Usuario?.id
@@ -74,7 +74,7 @@ export const Home = () => {
                 
                 setAgendamentos(agendamentosHoje)
 
-                // Buscar financeiro (apenas transacoes com status Pago)
+                // transacoes apenas pagas
                 const resFinanceiro = await axios.get('http://localhost:3001/financeiro?status=Pago')
                 const dataFin = Array.isArray(resFinanceiro.data) ? resFinanceiro.data : (resFinanceiro.data.data || [])
                 setFinanceiro(dataFin)
@@ -102,7 +102,6 @@ export const Home = () => {
                 <p className='text-lg font-semibold'>Hoje é {diaSemana}, {dia} de {mes} de {diaAno}</p>
             </div>
 
-            {/* SEÇÃO FATURAMENTO */}
             <div className='faturamento-hoje'>
                 <h2 className='text-xl font-bold text-gray-800 mb-4 flex items-center gap-2'>
                     <Wallet className='text-teal-600' size={24} />
@@ -139,7 +138,6 @@ export const Home = () => {
                                         </div>
                                     </div>
 
-                                    {/* Card Saldo */}
                                     <div className={`bg-gradient-to-br border rounded-lg p-4 shadow-sm ${
                                         saldo >= 0 
                                             ? 'from-blue-50 to-cyan-50 border-blue-200' 

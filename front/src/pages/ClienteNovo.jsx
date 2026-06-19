@@ -6,17 +6,13 @@ import { UserPlus, X, Phone, Mail, Calendar, FileText, User } from 'lucide-react
 import { toast } from 'react-toastify';
 import { maskCPF, maskPhone, maskName, validatePastDate } from '../utils/masks.js';
 
-//cadastro/form clientes
-
 export const ClienteNovo = () => {
 
     const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm();
     const navigate = useNavigate()
-    //os watchs renderizam apos receberem o setValue
     const nomeValue = watch('nome');
     const telefoneValue = watch('telefone');
     const cpfValue = watch('cpf');
-    // faz replace no telefone e cpf pra remover a formatacao e enviar apenas string pro banco
     const onSubmit = (data) => {
         const cleanData = {
             ...data,
@@ -147,7 +143,7 @@ export const ClienteNovo = () => {
                         {errors?.data_nascimento?.type == 'required' &&
                             <p className='text-red-500 text-sm'>Data de nascimento necessária!</p>}
                         {errors?.data_nascimento?.type == 'validate' &&
-                            <p className='text-red-500 text-sm'>Data de nascimento deve ser maior que o dia atual!</p>}
+                            <p className='text-red-500 text-sm'>Data de nascimento deve ser menor que o dia atual!</p>}
                     </div>
                 </div>
 

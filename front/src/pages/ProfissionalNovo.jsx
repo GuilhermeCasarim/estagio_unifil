@@ -208,7 +208,7 @@ export const ProfissionalNovo = () => {
                             {...register('nomes_servico_ids', {
                                 validate: (value) => (
                                     Array.isArray(value) ? value.length > 0 : (value && String(value).split(',').filter(Boolean).length > 0)
-                                ) || 'Selecione pelo menos um servico'
+                                ) || 'Selecione pelo menos um serviço'
                             })}
                         />
                         {errors?.nomes_servico_ids && (

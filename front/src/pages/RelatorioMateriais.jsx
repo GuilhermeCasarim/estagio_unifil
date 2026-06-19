@@ -15,11 +15,11 @@ export const RelatorioMateriais = () => {
     try {
       setCarregando(true)
 
-      // buscar todos os produtos cadastrados (para garantir inclusão dos não utilizados)
+      // busca todos os produtos cadastrados
       const resProdutos = await axios.get('http://localhost:3001/produtos')
       const listaProdutos = Array.isArray(resProdutos.data) ? resProdutos.data : (resProdutos.data.data || [])
 
-      // buscar agendamentos concluídos (histórico)
+      // busca agendamentos concluídos pra fazer a soma
       const resAg = await axios.get('http://localhost:3001/agendamentos/historico?status=concluido')
       const agendamentos = Array.isArray(resAg.data) ? resAg.data : (resAg.data.data || [])
 
@@ -67,7 +67,7 @@ export const RelatorioMateriais = () => {
         })
       })
 
-      // garantir que produtos cadastrados mas não usados apareçam com quantidade 0
+      // produtos cadastrados, mas sem utilizacao
       listaProdutos.forEach((p) => {
         if (!mapa.has(p.id)) {
           mapa.set(p.id, { id: p.id, nome: p.nome || 'Produto sem nome', quantidade_total: 0, volume_unidade: p.volume_unidade, unidade_medida: p.unidade_medida })
@@ -76,9 +76,7 @@ export const RelatorioMateriais = () => {
 
       const listaMateriais = Array.from(mapa.values()).sort((a, b) => b.quantidade_total - a.quantidade_total)
 
-      // Somar consumo em unidades (un): para cada item, se houver volume_unidade
-      // convertemos a quantidade bruta para unidades: unidades = quantidade_total / volume_unidade
-      // caso não haja volume_unidade, assumimos que quantidade_total já está em unidades
+      // consumo é somado em unidades(un)
       const totalConsumidoUn = listaMateriais.reduce((total, item) => {
         const quantidade = Number(item.quantidade_total) || 0
         const volume = Number(item.volume_unidade) || 0

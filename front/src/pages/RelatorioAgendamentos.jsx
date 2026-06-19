@@ -100,7 +100,6 @@ export const RelatorioAgendamentos = () => {
 
   return (
     <div className='space-y-6'>
-      {/* Header com botão de voltar */}
       <div className='flex items-center justify-between border-b-2 border-gray-400 pb-4'>
         <h1 className='text-2xl font-bold'>Agendamentos por período e profissional</h1>
         <button
@@ -112,7 +111,6 @@ export const RelatorioAgendamentos = () => {
         </button>
       </div>
 
-      {/* Filtros */}
       <div className='rounded-lg border border-gray-200 bg-white p-6'>
         <div className='mb-4 flex items-center gap-2'>
           <Filter size={20} className='text-gray-600' />
@@ -187,7 +185,6 @@ export const RelatorioAgendamentos = () => {
         </div>
       </div>
 
-      {/* Tabela de agendamentos */}
       <div className='rounded-lg border border-gray-200 bg-white p-6'>
         <h2 className='mb-4 text-lg font-semibold text-gray-800'>Agendamentos</h2>
         {carregando ? (

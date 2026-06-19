@@ -230,7 +230,7 @@ export const PaginaAgendamentos = () => {
         const inicio = filtroInicio || ''
         const fim = filtroFim || ''
 
-        // Se for profissional, mostrar apenas agendamentos vinculados a ele
+        // caso usuario seja profissional, mostra apenas os agendamentos dele
         if (authState?.tipo_login === 'profissional') {
             const usuarioProfissional = ag.Profissional?.usuario_id || ag.Profissional?.Usuario?.id || undefined
             if (!usuarioProfissional || Number(usuarioProfissional) !== Number(authState.id)) {
@@ -330,13 +330,13 @@ export const PaginaAgendamentos = () => {
                     <div className='text-gray-500 col-span-full text-center font-medium'>Nenhum agendamento cadastrado.</div>
                 ) : (
                     agendamentosFiltrados.map((ag, key) => {
-                        const cliente = ag.Cliente?.nome || ag.cliente?.nome || ag.cliente_nome || '-';
-                        const servico = ag.Servico?.nome_servico?.nome || ag.Servico?.nome || ag.servico?.nome_servico?.nome || ag.servico?.nome || ag.servico_nome || '-';
-                        const profissional = ag.Profissional?.nome || ag.Profissionai?.nome || ag.profissional?.nome || ag.profissional_nome || '-';
+                        const cliente = ag.Cliente?.nome || '-';
+                        const servico = ag.Servico?.nome_servico?.nome || '-';
+                        const profissional = ag.Profissional?.nome || '-';
                         const hojeLocal = getHojeInput()
                         const dataAgendamentoLocal = getDataLocal(ag.data_hora)
                         const podeFinalizar = ['agendado', 'confirmado'].includes(ag.status)
-                            && dataAgendamentoLocal === hojeLocal
+                            && dataAgendamentoLocal <= hojeLocal
                         const ehPendentes = abaAtiva === 'pendentes'
                         const ehTodos = abaAtiva === 'todos'
                         const ehSomenteLeitura = ag.status === 'concluido' || ag.status === 'cancelado'
@@ -427,7 +427,7 @@ export const PaginaAgendamentos = () => {
                                                             className='rounded-full bg-teal-500 px-3 py-1 text-sm font-semibold text-white hover:bg-teal-600 transition duration-300 cursor-pointer disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-gray-400'
                                                             onClick={(e) => { e.stopPropagation(); handleFinalizar(ag) }}
                                                             disabled={!podeFinalizar}
-                                                            title={!podeFinalizar ? 'Disponível apenas no horário do agendamento' : 'Finalizar atendimento'}
+                                                            title={!podeFinalizar ? 'Disponível apenas para hoje ou datas anteriores' : 'Finalizar atendimento'}
                                                         >
                                                             Finalizar
                                                         </button>

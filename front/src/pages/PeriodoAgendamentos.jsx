@@ -24,7 +24,6 @@ export const PeriodoAgendamentos = () => {
     agendado: '#6b7280'
   }
 
-  // FETCH: responsabilidade única de buscar agendamentos
   const fetchAgendamentos = async () => {
     try {
       setCarregando(true)
@@ -40,7 +39,6 @@ export const PeriodoAgendamentos = () => {
     }
   }
 
-  // Mapeamento: transforma agendamentos em eventos do FullCalendar
   const mapToEvents = (dados) => {
     return dados
       .filter((ag) => ag.data_hora)
@@ -73,7 +71,7 @@ export const PeriodoAgendamentos = () => {
       const dados = await fetchAgendamentos()
       if (!mounted) return
 
-      // Se for profissional, filtrar apenas agendamentos vinculados ao profissional logado
+      // se tipo_login for profissional, filtra apenas seus agendamentos
       let dadosFiltrados = dados
       if (authState?.tipo_login === 'profissional') {
         dadosFiltrados = dados.filter((ag) => {

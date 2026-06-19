@@ -3,11 +3,10 @@ import { X, Clock, Calendar, Briefcase, Mail, Phone, User } from 'lucide-react';
 import React, { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 
-// Página Profissional (quando clicado a partir da lista)
 
 export const Profissional = () => {
 
-  let { id } = useParams(); // Pega o id pela URL
+  let { id } = useParams();
   const [profissionalInfo, setProfissionalInfo] = useState({});
   const navigate = useNavigate();
 
@@ -23,7 +22,6 @@ export const Profissional = () => {
   }
 
   useEffect(() => { 
-    // Manda o id para buscar os dados do profissional
     axios.get(`http://localhost:3001/profissionais/byId/${id}`).then((res) => {
       setProfissionalInfo(res.data)
     }).catch(err => {

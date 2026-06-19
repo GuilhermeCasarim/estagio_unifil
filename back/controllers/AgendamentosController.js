@@ -51,7 +51,7 @@ class AgendamentosController {
             .filter((item) => item.quantidade_utilizada > 0);
     }
 
-    //valida o agendamento para nao ser marcado em data passada
+    //valida o agendamento para nao ser marcado em dia passado
     validarDataAtualOuFutura(dataHora) {
         const selecionada = new Date(dataHora);
 
@@ -60,8 +60,8 @@ class AgendamentosController {
         }
 
         const agora = new Date();
-        selecionada.setSeconds(0, 0);
-        agora.setSeconds(0, 0);
+        selecionada.setHours(0, 0, 0, 0);
+        agora.setHours(0, 0, 0, 0);
         return selecionada >= agora;
     }
 

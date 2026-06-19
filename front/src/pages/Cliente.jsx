@@ -2,13 +2,12 @@ import axios from 'axios';
 import { X, User, Mail, Phone, Calendar, FileText } from 'lucide-react';
 import React, { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-//pagina cliente(quando clicado a partir da lista)
 
 export const Cliente = () => {
 
-  let { id } = useParams(); //pega id pela url com o clique do usenavigate
+  let { id } = useParams();
   const [clienteInfo, setClienteInfo] = useState([]);
-  useEffect(() => { //manda o id pra pegar o cliente
+  useEffect(() => {
     axios.get(`http://localhost:3001/clientes/byId/${id}`).then((res) => { //
       setClienteInfo(res.data)
     })

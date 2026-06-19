@@ -87,7 +87,7 @@ export const PaginaFinanceiro = () => {
 
   const handleDelete = (transacao) => {
     if (transacao?.agendamento_id) {
-      toast.error('Nao e permitido excluir uma transacao vinculada a agendamento.')
+      toast.error('Não é permitido excluir uma transação vinculada a agendamento.')
       return
     }
 
