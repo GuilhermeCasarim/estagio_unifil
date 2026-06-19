@@ -1,4 +1,4 @@
-const { Usuarios, Profissionais } = require('../models');
+const { Usuarios, Profissionais, Financeiro } = require('../models');
 const bcrypt = require('bcrypt');
 const { sign } = require('jsonwebtoken');
 
@@ -93,6 +93,18 @@ class UsuarioController {
 
             if (!usuario) {
                 return res.status(404).json({ error: 'Usuário não encontrado' })
+            }
+
+            const totalTransacoes = await Financeiro.count({
+                where: {
+                    usuario_id: id
+                }
+            })
+
+            if (totalTransacoes > 0) {
+                return res.status(400).json({
+                    error: 'Não é possível excluir este usuário porque existem transações financeiras vinculadas a ele'
+                })
             }
 
             await Usuarios.destroy({ where: { id } })
